@@ -1,5 +1,6 @@
-# dtk
-A deformable toolkit used for deforamable physical simulation.
+# SimplePhysicsEngine
+This is a simple physics engine which is used for beginner to learn. 
+This project originally from DTK ,A deformable toolkit used for deforamable physical simulation.
 
 ## Dependencies
 
@@ -128,4 +129,4 @@ $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 
 ## Documentation
 
-You can find documentation [here](https://github.com/Deformable-Toolkit/dtk/blob/TOMbranch/doc/html/index.html).
+You can find documentation [here](https://github.com/Simple-XX/SimplePhysicsEngine/doc/html/index.html).
