@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <Eigen\\Dense>
+#include <Eigen/Dense>
 using namespace std;
 using namespace Eigen;
 
