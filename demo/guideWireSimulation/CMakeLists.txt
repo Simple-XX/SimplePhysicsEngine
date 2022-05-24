@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(guideWireSimulation)
 
-set(Qt5_DIR "C:\\Qt\\5.15.0\\msvc2019_64\\lib\\cmake\\Qt5")
+if(WIN32)
+	set(Qt5_DIR "C:\\Qt\\5.15.0\\msvc2019_64\\lib\\cmake\\Qt5")
+elseif(UNIX)
+	set(Qt5_DIR /home/dai/Qt/5.15.2/gcc_64/lib/cmake/Qt5)
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
@@ -15,22 +19,40 @@ FIND_PACKAGE(Qt5 COMPONENTS Core Gui Qml Quick Widgets REQUIRED)
 #FIND_PACKAGE(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(CGAL)
 find_package(Boost)
+if(WIN32)
+	#Boost
+	set(Boost_INCLUDE_DIR D:\\boost\\boost_1_71_0)
+	set(Boost_LIBRARIES_DIR D:\\boost\\boost_1_71_0\\lib64-msvc-14.2)
 
-#Boost
-set(Boost_INCLUDE_DIR D:\\boost\\boost_1_71_0)
-set(Boost_LIBRARIES_DIR D:\\boost\\boost_1_71_0\\lib64-msvc-14.2)
+	#dtk
+	set(DTK_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\include)
+	set(DTK_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\lib)
 
-#dtk
-set(DTK_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\include)
-set(DTK_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\lib)
+	#freeglut
+	set(FREEGLUT_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\include)
+	set(FREEGLUT_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\build\\lib)
 
-#freeglut
-set(FREEGLUT_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\include)
-set(FREEGLUT_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\build\\lib)
+	#gmp
+	set(GMP_INCLUDE_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\include)
+	set(GMP_LIBRARIES_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\lib)
+elseif(UNIX)
+	#boost
+	set(Boost_INCLUDE_DIR /usr/include/boost)
+	set(Boost_LIBRARIES_DIR /usr/lib/x86_64-linux-gnu)
+	
+	#dtk
+    set(DTK_INCLUDE_DIR /usr/local/include)
+    set(DTK_LIBRARIES_DIR /usr/local/lib)
 
-#gmp
-set(GMP_INCLUDE_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\include)
-set(GMP_LIBRARIES_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\lib)
+	#freeglut
+    set(freeglut_include_dir /usr/include/GL)
+    set(freeglut_libraries_dir /usr/lib/x86_64-linux-gnu)
+
+	#gmp
+	set(GMP_INCLUDE_DIR /usr/include)
+	set(GMP_LIBRARIES_DIR /usr/lib/x86_64-linux-gnu)	
+endif()
+
 
 aux_source_directory(. SOURCE_FILES)
 file(GLOB HEADER_FILES *.h)
