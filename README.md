@@ -1,7 +1,25 @@
-# SimplePhysicsEngine
-This is a simple physics engine which is used for beginner to learn. 
-This project originally from DTK ,A deformable toolkit used for deforamable physical simulation.
 
+# (SimplePhysicsEngine) dtk
+
+A deformable toolkit(dtk) used for deforamable physical simulation which is also caleed SimplePhysicsEngine. At first this repo is developed by dtk maintainer,  and currently this repo is maintained by SimpleXX community.
+- [(SimplePhysicsEngine) dtk](#simplephysicsengine-dtk)
+  - [Dependencies](#dependencies)
+    - [Boost](#boost)
+    - [CGAL](#cgal)
+    - [Eigen](#eigen)
+    - [GLM](#glm)
+    - [freeglut](#freeglut)
+  - [How to build](#how-to-build)
+    - [build with CMake GUI](#build-with-cmake-gui)
+    - [build with CLI](#build-with-cli)
+      - [build static libary](#build-static-libary)
+      - [build dynamic library](#build-dynamic-library)
+  - [Demo with dtk](#demo-with-dtk)
+    - [Rigid body Simulation demo](#rigid-body-simulation-demo)
+    - [Finite element method simulation](#finite-element-method-simulation)
+    - [SPH methods Simulation](#sph-methods-simulation)
+    - [Guidewire Simulation](#guidewire-simulation)
+  - [Documentation](#documentation)
 ## Dependencies
 
 ### [Boost](https://github.com/boostorg/boost)
@@ -11,13 +29,14 @@ This project originally from DTK ,A deformable toolkit used for deforamable phys
 &emsp;&emsp;Download and run the file boost_1_71_0-msvc-XX.Y-64.exe (where XX.Y = 14.0 for VC 2015, XX.Y = 14.1 for 2017, XX.Y = 14.2 for VC 2019).
 Extract the files to a new directory, e.g. c:\dev\libboost_1_71_0.
 Set the following two environment variables to point respectively to the path of the libraries and the headers
+
 ```bash
   BOOST_LIBRARYDIR = C:\dev\libboost_1_71_0\lib64-msvc-XX.Y
   BOOST_INCLUDEDIR = C:\dev\libboost_1_71_0
 ```
+
 as this will help cmake to find Boost.
 Add the path to the Boost dlls (C:\dev\libboost_1_71_0\lib64-msvc-XX.Y) files to the PATH environment variable.
-
 
 ### [CGAL](https://github.com/CGAL/cgal)
 
@@ -49,7 +68,7 @@ Add the path to the Boost dlls (C:\dev\libboost_1_71_0\lib64-msvc-XX.Y) files to
 
 ### [freeglut](http://freeglut.sourceforge.net)
 
-&emsp;Freeglut, the Free OpenGL Utility Toolkit, is meant to be a free alternative to Mark Kilgard's GLUT library. 
+&emsp;Freeglut, the Free OpenGL Utility Toolkit, is meant to be a free alternative to Mark Kilgard's GLUT library.
 
 &emsp;dtk Render by Opengl.
 
@@ -57,10 +76,16 @@ Add the path to the Boost dlls (C:\dev\libboost_1_71_0\lib64-msvc-XX.Y) files to
 
 ## How to build
 
-&emsp;&emsp;Dtk is build by CMake. so you can build easily.
+&emsp;&emsp;dtk is build by CMake. so you can build easily. You could build this project either in windows or linux. [tutorial on cmake build](https://preshing.com/20170511/how-to-build-a-cmake-based-project/)
 
 ### build with CMake GUI
+If you are a beginner to cpp with Cmake, we advice you to use gui command to build.  Actually , build with CLI is similar to build with CLI.
 
+&emsp;&emsp; First, modify the cmakelists.txt the correspondence library path.
+
+&emsp;&emsp; Second, click the config buttion and wait. After configuration if there are some library have problems, you could set the path in the red hint in the GUI.
+
+&emsp;&emsp; In the final, click the genrate button, the project will generated and you could complie this by using Visual stdio.
 
 ### build with CLI
 
@@ -91,7 +116,7 @@ $ cmake -S "DTK_DIR" -B "DESTINATION_SHARED_DIR" -D BUILD_SHARED_LIBS=ON -D CMAK
 $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 ```
 
-## demo with dtk
+## Demo with dtk
 
 ### Rigid body Simulation demo
 
@@ -129,4 +154,4 @@ $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 
 ## Documentation
 
-You can find documentation [here](https://github.com/Simple-XX/SimplePhysicsEngine/doc/html/index.html).
+You can find documentation [here](https://github.com/Simple-XX/SimplePhysicsEngine/blob/main/doc/html/index.html).
