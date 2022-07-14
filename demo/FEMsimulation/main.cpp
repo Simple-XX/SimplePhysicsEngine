@@ -74,7 +74,7 @@ void display() {
 	//draw_text(5, 45, "Time step: %.6f", 1.0 / 32);
 	draw_text(5, 45, "Poisson's ratio: %.2f", 0.3f);
 	draw_text(5, 60, "Young's modulus: %.2f", 1000.0f);
-	draw_text(5, 75, "Energy : %.2f", Breakout.getEnergy());
+	draw_text(5, 75, "Energy : %.2f", Breakout.rectangle.getEnergy());
 
 	//draw_text(5, 40, "Push [1-5] to switch scene");
 	//draw_text(w - 150, h - 20, "refer: apollonia");
