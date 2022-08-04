@@ -25,34 +25,6 @@
 
  dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
- static void draw_text(int x, int y, const char* format, ...) {
-	 glMatrixMode(GL_PROJECTION);
-	 glPushMatrix();
-	 glLoadIdentity();
-	 int w = glutGet(GLUT_WINDOW_WIDTH);
-	 int h = glutGet(GLUT_WINDOW_HEIGHT);
-	 gluOrtho2D(0, w, h, 0);
-	 glMatrixMode(GL_MODELVIEW);
-	 glPushMatrix();
-	 glLoadIdentity();
-
-	 glColor3f(0.9f, 0.9f, 0.9f);
-	 glRasterPos2i(x, y);
-
-	 char buffer[256];
-	 va_list args;
-	 va_start(args, format);
-	 int len = vsprintf(buffer, format, args);
-	 va_end(args);
-	 for (int i = 0; i < len; ++i) {
-		 glutBitmapCharacter(GLUT_BITMAP_9_BY_15, buffer[i]);
-	 }
-
-	 glPopMatrix();
-	 glMatrixMode(GL_PROJECTION);
-	 glPopMatrix();
- }
-
  static int pcount = 1;
  void display() {
 	 glClearColor(0x11 * 1.0 / 0xff, 0x2f * 1.0 / 0xff, 0x41 * 1.0 / 0xff, 1.0f);
@@ -187,7 +159,7 @@ static clib::cworld world({ 0, -9.8 });
 const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 600;
-//dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+//dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT,{ 0, -9.8 });
 
 static void draw_text(int x, int y, const char* format, ...) {
 	glMatrixMode(GL_PROJECTION);
@@ -216,7 +188,6 @@ static void draw_text(int x, int y, const char* format, ...) {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 }
-
 
 static void draw_body(const clib::polygon_body& body) {
 	if (std::isinf(body.get_mass())) {
@@ -363,9 +334,9 @@ static void test_chain() {
 	}
 }
 
-void init() {
-	test_joint();
-}
+//void init() {
+//	test_joint();
+//}
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -391,6 +362,7 @@ void display() {
 		draw_text(5, h - 20, "dt: %.2f ms", dt * 1000);
 
 	world.step(std::min(dt, 0.01));
+
 	for (auto& body : world.get_bodies()) {
 		draw_body(*std::dynamic_pointer_cast<clib::polygon_body>(body).get());
 	}
