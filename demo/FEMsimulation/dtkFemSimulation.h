@@ -32,7 +32,7 @@ class dtkFemSimulation : public dtkScene
 {
 private:
 	dtk::dtkGraphicsKernel::Circle2 sphere;//(dtk::dtkGraphicsKernel::Point2(0.5,0.2), 0.1);
-	Vector2f spherecenter;
+	EigenVector2f spherecenter;
 	//刚体部分
 	using body_list = std::vector<cbody::ptr>;
 	using joint_list = std::vector<cjoint::ptr>;

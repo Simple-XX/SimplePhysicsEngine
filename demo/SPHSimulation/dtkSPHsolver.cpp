@@ -1,8 +1,8 @@
 ﻿# include "dtkSPHsolver.h"
 
-dtkSPHSolver::dtkSPHSolver(const vector<int>& res, float screen_to_world_ratio, const vector<int>& bound, float alpha = 0.5, float dx = 0.2
-	int max_num_paticles = (1 << 20), bool dynamic_allocate = false, bool adaptive_time_step = true, enmu SPHMethod method = SPHMethod::WCSPH)
-	:res(res), screen_to_world_ratio(screen_to_world_ratio), alpha(alpha), dx(dx), max_num_paticles(max_num_paticles), dynamic_allocate(dynamic_allocate),
+dtkSPHSolver::dtkSPHSolver(const vector<int>& res, float screen_to_world_ratio, const vector<int>& bound, float alpha = 0.5, float dx = 0.2,
+	int max_num_paticles = (1 << 20), bool dynamic_allocate = false, bool adaptive_time_step = true, enum SPHMethod method = SPHMethod::WCSPH)
+	:res(res), screen_to_world_ratio(screen_to_world_ratio), alpha(alpha), dx(dx), max_num_particles_per_cell(max_num_paticles), dynamic_allocate(dynamic_allocate),
 	adaptive_time_step(adaptive_time_step), method(method)
 {
 	dim = res.size();
@@ -24,47 +24,47 @@ dtkSPHSolver::dtkSPHSolver(const vector<int>& res, float screen_to_world_ratio, 
 	left_bound = bound[2] / screen_to_world_ratio;
 	right_bound = bound[3] / screen_to_world_ratio;
 
-	rho_err(max_num_particles);
-	max_rho_err(max_num_particles);
+	rho_err.resize(max_num_particles);
+	max_rho_err.resize(max_num_particles);
 
 	//source_bound()
 
 	particle_num = 0;
 
 	if (dim == 2) {
-		particle_position(max_num_particles, Vector2f(0.0, 0.0));
-		particle_velocity(max_num_particles, Vector2f(0.0, 0.0));
-		particle_position_new(max_num_particles, Vector2f(0.0, 0.0));
-		particle_velocity_new(max_num_particles, Vector2f(0.0, 0.0));
-		particle_pressure_acc(max_num_particles, Vector2f(0.0, 0.0));
+		particle_position.resize(max_num_particles, Vector2f(0.0, 0.0));
+		particle_velocity.resize(max_num_particles, Vector2f(0.0, 0.0));
+		particle_position_new.resize(max_num_particles, Vector2f(0.0, 0.0));
+		particle_velocity_new.resize(max_num_particles, Vector2f(0.0, 0.0));
+		particle_pressure_acc.resize(max_num_particles, Vector2f(0.0, 0.0));
 
-		d_velocity(max_num_particles, Vector2f(0.0, 0.0));
+		d_velocity.resize(max_num_particles, Vector2f(0.0, 0.0));
 	}
 	else {
-		particle_position(max_num_particles, Vector3f(0.0, 0.0, 0.0));
-		particle_velocity(max_num_particles, Vector3f(0.0, 0.0, 0.0));
-		particle_position_new(max_num_particles, Vector3f(0.0, 0.0, 0.0));
-		particle_velocity_new(max_num_particles, Vector3f(0.0, 0.0, 0.0));
-		particle_pressure_acc(max_num_particles, Vector3f(0.0, 0.0, 0.0));
-		d_velocity(max_num_particles, Vector3f(0.0, 0.0));
+		particle_position.resize(max_num_particles, Vector3f(0.0, 0.0, 0.0));
+		particle_velocity.resize(max_num_particles, Vector3f(0.0, 0.0, 0.0));
+		particle_position_new.resize(max_num_particles, Vector3f(0.0, 0.0, 0.0));
+		particle_velocity_new.resize(max_num_particles, Vector3f(0.0, 0.0, 0.0));
+		particle_pressure_acc.resize(max_num_particles, Vector3f(0.0, 0.0, 0.0));
+		d_velocity.resize(max_num_particles, Vector3f(0.0, 0.0));
 	}
 
-	particle_pressure(max_num_particles, 0.0);
-	particle_density(max_num_particles, 0.0);
-	particle_density_new(max_num_particles, 0.0);
-	particle_alpha(max_num_particles, 0.0);
-	particle_stiff(max_num_particles, 0.0);
+	particle_pressure.resize(max_num_particles, 0.0);
+	particle_density.resize(max_num_particles, 0.0);
+	particle_density_new.resize(max_num_particles, 0.0);
+	particle_alpha.resize(max_num_particles, 0.0);
+	particle_stiff.resize(max_num_particles, 0.0);
 
-	d_density(max_num_particles, 0.0);
+	d_density.resize(max_num_particles, 0.0);
 
-	color(max_num_particles, 0XFFFFFF);
-	material(max_num_particles, SPH_Material::Material_Fiuld);
+	color.resize(max_num_particles, 0XFFFFFF);
+	material.resize(max_num_particles, SPH_Material::Material_Fiuld);
 
 	//grid_num_particles;
 	// grid2particles
 
-	particle_num_neigbors(max_num_particles, 0);
-	particle_neighbors(max_num_particles);
+	particle_num_neigbors.resize(max_num_particles, 0);
+	particle_neighbors.resize(max_num_particles);
 
 	//initizlize dt
 	if (method == WCSPH) {
@@ -103,7 +103,7 @@ inline int dtkSPHSolver::compute_grid_index(VectorXf pos) {
 	return res;
 }
 
-void SPHSolver::allocate_particles() {
+void dtkSPHSolver::allocate_particles() {
 	// Ref to pbf2d example from by Ye Kuang (k-ye)
 	// https://github.com/taichi-dev/taichi/blob/master/examples/pbf2d.py
 	// allocate particles to grid

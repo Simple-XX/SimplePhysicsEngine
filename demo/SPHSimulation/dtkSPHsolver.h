@@ -15,14 +15,14 @@
 #include <vector>
 #include <unordered_map>
 #include "../dtkScene.h"
-#include "../../src/dtk.h"
-#include "../../src/dtkGraphicsKernel.h"
+ //#include "../../src/dtk.h"
+ //#include "../../src/dtkGraphicsKernel.h"
 #include <iostream>
 
 #include <Eigen/Dense>
 using namespace std;
 using namespace Eigen;
-using namespace dtk;
+//using namespace dtk;
 
 /**
  * @brief SPH方法
@@ -120,7 +120,7 @@ private:
 	vector<float> particle_pressure;
 	vector<VectorXf> particle_pressure_acc; /**< pressure force for PCISPH */
 	vector<float> particle_density;
-	vector<float> particle_desity_new; /**< Prediction desity values for PCSPH */
+	vector<float> particle_density_new; /**< Prediction desity values for PCSPH */
 	vector<float> particle_alpha; /**< for DFSPH */
 	vector<float> particle_stiff;
 
