@@ -11,9 +11,9 @@ elseif(COMPILER_SUPPORTS_CXX0X)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 
-set(freeglut_include_dir D:/Envs/opengl/freeglut-3.2.1/include)
-set(freeglut_libraries_dir D:/Envs/opengl/freeglut-3.2.1/build/lib)
-set(EIGEN_PATH D:/Envs/Eigen/eigen-3.3.8)
+set(freeglut_include_dir D:/WORK/Dev/freeglut-3.2.1/include)
+set(freeglut_libraries_dir D:/WORK/Dev/freeglut-3.2.1/lib)
+set(EIGEN_PATH D:/WORK/Dev/eigen3)
 
 include_directories(
 	"${freeglut_include_dir}"

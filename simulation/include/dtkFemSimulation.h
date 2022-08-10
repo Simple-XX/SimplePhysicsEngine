@@ -6,12 +6,10 @@
  */
 
 
-#ifndef DTKFEMSIMULATION_H
-#define DTKFEMSIMULATION_H
-
-#include "dtkScene.h"
-#include "dtkMesh.h"
-#include <iostream>
+ 
+ #include "dtkScene.h"
+ #include "dtkMesh.h"
+ #include <iostream>
 #include <vector>
 #include <memory>
 #include <unordered_map>
@@ -30,29 +28,12 @@ struct Circle2
 	double x, y, radius;
 };
 
-class dtkFemSimulation : public dtkScene
+class dtkFemSimulation
 {
-private:
-	Circle2 sphere;//(dtk::dtkGraphicsKernel::Point2(0.5,0.2), 0.1);
-	Vector2f spherecenter;
-	//刚体部分
-	using body_list = std::vector<cbody::ptr>;
-	using joint_list = std::vector<cjoint::ptr>;
-	using pair_list = std::unordered_map<uint32_t, cpair::ptr>;
-
-	bool _pause{ false }; // 是否暂停
-	clib::vec2 _gravity; // 重力
-	size_t _iterations{ 10 };
-
-	body_list _bodies; // 刚体列表
-	joint_list _joints; // 关节数组
-	pair_list _arbiters; // 碰撞检测对列表
-
-
 public:
 	dtkMesh rectangle;
-	dtkFemSimulation(unsigned int width, unsigned int height, const vec2& gravity);
-	~dtkFemSimulation();
+	dtkFemSimulation(const vec2& gravity);
+	~dtkFemSimulation() = default;
 	void Init();
 
 	void moveBall(int x, int y);
@@ -62,6 +43,10 @@ public:
 	void DoCollisions();
 
 	//刚体部分
+	using body_list = std::vector<cbody::ptr>;
+	using joint_list = std::vector<cjoint::ptr>;
+	using pair_list = std::unordered_map<uint32_t, cpair::ptr>;
+
 	void add(cbody::ptr body);
 	void add(cjoint::ptr joint);
 	const vec2& get_gravity() const;
@@ -76,9 +61,23 @@ public:
 
 	bool is_pause() const;
 	void set_pause(bool pause);
+
+
+private:
+	Circle2 sphere;
+	Vector2f spherecenter;
+	//刚体部分
+
+	bool _pause{ false }; // 是否暂停
+	clib::vec2 _gravity; // 重力
+	size_t _iterations{ 10 };
+
+	body_list _bodies; // 刚体列表
+	joint_list _joints; // 关节数组
+	pair_list _arbiters; // 碰撞检测对列表
 };
 
-class cfactory {
+class dtkFactory {
 public:
 	static polygon_body::ptr make_box(decimal mass, decimal width, decimal height,
 		const vec2& position = vec2());
@@ -92,5 +91,3 @@ public:
 	static revolute_joint::ptr make_revolute_joint(cbody::ptr a, cbody::ptr b,
 		const vec2& anchor);
 };
-
-#endif

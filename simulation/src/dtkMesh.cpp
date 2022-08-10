@@ -16,8 +16,8 @@ dtkMesh::dtkMesh(int x_node, int y_node) :
 	dim_ = 2;
 	element_v_ = 0.02f;
 
-	Young_E_ = 31000.0f;
-	Poisson_r_ = 0.3f;
+	Young_E_ = 8000.0f;
+	Poisson_r_ = 0.2f;
 	Lame_parameter_1_ = Young_E_ / (2 * (1 + Poisson_r_));
 	Lame_parameter_2_ = Young_E_ * Poisson_r_ / ((1 + Poisson_r_) * (1 - 2 * Poisson_r_));
 	node_mass_ = 1.0f;

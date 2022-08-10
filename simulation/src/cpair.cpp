@@ -1,5 +1,5 @@
 #include "cpair.h"
-#include "cworld.h"
+#include "dtkFemSimulation.h"
 
 #include <cassert>
 #include <algorithm>
@@ -211,7 +211,7 @@ namespace clib {
         }
 
         auto va = a.local_to_world(a[ia]);
-        auto arbiter = cfactory::make_arbiter(*_pa, *_pb, N);
+        auto arbiter = dtkFactory::make_arbiter(*_pa, *_pb, N);
         for (auto &contact : clipped_contacts) {
             auto sep = dot(contact.position - va, N);
             if (sep <= 0) {

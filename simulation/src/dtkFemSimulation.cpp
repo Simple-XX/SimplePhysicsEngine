@@ -4,67 +4,37 @@
  * @Last Modified by: tom: https://github.com/TOMsworkspace
  * @Last Modified time: 2021-09-03 19:17:13
  */
-
-#include <algorithm>
-#include <sstream>
-#include <iostream>
-#include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
-
-
-//#include <gl/GL.h>
-//#include <glad/glad.h>
-//#include <GLFW/glfw3.h>
-
-
-//#include <irrklang/irrKlang.h>
-//using namespace irrklang;
+ /*
+ #include <algorithm>
+ #include <sstream>
+ #include <iostream>
+ #include <Eigen/Dense>
+ using namespace std;
+ using namespace Eigen;*/
 
 #include "dtkFemSimulation.h"
-
+ 
 #include "GL/freeglut.h"
 
-//#include "resource_manager.h"
-//#include "sprite_renderer.h"
-
-
-int dim = 2;
 int n_node_x = 50;
 int n_node_y = 6;
-float node_mass = 1.0f;
-int n_node = n_node_x * n_node_y;
-int n_fem_element = (n_node_x - 1) * (n_node_y - 1) * 2;
-float deltat = 3e-4;
-float deltax = (1.0 / 32);
-
-float Young_E = 31000.0f; /**< 杨氏模量 */
-float Poisson_r = 0.3f; /**< 泊松比 [0 - 0.5] */
-float Lame_parameter_1 = Young_E / (2 * (1 + Poisson_r));
-float Lame_parameter_2 = Young_E * Poisson_r / ((1 + Poisson_r) * (1 - 2 * Poisson_r));
-float element_v = 0.02f; /**< 微元体积 */
+float deltat = 0.0001;
 
 float radius = 0.05;
 
 int iterate_time = 3;
 
 
-dtkFemSimulation::dtkFemSimulation(unsigned int width, unsigned int height, const vec2& gravity)
-	: dtkScene(width, height),
-	spherecenter(0.5, 0.25), rectangle(n_node_x, n_node_y), _gravity(gravity)
+dtkFemSimulation::dtkFemSimulation(const vec2& gravity)
+	:spherecenter(0.4, 0.5), rectangle(n_node_x, n_node_y),_gravity(gravity)
 {
-	sphere.x = 0.5;
-	sphere.y = 0.25;
+	sphere.x = spherecenter[0];
+	sphere.y = spherecenter[1];
 	sphere.radius = radius;
-}
-
-dtkFemSimulation::~dtkFemSimulation()
-{
 }
 
 void dtkFemSimulation::Init()
 {
-	dtkScene::Init();
 	rectangle.Init();
 	//TODO: load shaders
 
@@ -80,6 +50,7 @@ void dtkFemSimulation::Init()
 
 	//TODO: audio
 }
+
 /*
 void dtkFemSimulation::Update(float dt)
 {
@@ -131,7 +102,6 @@ void dtkFemSimulation::Update(float dt)
 {
 	//TODO: update objects
 	//TODO: check for object collisions
-	if (this->State == SCENE_ACTIVE) {
 
 		// 迭代多轮, 防止穿透
 		for (int i = 0; i < iterate_time; ++i) {
@@ -141,19 +111,18 @@ void dtkFemSimulation::Update(float dt)
 			DoCollisions();
 			rectangle.compute_force();
 
-			for (int j = 0; j < n_node; ++j) {
+			for (int j = 0; j < rectangle.n_node_; ++j) {
 				rectangle.points_v_[j] = (rectangle.points_v_[j] + (rectangle.points_force_[j] / rectangle.node_mass_) * deltat) * exp(deltat * -3);
 
 				rectangle.points_[j] += deltat * rectangle.points_v_[j];
 			}
 
 		}
-	}
 }
 
 void dtkFemSimulation::ProcessInput(float dt)
 {
-	dtkScene::ProcessInput(dt);
+	//dtkScene::ProcessInput(dt);
 	//TODO: process input(keys)
 
 }
@@ -180,7 +149,7 @@ void dtkFemSimulation::Render()
 	//TODO: draw fem element(triangles here)
 	glColor3f(0x4f * 1.0 / 0xff, 0xb9 * 1.0 / 0xff, 0x9f * 1.0 / 0xff);
 	glBegin(GL_LINES);
-	for (int i = 0; i < n_fem_element; ++i) {
+	for (int i = 0; i < rectangle.n_fem_element_; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			int a = rectangle.mesh_table_[i][j];
 			int b = rectangle.mesh_table_[i][(j + 1) % 3];
@@ -199,12 +168,11 @@ void dtkFemSimulation::Render()
 
 void dtkFemSimulation::DoCollisions()
 {
-	if (this->State == SCENE_ACTIVE) {
 		Vector2f center = spherecenter;
 		//Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
 		float radius = this->sphere.radius;
 
-		for (int i = 0; i < n_node; ++i) {
+		for (int i = 0; i < rectangle.n_node_; ++i) {
 			//# Collide with sphere
 
 			Vector2f dis = rectangle.points_[i] - center;
@@ -221,26 +189,25 @@ void dtkFemSimulation::DoCollisions()
 
 			if (rectangle.points_[i][1] < 0.2f) {
 				rectangle.points_[i][1] = 0.2f;
-				rectangle.points_v_[i][1] = 0.0f;
+				rectangle.points_v_[i][1] *= -0.5f;
 			}
 
 			if (rectangle.points_[i][1] > 0.9f) {
 				rectangle.points_[i][1] = 0.9f;
-				rectangle.points_v_[i][1] = 0.0f;
+				rectangle.points_v_[i][1] *= -0.5f;
 			}
 
 			if (rectangle.points_[i][0] < 0.0f) {
 				rectangle.points_[i][0] = 0.0f;
-				rectangle.points_v_[i][0] = 0.0f;
+				rectangle.points_v_[i][0] *= -0.5f;
 			}
 
 			if (rectangle.points_[i][0] > 1.0f) {
 				rectangle.points_[i][0] = 1.0f;
-				rectangle.points_v_[i][0] = 0.0f;
+				rectangle.points_v_[i][0] *= -0.5f;
 			}
 		}
 
-	}
 }
 
 void dtkFemSimulation::moveBall(int x, int y) {
@@ -339,7 +306,7 @@ void dtkFemSimulation::set_pause(bool pause) {
 //工厂
 static uint16_t global_id = 1;
 
-polygon_body::ptr cfactory::make_box(decimal mass, decimal width, decimal height, const vec2& position) {
+polygon_body::ptr dtkFactory::make_box(decimal mass, decimal width, decimal height, const vec2& position) {
 	// 四边形
 	// 注意顶点呈逆时针
 	polygon_body::vertex_list vertices = {
@@ -354,13 +321,13 @@ polygon_body::ptr cfactory::make_box(decimal mass, decimal width, decimal height
 }
 
 polygon_body::ptr
-cfactory::make_polygon(decimal mass, const polygon_body::vertex_list& vertices, const vec2& position) {
+dtkFactory::make_polygon(decimal mass, const polygon_body::vertex_list& vertices, const vec2& position) {
 	auto body = std::make_shared<polygon_body>(global_id++, mass, vertices);
 	body->set_position(position);
 	return body;
 }
 
-polygon_body::ptr cfactory::make_fence(dtkFemSimulation& world) {
+polygon_body::ptr dtkFactory::make_fence(dtkFemSimulation& world) {
 	auto ground = make_box(clib::inf, 20, 1, { 0, -0.5 });
 	world.add(ground);
 	world.add(make_box(clib::inf, 20, 1, { 0, 16.5 }));
@@ -370,10 +337,10 @@ polygon_body::ptr cfactory::make_fence(dtkFemSimulation& world) {
 }
 
 cpair::ptr
-cfactory::make_arbiter(cbody::ptr a, cbody::ptr b, const vec2& normal, const cpair::contact_list& contacts) {
+dtkFactory::make_arbiter(cbody::ptr a, cbody::ptr b, const vec2& normal, const cpair::contact_list& contacts) {
 	return std::make_shared<cpair>(a, b, normal, contacts);
 }
 
-revolute_joint::ptr cfactory::make_revolute_joint(cbody::ptr a, cbody::ptr b, const vec2& anchor) {
+revolute_joint::ptr dtkFactory::make_revolute_joint(cbody::ptr a, cbody::ptr b, const vec2& anchor) {
 	return std::make_shared<revolute_joint>(a, b, anchor);
 }
