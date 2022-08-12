@@ -1,31 +1,40 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(sph)
+project(simualtion)
+set(CMAKE_CXX_STANDARD 11)
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif()
+find_package(CGAL)
 
 set(freeglut_include_dir D:/WORK/Dev/freeglut-3.2.1/include)
 set(freeglut_libraries_dir D:/WORK/Dev/freeglut-3.2.1/lib)
 set(EIGEN_PATH D:/WORK/Dev/eigen3)
+set(GLM_INCLUDE_DIR D:\\WORK\\Dev\\glm)
 
 include_directories(
 	"${freeglut_include_dir}"
 	"${EIGEN_PATH}"
 	"${PROJECT_SOURCE_DIR}/include"
+	"${PROJECT_SOURCE_DIR}/../src/"
+	"${GLM_INCLUDE_DIR}"
 )
 
 link_directories(${freeglut_libraries_dir})
 
-file(GLOB_RECURSE sph_FILES
+file(GLOB_RECURSE simualtion_FILES
 	"${PROJECT_SOURCE_DIR}/include/*.h"
 	"${PROJECT_SOURCE_DIR}/src/*.cpp"
+	"${PROJECT_SOURCE_DIR}/../src/dtkRigidBody.h"
+	"${PROJECT_SOURCE_DIR}/../src/dtkRigidBody.cpp"
+	"${PROJECT_SOURCE_DIR}/../src/dtkTx.h"
+	"${PROJECT_SOURCE_DIR}/../src/dtkTxOP.h"
+	"${PROJECT_SOURCE_DIR}/../src/dtkMatrix.h"
+	"${PROJECT_SOURCE_DIR}/../src/dtkMatrixOP.h"
+	"${PROJECT_SOURCE_DIR}/../src/dtkMatrixOp.cpp"
+	"${PROJECT_SOURCE_DIR}/../src/dtkJoint.h"
+	"${PROJECT_SOURCE_DIR}/../src/dtkJoint.cpp"
+	
 )
 
-add_executable(sph ${sph_FILES})
+add_executable(simualtion ${simualtion_FILES})
+
+target_link_libraries(simualtion CGAL)

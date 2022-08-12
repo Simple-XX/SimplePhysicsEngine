@@ -6,22 +6,19 @@
  */
 
 
- 
- #include "dtkScene.h"
- #include "dtkMesh.h"
- #include <iostream>
+
+#include "dtkScene.h"
+#include "dtkMesh.h"
+#include <iostream>
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include "cbody.h"
-#include "cjoint.h"
-#include "cpair.h"
-#include "ctypes.h"
+#include "dtkCollisionPair.h"
+#include "dtkJoint.h"
 
 #include <Eigen/Dense>
 using namespace std;
 using namespace Eigen;
-using namespace clib;
 
 struct Circle2
 {
@@ -32,7 +29,7 @@ class dtkFemSimulation
 {
 public:
 	dtkMesh rectangle;
-	dtkFemSimulation(const vec2& gravity);
+	dtkFemSimulation(const dtk::dtkDouble2& gravity);
 	~dtkFemSimulation() = default;
 	void Init();
 
@@ -43,21 +40,21 @@ public:
 	void DoCollisions();
 
 	//刚体部分
-	using body_list = std::vector<cbody::ptr>;
-	using joint_list = std::vector<cjoint::ptr>;
-	using pair_list = std::unordered_map<uint32_t, cpair::ptr>;
+	using body_list = std::vector<dtk::dtkRigidBody::ptr>;
+	using joint_list = std::vector<dtk::dtkJoint::ptr>;
+	using pair_list = std::unordered_map<uint32_t, dtk::dtkCollisionPair::ptr>;
 
-	void add(cbody::ptr body);
-	void add(cjoint::ptr joint);
-	const vec2& get_gravity() const;
+	void add(dtk::dtkRigidBody::ptr body);
+	void add(dtk::dtkJoint::ptr joint);
+	const dtk::dtkDouble2& get_gravity() const;
 	const body_list& get_bodies() const;
 	const joint_list& get_joints() const;
 	const pair_list& get_arbiters() const;
 
-	void move(const vec2& v);
+	void move(const dtk::dtkDouble2& v);
 
 	void clear();
-	void step(decimal dt);
+	void step(double dt);
 
 	bool is_pause() const;
 	void set_pause(bool pause);
@@ -69,7 +66,7 @@ private:
 	//刚体部分
 
 	bool _pause{ false }; // 是否暂停
-	clib::vec2 _gravity; // 重力
+	dtk::dtkDouble2 _gravity; // 重力
 	size_t _iterations{ 10 };
 
 	body_list _bodies; // 刚体列表
@@ -79,15 +76,15 @@ private:
 
 class dtkFactory {
 public:
-	static polygon_body::ptr make_box(decimal mass, decimal width, decimal height,
-		const vec2& position = vec2());
-	static polygon_body::ptr make_polygon(decimal mass,
-		const polygon_body::vertex_list& vertices,
-		const vec2& position = vec2());
-	static polygon_body::ptr make_fence(dtkFemSimulation& world);
-	static cpair::ptr make_arbiter(cbody::ptr a, cbody::ptr b,
-		const vec2& normal,
-		const cpair::contact_list& contacts = cpair::contact_list());
-	static revolute_joint::ptr make_revolute_joint(cbody::ptr a, cbody::ptr b,
-		const vec2& anchor);
+	static dtk::dtkPolygonRigidBody::ptr make_box(double mass, double width, double height,
+		const dtk::dtkDouble2& position = dtk::dtkDouble2());
+	static dtk::dtkPolygonRigidBody::ptr make_polygon(double mass,
+		const dtk::dtkPolygonRigidBody::vertex_list& vertices,
+		const dtk::dtkDouble2& position = dtk::dtkDouble2());
+	static dtk::dtkPolygonRigidBody::ptr make_fence(dtkFemSimulation& world);
+	static dtk::dtkCollisionPair::ptr make_arbiter(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
+		const dtk::dtkDouble2& normal,
+		const dtk::dtkCollisionPair::contact_list& contacts = dtk::dtkCollisionPair::contact_list());
+	static dtk::dtkRevoluteJoint::ptr make_revolute_joint(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
+		const dtk::dtkDouble2& anchor);
 };

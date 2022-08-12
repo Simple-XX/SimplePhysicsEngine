@@ -31,13 +31,13 @@ void draw_sph(SPHSolver& sph)
 	{
 		glColor3f(0.5, 1.0, 1.0);
 		drawParticle(particle.position[0], particle.position[1], 0.01);
-		
+
 	}
 }
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(-1.5f, -1.0f, -5.0f);
@@ -51,7 +51,7 @@ void idle() {
 	display();
 }
 int main(int argc, char* argv[]) {
-	
+
 	glutInit(&argc, argv);
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(50, 50);
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 */
 
 
-/*
+
 #include "GL/freeglut.h"
 #include <chrono>
 #include <cmath>
@@ -113,9 +113,10 @@ static void draw_text(int x, int y, const char* format, ...) {
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
+
 }
 
-static void draw_body(const clib::polygon_body& body) {
+static void draw_body(const dtk::dtkPolygonRigidBody& body) {
 	if (std::isinf(body.get_mass())) {
 		glColor3f(1.0f, 1.0f, 1.0f);
 	}
@@ -143,7 +144,7 @@ static void draw_body(const clib::polygon_body& body) {
 	}
 }
 
-static void draw_joint(const clib::revolute_joint& joint) {
+static void draw_joint(const dtk::dtkRevoluteJoint& joint) {
 	auto centroid_a = joint.get_a()->local_to_world(joint.get_a()->get_centroid());
 	auto anchor_a = joint.world_anchor_a();
 	auto centroid_b = joint.get_b()->local_to_world(joint.get_b()->get_centroid());
@@ -162,12 +163,12 @@ static void draw_joint(const clib::revolute_joint& joint) {
 	glEnd();
 }
 
-static void draw_arbiter(const clib::cpair::ptr& pair) {
+static void draw_arbiter(const dtk::dtkCollisionPair::ptr& pair) {
 	auto& contacts = pair->get_contacts();
 	for (auto& contact : contacts) {
 		auto pos = contact.position;
-		auto ra = pos + contact.ra.normalized() * 0.2;
-		auto rb = pos + contact.rb.normalized() * 0.2;
+		auto ra = pos + dtk::normalize(contact.ra) * 0.2;
+		auto rb = pos + dtk::normalize(contact.rb) * 0.2;
 		glColor3f(0.2f, 0.2f, 1.0f);
 		glBegin(GL_LINES);
 		glVertex2d(pos.x, pos.y);
@@ -183,7 +184,7 @@ static void draw_arbiter(const clib::cpair::ptr& pair) {
 	}
 }
 
-clib::decimal random(clib::decimal low, clib::decimal high) {
+double random(double low, double high) {
 	return 1.0 * rand() / RAND_MAX * (high - low) + low;
 }
 
@@ -201,7 +202,7 @@ static void test_polygon() {
 static void test_stack() {
 	dtkFactory::make_fence(world);
 	for (int i = 0; i < 10; ++i) {
-		clib::decimal x = random(-0.1 * i, 0.1 * i);
+		double x = random(-0.1 * i, 0.1 * i);
 		auto body = dtkFactory::make_box(1, 1, 1, { x, 0.51f + 1.05f * i });
 		body->set_friction(0.2);
 		world.add(body);
@@ -210,8 +211,8 @@ static void test_stack() {
 
 static void test_pyramid() {
 	dtkFactory::make_fence(world);
-	clib::vec2 x(-6.0f, 0.75f);
-	clib::vec2 y;
+	dtk::dtkDouble2 x(-6.0f, 0.75f);
+	dtk::dtkDouble2 y;
 	int n = 10;
 	for (int i = 0; i < n; ++i) {
 		y = x;
@@ -219,14 +220,14 @@ static void test_pyramid() {
 			auto body = dtkFactory::make_box(10, 1, 1, y);
 			body->set_friction(0.2);
 			world.add(body);
-			y += clib::vec2(1.125f, 0.0f);
+			y += dtk::dtkDouble2(1.125f, 0.0f);
 		}
-		x += clib::vec2(0.5625f, 1.5f);
+		x += dtk::dtkDouble2(0.5625f, 1.5f);
 	}
 }
 
 static void test_joint() {
-	auto ground = dtkFactory::make_box(clib::inf, 100, 20, { 0, -10 });
+	auto ground = dtkFactory::make_box(dtk::inf, 100, 20, { 0, -10 });
 	world.add(ground);
 
 	auto box1 = dtkFactory::make_box(500, 1, 1, { 13.5, 11 });
@@ -243,18 +244,18 @@ static void test_joint() {
 }
 
 static void test_chain() {
-	auto ground = dtkFactory::make_box(clib::inf, 100, 20, { 0, -10 });
+	auto ground = dtkFactory::make_box(dtk::inf, 100, 20, { 0, -10 });
 	ground->set_friction(0.4);
 	world.add(ground);
 
-	const clib::decimal mass = 10.0f;
-	const clib::decimal y = 12.0f;
+	const double mass = 10.0f;
+	const double y = 12.0f;
 	auto last = ground;
 	for (int i = 0; i < 15; ++i) {
 		auto box = dtkFactory::make_box(mass, 0.75, 0.25, { 0.5f + i, y });
 		box->set_friction(0.4);
 		world.add(box);
-		auto joint = dtkFactory::make_revolute_joint(last, box, clib::vec2(i, y));
+		auto joint = dtkFactory::make_revolute_joint(last, box, dtk::dtkDouble2(i, y));
 		world.add(joint);
 		last = box;
 	}
@@ -290,11 +291,11 @@ void display() {
 	world.step(std::min(dt, 0.01));
 
 	for (auto& body : world.get_bodies()) {
-		draw_body(*std::dynamic_pointer_cast<clib::polygon_body>(body).get());
+		draw_body(*std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(body).get());
 	}
 
 	for (auto& joint : world.get_joints()) {
-		draw_joint(*std::dynamic_pointer_cast<clib::revolute_joint>(joint).get());
+		draw_joint(*std::dynamic_pointer_cast<dtk::dtkRevoluteJoint>(joint).get());
 	}
 
 	for (auto& arbiter : world.get_arbiters()) {
@@ -315,7 +316,7 @@ void mouse(int button, int state, int x, int y) {
 
 }
 
-void move(const clib::vec2& v) {
+void move(const dtk::dtkDouble2& v) {
 	world.move(v);
 }
 
@@ -342,16 +343,16 @@ void keyboard(unsigned char key, int x, int y) {
 		test_chain();
 		break;
 	case 'w':
-		move(clib::vec2(0, 1));
+		move(dtk::dtkDouble2(0, 1));
 		break;
 	case 'a':
-		move(clib::vec2(-1, 0));
+		move(dtk::dtkDouble2(-1, 0));
 		break;
 	case 's':
-		move(clib::vec2(0, -1));
+		move(dtk::dtkDouble2(0, -1));
 		break;
 	case 'd':
-		move(clib::vec2(1, 0));
+		move(dtk::dtkDouble2(1, 0));
 		break;
 	case ' ':
 		world.set_pause(!world.is_pause());
@@ -393,9 +394,9 @@ int main(int argc, char* argv[]) {
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutMainLoop();
 	return 0;
-}*/
+}
 
-
+/*
 #include "GL/freeglut.h"
 #include <chrono>
 #include <cmath>
@@ -543,4 +544,4 @@ int main(int argc, char* argv[]) {
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutMainLoop();
 	return 0;
-}
+}*/
