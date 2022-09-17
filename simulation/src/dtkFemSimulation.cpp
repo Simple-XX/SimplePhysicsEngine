@@ -16,208 +16,25 @@
 
 #include "GL/freeglut.h"
 
-int n_node_x = 50;
-int n_node_y = 6;
-float deltat = 0.0001;
-
-float radius = 0.05;
+float deltat = 0.001;
 
 int iterate_time = 3;
 
 
 dtkFemSimulation::dtkFemSimulation(const dtk::dtkDouble2& gravity)
-	:spherecenter(0.4, 0.5), rectangle(n_node_x, n_node_y), _gravity(gravity)
+	:spherecenter(0.4, 0.5), _gravity(gravity)
 {
 	sphere.x = spherecenter[0];
 	sphere.y = spherecenter[1];
-	sphere.radius = radius;
-}
-
-void dtkFemSimulation::Init()
-{
-	rectangle.Init();
-	//TODO: load shaders
-
-	//TODO: configure shaders
-
-	//TODO: load textures
-
-	//TODO: set render-specific controls
-
-	//TODO: configure Scene objects
-
-	//build mesh
-
-	//TODO: audio
-}
-
-/*
-void dtkFemSimulation::Update(float dt)
-{
-	//TODO: update objects
-	//TODO: check for object collisions
-	if (this->State == SCENE_ACTIVE) {
-
-		// 迭代多轮, 防止穿透
-		for (int i = 0; i < iterate_time; ++i) {
-			//this->pre_total_energy = total_energy;
-			compute_total_energy();
-			DoCollisions();
-			compute_force();
-
-			//cout << total_energy << endl;
-
-			//float deltaU = this->total_energy - this->pre_total_energy;
-			//deltaU = abs(deltaU) < 1e-9 ? 0 : deltaU;
-			for (int j = 0; j < n_node; ++j) {
-				// update points
-
-				//Vector2f deltaX = this->points[i] - this->pre_points[i];
-
-				//Vector2f diffUtoX = Vector2f(deltaU / deltaX[0], deltaU / deltaX[1]);
-
-
-			   // Vector2f diffUtoX = Vector2f(abs(deltaX[0]) > 1e-4 ? deltaU / deltaX[0] : 0.0f, abs(deltaX[1]) > 1e-4 ? deltaU / deltaX[1] : 0.0f);
-
-				//diffUtoX = Vector2f(0.0f,0.0f);
-
-				//cout << diffUtoX << endl;
-
-			   // this->points_v[i] = (this->points_v[i] + ((- diffUtoX / node_mass) + Vector2f(0.0f, -10.0f)) * deltat) * exp(deltat * -6);
-
-				this->points_v[j] = (this->points_v[j] + (this->points_force[j] / node_mass) * deltat) * exp(deltat * -3);
-				//this->pre_points[i] = this->points[i];
-
-				this->points[j] += deltat * this->points_v[j];
-			}
-
-
-			// this->pre_points = this->points;
-			// this->pre_total_energy = this->total_energy;
-		}
-	}
-}*/
-
-void dtkFemSimulation::Update(float dt)
-{
-	//TODO: update objects
-	//TODO: check for object collisions
-
-		// 迭代多轮, 防止穿透
-	for (int i = 0; i < iterate_time; ++i) {
-		//this->pre_total_energy = total_energy; 
-
-		rectangle.compute_total_energy();
-		DoCollisions();
-		rectangle.compute_force();
-
-		for (int j = 0; j < rectangle.n_node_; ++j) {
-			rectangle.points_v_[j] = (rectangle.points_v_[j] + (rectangle.points_force_[j] / rectangle.node_mass_) * deltat) * exp(deltat * -3);
-
-			rectangle.points_[j] += deltat * rectangle.points_v_[j];
-		}
-
-	}
-}
-
-void dtkFemSimulation::ProcessInput(float dt)
-{
-	//dtkScene::ProcessInput(dt);
-	//TODO: process input(keys)
-
-}
-
-void dtkFemSimulation::Render()
-{
-	//if(this->State == SCENE_ACTIVE){
-		//TODO: draw circle
-
-	Vector2f center = spherecenter;
-	//Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
-
-	glColor3f(0x06 * 1.0 / 0xff, 0x85 * 1.0 / 0xff, 0x87 * 1.0 / 0xff);
-	glBegin(GL_POLYGON);
-
-	int n = 100;
-	for (int i = 0; i < n; i++)
-	{
-		glVertex2f(center[0] + radius * cos(2 * 3.1415 / n * i), center[1] + radius * sin(2 * 3.1415 / n * i));
-	}
-	glEnd();
-
-
-	//TODO: draw fem element(triangles here)
-	glColor3f(0x4f * 1.0 / 0xff, 0xb9 * 1.0 / 0xff, 0x9f * 1.0 / 0xff);
-	glBegin(GL_LINES);
-	for (int i = 0; i < rectangle.n_fem_element_; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			int a = rectangle.mesh_table_[i][j];
-			int b = rectangle.mesh_table_[i][(j + 1) % 3];
-
-			//draw line from a to b;
-			glVertex2f(rectangle.points_[a][0], rectangle.points_[a][1]);
-			glVertex2f(rectangle.points_[b][0], rectangle.points_[b][1]);
-		}
-	}
-	glEnd();
-
-
-}
-
-// collision detection
-
-void dtkFemSimulation::DoCollisions()
-{
-	Vector2f center = spherecenter;
-	//Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
-	float radius = this->sphere.radius;
-
-	for (int i = 0; i < rectangle.n_node_; ++i) {
-		//# Collide with sphere
-
-		Vector2f dis = rectangle.points_[i] - center;
-		if ((float)(dis.dot(dis)) < radius * radius)
-		{
-			Vector2f normal = dis.normalized();
-
-			rectangle.points_[i] = center + radius * normal;
-			rectangle.points_v_[i] -= (rectangle.points_v_[i].dot(normal)) * normal;
-		}
-
-
-		// Collide with ground
-
-		if (rectangle.points_[i][1] < 0.2f) {
-			rectangle.points_[i][1] = 0.2f;
-			rectangle.points_v_[i][1] *= -0.5f;
-		}
-
-		if (rectangle.points_[i][1] > 0.9f) {
-			rectangle.points_[i][1] = 0.9f;
-			rectangle.points_v_[i][1] *= -0.5f;
-		}
-
-		if (rectangle.points_[i][0] < 0.0f) {
-			rectangle.points_[i][0] = 0.0f;
-			rectangle.points_v_[i][0] *= -0.5f;
-		}
-
-		if (rectangle.points_[i][0] > 1.0f) {
-			rectangle.points_[i][0] = 1.0f;
-			rectangle.points_v_[i][0] *= -0.5f;
-		}
-	}
-
-}
-
-void dtkFemSimulation::moveBall(int x, int y) {
-
-	//this->spherecenter = Vector2f((x) * 1.0 / 800 , (600 - y) * 1.0 / 600 );
 }
 
 void dtkFemSimulation::add(dtk::dtkRigidBody::ptr body) { _bodies.push_back(body); }
 
 void dtkFemSimulation::add(dtk::dtkJoint::ptr joint) { _joints.push_back(joint); }
+
+void dtkFemSimulation::add(dtkMesh::ptr mesh) { mesh->Init(); _meshes.push_back(mesh); }
+
+void dtkFemSimulation::add(SPHSolver::ptr sph) { _sphs.push_back(sph); }
 
 const dtk::dtkDouble2& dtkFemSimulation::get_gravity() const { return _gravity; }
 
@@ -225,9 +42,11 @@ const dtkFemSimulation::body_list& dtkFemSimulation::get_bodies() const { return
 
 const dtkFemSimulation::joint_list& dtkFemSimulation::get_joints() const { return _joints; }
 
-const dtkFemSimulation::pair_list& dtkFemSimulation::get_arbiters() const {
-	return _arbiters;
-}
+const dtkFemSimulation::pair_list& dtkFemSimulation::get_arbiters() const { return _arbiters; }
+
+const dtkFemSimulation::mesh_list& dtkFemSimulation::get_meshes() const { return _meshes; }
+
+const dtkFemSimulation::sph_list& dtkFemSimulation::get_sphs() const { return _sphs; }
 
 void dtkFemSimulation::move(const dtk::dtkDouble2& v) {
 	for (auto& body : _bodies) {
@@ -240,15 +59,16 @@ void dtkFemSimulation::step(double dt) {
 	if (_pause)
 		return;
 	// 碰撞检测
-	for (size_t i = 0; i < _bodies.size(); ++i) {
-		for (size_t j = i + 1; j < _bodies.size(); ++j) {
+	int body_cnt = _bodies.size();
+	for (size_t i = 0; i < body_cnt; ++i) {
+		for (size_t j = i + 1; j < body_cnt; ++j) {
 			auto a = std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(_bodies[i]);
 			auto b = std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(_bodies[j]);
 			if (!a->can_collide(*b)) {
 				continue;
 			}
 			uint32_t id;
-			auto arbiter = dtk::dtkCollisionPair::is_collide(a, b, id);
+			auto arbiter = dtk::dtkCollisionPair::is_collide_rr(a, b, id);
 			auto iter = _arbiters.find(id);
 			if (arbiter == nullptr) {
 				if (iter != _arbiters.end()) {
@@ -282,16 +102,43 @@ void dtkFemSimulation::step(double dt) {
 		}
 	}
 
-	// 更新外力
+	// 更新重力
 	for (auto& body : _bodies) {
 		body->update_force(_gravity, dt);
 	}
+
+	//更新mesh运动
+	for (auto& mesh : _meshes) {
+		for (int i = 0; i < iterate_time; ++i) {
+			for (auto& body : _bodies)
+			{
+				auto poly_body = std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(body);
+				dtk::dtkCollisionPair::do_collision_mr(mesh, poly_body);
+			}
+			mesh->compute_force();
+
+			for (int j = 0; j < (*mesh).n_node_; ++j) {
+				(*mesh).points_v_[j] = ((*mesh).points_v_[j] + ((*mesh).points_force_[j] / (*mesh).node_mass_) * deltat) * exp(deltat * -3);
+
+				(*mesh).points_[j] += deltat * (*mesh).points_v_[j];
+			}
+
+		}
+		mesh->updateShell();
+	}
+	//更新sph
+	for (auto& sph : _sphs) {
+		sph->update(Constants::TIMESTEP);
+	}
+
 }
 
 void dtkFemSimulation::clear() {
 	_arbiters.clear();
 	_joints.clear();
 	_bodies.clear();
+	_meshes.clear();
+	_sphs.clear();
 }
 
 bool dtkFemSimulation::is_pause() const {
@@ -343,4 +190,14 @@ dtkFactory::make_arbiter(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b, con
 
 dtk::dtkRevoluteJoint::ptr dtkFactory::make_revolute_joint(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b, const dtk::dtkDouble2& anchor) {
 	return std::make_shared<dtk::dtkRevoluteJoint>(a, b, anchor);
+}
+
+dtkMesh::ptr dtkFactory::make_mesh(int n_x_node, int n_y_node, const dtk::dtkDouble2& position)
+{
+	return std::make_shared<dtkMesh>(global_id++, n_x_node, n_y_node, Vector2f(position.x, position.y));
+}
+
+SPHSolver::ptr dtkFactory::make_sph()
+{
+	return std::make_shared<SPHSolver>();
 }

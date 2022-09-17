@@ -5,6 +5,7 @@
 
 #include <memory>
 #include "dtkRigidBody.h"
+#include "dtkMesh.h"
 
 namespace dtk {
 
@@ -44,7 +45,8 @@ namespace dtk {
 
 		void add_contact(const ccontact& contact);
 
-		static ptr is_collide(dtk::dtkPolygonRigidBody::ptr& pa, dtk::dtkPolygonRigidBody::ptr& pb, uint32_t& id);
+		static ptr is_collide_rr(dtk::dtkPolygonRigidBody::ptr& pa, dtk::dtkPolygonRigidBody::ptr& pb, uint32_t& id);
+		static void do_collision_mr(dtkMesh::ptr& pa, dtk::dtkPolygonRigidBody::ptr& pb);
 
 	private:
 		std::weak_ptr<dtk::dtkRigidBody> _a, _b; // 参与碰撞检测的两个刚体

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 
@@ -18,6 +18,7 @@ enum class Visualization
 class SPHSolver
 {
 public:
+	using ptr = std::shared_ptr<SPHSolver>;
 	SPHSolver();
 
 	void update(float dt);
@@ -28,7 +29,7 @@ public:
 
 private:
 	int numberParticles;
-	
+
 	std::vector<std::vector<int>> neighborhoods;
 	Grid grid;
 
@@ -42,7 +43,7 @@ private:
 	void calculatePressure();
 
 	void calculateForceDensity();
-	
+
 	void integrationStep(float dt);
 
 	void collisionHandling();

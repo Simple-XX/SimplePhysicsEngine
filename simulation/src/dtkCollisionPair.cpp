@@ -160,21 +160,22 @@ namespace dtk {
 		return num_out;
 	}
 
-	dtkCollisionPair::ptr dtkCollisionPair::is_collide(dtk::dtkPolygonRigidBody::ptr& pa, dtk::dtkPolygonRigidBody::ptr& pb, uint32_t& id) {
+	dtkCollisionPair::ptr dtkCollisionPair::is_collide_rr(dtk::dtkPolygonRigidBody::ptr& pa, dtk::dtkPolygonRigidBody::ptr& pb, uint32_t& id) {
 		auto _pa = &pa;
 		auto _pb = &pb;
 		size_t ia, ib;
 		double sa, sb;
-		if ((sa = pa->min_separating_axis(ia, *pb)) >= 0) {
+		if ((sa = pa->SAT(ia, *pb)) >= 0) {
 			id = MAKE_ID(pa->get_id(), pb->get_id());
 			return nullptr;
 		}
-		if ((sb = pb->min_separating_axis(ib, *pa)) >= 0) {
+		if ((sb = pb->SAT(ib, *pa)) >= 0) {
 			id = MAKE_ID(pa->get_id(), pb->get_id());
 			return nullptr;
 		}
 		// 当且仅当SAT全为负，则表示相交
-		if (sa < sb) { // 有序排列
+		if (sa < sb) {
+			// 有序排列
 			std::swap(sa, sb);
 			std::swap(ia, ib);
 			std::swap(_pa, _pb);
@@ -182,17 +183,24 @@ namespace dtk {
 		auto& a = **_pa;
 		auto& b = **_pb;
 		// 获得SAT的轴
+		int idx_a = ia;
 		auto N = normal(a.edge(ia));
 		// 获得最小间隙时的B物体起点索引
-		auto idx = incident_edge(N, b);
+
+		//auto idx = incident_edge(N, b);
+		size_t idx = ib;
+
 		// 获得最小间隙时的B物体终点索引
-		auto next_idx = (idx + 1) % b.count();
+		size_t prev_idx = (idx - 1) % b.count();
+		size_t next_idx = (idx + 1) % b.count();
 		// 关节列表，暂时认为边 idx-next_idx 是包括在重叠部分中的
 		// 下面需要判断B物体其余边是否与A物体重叠
-		dtkCollisionPair::contact_list contacts = { {b, idx},
+
+		dtkCollisionPair::contact_list contacts = { {b, prev_idx}, {b, idx},
 										{b, next_idx} };
 		auto clipped_contacts = contacts;
 		// 遍历A物体
+		/*
 		for (size_t i = 0; i < a.count(); ++i) {
 			if (i == ia) { // 非SAT轴的边
 				continue;
@@ -208,9 +216,9 @@ namespace dtk {
 			}
 			assert(num == 2);
 			contacts = clipped_contacts;
-		}
+		}*/
 
-		auto va = a.local_to_world(a[ia]);
+		auto va = a.local_to_world(a[idx_a]);
 		auto arbiter = dtkFactory::make_arbiter(*_pa, *_pb, N);
 		for (auto& contact : clipped_contacts) {
 			auto sep = dot(contact.position - va, N);
@@ -223,5 +231,100 @@ namespace dtk {
 		}
 		id = MAKE_ID(a.get_id(), b.get_id());
 		return arbiter;
+	}
+
+	static size_t nearest_edge(const dtk::dtkDouble2& pos, const dtk::dtkPolygonRigidBody& body) {
+		size_t idx = SIZE_MAX;
+		auto min_dot = dtk::inf;
+		// 遍历B物体的边
+		for (size_t i = 0; i < body.count(); ++i) {
+			auto edge_normal = normal(body.edge(i));
+			auto P = pos - body.local_to_world(body[i]);
+			auto _dot = abs(dot(edge_normal, P));
+			// 找出最小投影，即最小间隙
+			if (_dot < min_dot) {
+				min_dot = _dot; // 最小间隙
+				idx = i; // 返回索引
+			}
+		}
+		return idx;
+	}
+
+	void dtkCollisionPair::do_collision_mr(dtkMesh::ptr& pa, dtk::dtkPolygonRigidBody::ptr& pb) {
+		// 当且仅当SAT全为负，则表示相交
+		size_t ia, ib;
+		double sa, sb;
+		if ((sa = pa->shell->SAT(ia, *pb)) >= 0) {
+			return;
+		}
+		if ((sb = pb->SAT(ib, *pa->shell)) >= 0) {
+			return;
+		}
+
+		// 处理mesh的顶点在刚体内的情况
+		int pa_cnt = pa->shell->count();
+		for (int i = 0; i < pa_cnt; i++)
+		{
+			dtkDouble2 va = pa->shell->local_to_world((*pa->shell)[i]);
+
+			size_t idx = nearest_edge(va, *pb);
+			dtkDouble2 Nb = normal(pb->edge(idx));
+			dtkDouble2 vb = pb->local_to_world((*pb)[idx]);
+			dtkDouble2 vb_next = pb->local_to_world((*pb)[(idx + 1) % pb->count()]);
+			double sep = dot((va - vb), Nb);
+
+			bool within_edge = dot(va - vb, vb_next - vb) >= 0 && dot(va - vb_next, vb - vb_next) >= 0;
+
+			if (sep <= 0 && within_edge)
+			{
+				int mesh_index = pa->vertex(i);
+				auto velocity_a = pa->points_v_[mesh_index];
+				auto pos_a = pa->points_[mesh_index];
+				Vector2f vn(Nb.x, Nb.y);
+				Vector2f vl(vn[1], -vn[0]);
+				Vector2f va_n = velocity_a.dot(vn) * vn, va_l = velocity_a.dot(vl) * vl;
+				va_n *= -0.1;
+				velocity_a = va_n + va_l;
+
+				pa->points_v_[mesh_index] = velocity_a;
+				pa->points_[mesh_index] = pos_a - sep * vn;
+			}
+		}
+
+		// 处理刚体的顶点在mesh内的情况
+		int pb_cnt = pb->count();
+		for (int i = 0; i < pb_cnt; i++)
+		{
+			dtkDouble2 vb = pb->local_to_world((*pb)[i]);
+
+			size_t idx = nearest_edge(vb, *(pa->shell));
+			dtkDouble2 Na = normal(pa->shell->edge(idx));
+			dtkDouble2 va = pa->shell->local_to_world((*pa->shell)[idx]);
+			dtkDouble2 va_next = pa->shell->local_to_world((*pa->shell)[(idx + 1) % pa->shell->count()]);
+			double sep = dot((vb - va), Na);
+
+			bool within_edge = dot(vb - va, va_next - va) >= 0 && dot(vb - va_next, va - va_next) >= 0;
+
+			if (sep <= 0 && within_edge)
+			{
+
+				int ia2 = (idx + 1) % pa->shell->count();
+				int mesh_index1 = pa->vertex(idx), mesh_index2 = pa->vertex(ia2);
+				double l1 = length((*pa->shell)[idx] - vb), l2 = length((*pa->shell)[ia2] - vb);
+				Vector2f vn(Na.x, Na.y);
+				Vector2f v_sum = ((pa->points_v_[mesh_index1] + pa->points_v_[mesh_index2]).dot(vn)) * vn;
+				pa->points_v_[mesh_index1] += -(l2 / (l1 + l2)) * v_sum;
+				pa->points_v_[mesh_index2] += -(l1 / (l1 + l2)) * v_sum;
+
+				auto B1 = pa->points_[mesh_index1], B2 = pa->points_[mesh_index2];
+				auto P = Vector2f(vb.x, vb.y);
+				auto B1B2 = B2 - B1;
+				Vector2f P1 = (P - B1).dot(B1B2) * B1B2 / pow(B1B2.norm(), 2) + B1;
+				pa->points_[mesh_index1] = B1 + (P - P1);
+				pa->points_[mesh_index2] = B2 + (P - P1);
+
+			}
+		}
+
 	}
 }

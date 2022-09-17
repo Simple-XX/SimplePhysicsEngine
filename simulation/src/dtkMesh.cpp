@@ -5,23 +5,30 @@ dtkMesh::dtkMesh()
 
 }
 
-dtkMesh::dtkMesh(int x_node, int y_node) :
+dtkMesh::dtkMesh(int id, int x_node, int y_node, Vector2f pos) :
 	n_node_x_(x_node), n_node_y_(y_node), n_node_(x_node* y_node), n_fem_element_((n_node_x_ - 1)* (n_node_y_ - 1) * 2),
-	points_(n_node_), pre_points_(n_node_),
-	points_v_(n_node_), points_force_(n_node_),
 	mesh_table_(n_fem_element_, std::vector<int>(3, 0)), total_energy_(0),
 	pre_total_energy_(0)
 {
+	position = pos;
+	points_.resize(n_node_);
+	pre_points_.resize(n_node_);
+	points_v_.resize(n_node_);
+	points_force_.resize(n_node_);
+	mID = id;
 	B_.resize(n_fem_element_);
 	dim_ = 2;
-	element_v_ = 0.02f;
+
 
 	Young_E_ = 8000.0f;
-	Poisson_r_ = 0.2f;
+	Poisson_r_ = 0.1f;
 	Lame_parameter_1_ = Young_E_ / (2 * (1 + Poisson_r_));
 	Lame_parameter_2_ = Young_E_ * Poisson_r_ / ((1 + Poisson_r_) * (1 - 2 * Poisson_r_));
-	node_mass_ = 1.0f;
-	deltax = (1.0 / 32);
+
+	//deltax = (1.0 / 32);
+	deltax = 1.0;
+	node_mass_ = 10.0f;
+	element_v_ = 30.0;
 }
 
 Matrix2f dtkMesh::compute_D(int i) {
@@ -94,20 +101,41 @@ void dtkMesh::compute_total_energy() {
 	}
 }
 
+void dtkMesh::updateShell()
+{
+	std::vector < dtk::dtkDouble2 > shell_vertices;
+	shell_vertices.clear();
+	for (int i = 1; i < n_node_x_; i++)
+		shell_vertices.push_back({ this->points_[mesh(i, 0)][0], this->points_[mesh(i, 0)][1] });
+
+	for (int i = 1; i < n_node_y_; i++)
+		shell_vertices.push_back({ this->points_[mesh(n_node_x_ - 1, i)][0], this->points_[mesh(n_node_x_ - 1, i)][1] });
+
+	for (int i = n_node_x_ - 2; i >= 0; i--)
+		shell_vertices.push_back({ this->points_[mesh(i, n_node_y_ - 1)][0], this->points_[mesh(i, n_node_y_ - 1)][1] });
+
+	for (int i = n_node_y_ - 2; i >= 0; i--)
+		shell_vertices.push_back({ this->points_[mesh(0, i)][0], this->points_[mesh(0, i)][1] });
+
+	shell = std::make_shared<dtk::dtkPolygonRigidBody>(0, 0, shell_vertices);
+}
+
 void dtkMesh::Init()
 {
+
 	for (int i = 0; i < n_node_x_; ++i) {
 		for (int j = 0; j < n_node_y_; ++j) {
 			int idx = mesh(i, j);
 
-			this->points_[idx][0] = 0.1f + i * deltax * 0.5f;
-			this->points_[idx][1] = 0.5f + j * deltax * 0.5f + i * deltax * 0.1f;
+			this->points_[idx][0] = position[0] + (i - n_node_x_ / 2) * deltax * 0.5f;
+			this->points_[idx][1] = position[1] + (j - n_node_y_ / 2) * deltax * 0.5f + (i - n_node_x_ / 2) * deltax * 0.1f;
 			this->points_v_[idx][0] = 0.0f;
 			this->points_v_[idx][1] = -1.0f;
 		}
 	}
 
 	//this->pre_points = points;
+	updateShell();
 
 	for (int i = 0; i < n_node_x_ - 1; ++i) {
 		for (int j = 0; j < n_node_y_ - 1; ++j) {

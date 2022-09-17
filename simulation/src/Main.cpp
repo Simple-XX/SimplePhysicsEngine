@@ -1,4 +1,4 @@
-/*#include "GL/freeglut.h"
+﻿/*#include "GL/freeglut.h"
 #include <iostream>
 #include "Constants.h"
 #include "SPHSolver.h"
@@ -15,25 +15,9 @@ void reshape(int width, int height) {
 	gluPerspective(45.0, width / (float)height, 0.1, 100.0);
 }
 
-void drawParticle(float x, float y, float s)
-{
-	glBegin(GL_POLYGON);
-	glVertex2f(x, y + s);
-	glVertex2f(x - s, y);
-	glVertex2f(x, y - s);
-	glVertex2f(x + s, y);
-	glEnd();
-}
 
-void draw_sph(SPHSolver& sph)
-{
-	for each (auto& particle in sph.particles)
-	{
-		glColor3f(0.5, 1.0, 1.0);
-		drawParticle(particle.position[0], particle.position[1], 0.01);
 
-	}
-}
+
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -65,8 +49,8 @@ int main(int argc, char* argv[]) {
 	glutIdleFunc(&idle);
 	glutMainLoop();
 	return 0;
-}
-*/
+}*/
+
 
 
 
@@ -80,12 +64,19 @@ int main(int argc, char* argv[]) {
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
 
-//static cworld world({ 0, -9.8 });
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 600;
 static dtkFemSimulation world({ 0, -9.8 });
+
+#include "Constants.h"
+#include "SPHSolver.h"
+
+Visualization vis = Visualization::Default;
+
+
+
 
 static void draw_text(int x, int y, const char* format, ...) {
 	glMatrixMode(GL_PROJECTION);
@@ -116,6 +107,21 @@ static void draw_text(int x, int y, const char* format, ...) {
 
 }
 
+static void draw_divided_polys(dtk::dtkPolygonRigidBody& body)
+{
+	int len1 = body.mPolygonList.size();
+	for (int i = 0; i < len1; i++)
+	{
+		glBegin(GL_LINE_LOOP);
+		int len2 = body.mPolygonList[i].size();
+		for (int j = 0; j < len2; j++)
+		{
+			glVertex2d(body[body.mPolygonList[i][j]].x, body[body.mPolygonList[i][j]].y);
+		}
+		glEnd();
+	}
+}
+
 static void draw_body(const dtk::dtkPolygonRigidBody& body) {
 	if (std::isinf(body.get_mass())) {
 		glColor3f(1.0f, 1.0f, 1.0f);
@@ -142,6 +148,37 @@ static void draw_body(const dtk::dtkPolygonRigidBody& body) {
 		glVertex2d(pos.x, pos.y);
 		glEnd();
 	}
+}
+
+static void draw_mesh(const dtkMesh& mesh) {
+	glColor3f(0.8f, 0.8f, 0.0f);
+	glBegin(GL_LINES);
+	for (int i = 0; i < mesh.n_fem_element_; ++i) {
+
+		for (int j = 0; j < 3; ++j) {
+			int a = mesh.mesh_table_[i][j];
+			int b = mesh.mesh_table_[i][(j + 1) % 3];
+
+			//draw line from a to b;
+			glVertex2f(mesh.points_[a][0], mesh.points_[a][1]);
+			glVertex2f(mesh.points_[b][0], mesh.points_[b][1]);
+		}
+
+	}
+	glEnd();
+
+}
+
+static void draw_mesh_shell(const dtkMesh& mesh) {
+	glColor3f(0.8f, 0.0f, 0.0f);
+
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < mesh.shell->count(); ++i) {
+		glVertex2f((*mesh.shell)[i].x, (*mesh.shell)[i].y);
+	}
+	glEnd();
+
+	//draw_divided_polys(*(mesh.shell));
 }
 
 static void draw_joint(const dtk::dtkRevoluteJoint& joint) {
@@ -184,19 +221,43 @@ static void draw_arbiter(const dtk::dtkCollisionPair::ptr& pair) {
 	}
 }
 
+void drawParticle(float x, float y, float s)
+{
+	glBegin(GL_POLYGON);
+	glVertex2f(x, y + s);
+	glVertex2f(x - s, y);
+	glVertex2f(x, y - s);
+	glVertex2f(x + s, y);
+	glEnd();
+}
+
+void draw_sph(SPHSolver& sph)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(-1.5f, -1.0f, -5.0f);
+	for each (auto & particle in sph.particles)
+	{
+		glColor3f(0.5, 1.0, 1.0);
+		drawParticle(particle.position[0], particle.position[1], 0.01);
+	}
+}
+
 double random(double low, double high) {
 	return 1.0 * rand() / RAND_MAX * (high - low) + low;
 }
 
 static void test_polygon() {
 	dtkFactory::make_fence(world);
-	world.add(dtkFactory::make_polygon(200, { {-1, 0},
-												 {1,  0},
-												 {0,  1} }, { -1, 0 }));
-	world.add(dtkFactory::make_polygon(200, { {-1, 0},
-												 {1,  0},
-												 {0,  1} }, { 1, 0 }));
-	world.add(dtkFactory::make_box(200, 3, 6, { 0, 8 }));
+	world.add(dtkFactory::make_polygon(200, { {-4, 0},
+												 {4,  0},
+												 {4,  1} ,{-4,1} }, { 0, 0 }));
+	world.add(dtkFactory::make_polygon(200, { {-1, -2},
+												 {1,  -2},
+												 {1,  2} ,{-1,2} }, { 0, 4 }));
+	world.add(dtkFactory::make_polygon(200, { {2, -1},
+												 {0,  1},
+												 {-2,  -1} ,{0,0} }, { 0, 10 }));
 }
 
 static void test_stack() {
@@ -261,9 +322,19 @@ static void test_chain() {
 	}
 }
 
-//void init() {
-//	test_joint();
-//}
+static void test_mesh() {
+	dtkFactory::make_fence(world);
+	auto mesh = dtkFactory::make_mesh(15, 3, dtk::dtkDouble2(0.0, 6.0));
+	world.add(mesh);
+	auto box = dtkFactory::make_polygon(200, { {-1, 0}, {1, 0}, {1, 2}, {-1, 2} }, { 0.2, 0 });
+	world.add(box);
+}
+
+static void test_sph() {
+	auto sph = dtkFactory::make_sph();
+	world.add(sph);
+
+}
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -280,7 +351,7 @@ void display() {
 
 	draw_text(5, 20, "dtk @RigidBody simulation");
 
-	draw_text(5, 40, "Push [1-5] to switch scene");
+	draw_text(5, 40, "Push [1-7] to switch scene");
 	draw_text(w - 150, h - 20, "refer: apollonia");
 
 	if (world.is_pause())
@@ -300,6 +371,14 @@ void display() {
 
 	for (auto& arbiter : world.get_arbiters()) {
 		draw_arbiter(arbiter.second);
+	}
+
+	for (auto& mesh : world.get_meshes()) {
+		draw_mesh_shell(*std::dynamic_pointer_cast<dtkMesh>(mesh).get());
+	}
+
+	for (auto& sph : world.get_sphs()) {
+		draw_sph(*std::dynamic_pointer_cast<SPHSolver>(sph).get());
 	}
 
 	glutSwapBuffers();
@@ -341,6 +420,14 @@ void keyboard(unsigned char key, int x, int y) {
 	case '5':
 		world.clear();
 		test_chain();
+		break;
+	case '6':
+		world.clear();
+		test_mesh();
+		break;
+	case '7':
+		world.clear();
+		test_sph();
 		break;
 	case 'w':
 		move(dtk::dtkDouble2(0, 1));
@@ -395,153 +482,3 @@ int main(int argc, char* argv[]) {
 	glutMainLoop();
 	return 0;
 }
-
-/*
-#include "GL/freeglut.h"
-#include <chrono>
-#include <cmath>
-#include <iostream>
-
-#include "dtkFemSimulation.h"
-
-static auto last_clock = std::chrono::high_resolution_clock::now();
-
-// The Width of the screen
-const unsigned int SCREEN_WIDTH = 800;
-// The height of the screen
-const unsigned int SCREEN_HEIGHT = 600;
-
-dtkFemSimulation Breakout({ 0, -9.8 });
-
-static int pcount = 1;
-
-static void draw_text(int x, int y, const char* format, ...) {
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	int w = glutGet(GLUT_WINDOW_WIDTH);
-	int h = glutGet(GLUT_WINDOW_HEIGHT);
-	gluOrtho2D(0, w, h, 0);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glColor3f(0.9f, 0.9f, 0.9f);
-	glRasterPos2i(x, y);
-
-	char buffer[256];
-	va_list args;
-	va_start(args, format);
-	int len = vsprintf(buffer, format, args);
-	va_end(args);
-	for (int i = 0; i < len; ++i) {
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, buffer[i]);
-	}
-
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-}
-
-void display() {
-	glClearColor(0x11 * 1.0 / 0xff, 0x2f * 1.0 / 0xff, 0x41 * 1.0 / 0xff, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(-0.5f, -0.55f, -1.0f);
-
-	auto now = std::chrono::high_resolution_clock::now();
-	auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(now - last_clock).count();
-	last_clock = now;
-
-	int h = glutGet(GLUT_WINDOW_HEIGHT);
-	int w = glutGet(GLUT_WINDOW_WIDTH);
-
-	draw_text(5, 15, "dtk @Deformation FEM simulation");
-
-	draw_text(5, 30, "Method: Semi-implict Euler");
-	//draw_text(5, 45, "Time step: %.6f", 1.0 / 32);
-	draw_text(5, 45, "Poisson's ratio: %.2f", 0.3f);
-	draw_text(5, 60, "Young's modulus: %.2f", 1000.0f);
-	draw_text(5, 75, "Energy : %.2f", Breakout.rectangle.getEnergy());
-
-	//draw_text(5, 40, "Push [1-5] to switch scene");
-	//draw_text(w - 150, h - 20, "refer: apollonia");
-
-	draw_text(5, h - 20, "dt: %.2f ms (%.2F FPS)", dt * 1000, 1.0 / dt);
-
-	//if(pcount++ < 2)
-
-	Breakout.Update(dt);
-	Breakout.Render();
-
-	glColor3f(1.0, 1.0, 1.0);
-	glBegin(GL_LINES);
-	glVertex2f(0.0f, 0.2f);
-	glVertex2f(1.0f, 0.2f);
-
-	glVertex2f(1.0f, 0.85f);
-	glVertex2f(1.0f, 0.2f);
-
-	glVertex2f(1.0f, 0.85f);
-	glVertex2f(0.0f, 0.85f);
-
-	glVertex2f(0.0f, 0.85f);
-	glVertex2f(0.0f, 0.2f);
-	glEnd();
-
-	glutSwapBuffers();
-}
-
-void reshape(int width, int height) {
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0, width / (float)height, 0.1, 100.0);
-}
-
-void mouse(int button, int state, int x, int y) {
-}
-
-void keyboard(unsigned char key, int x, int y) {
-	switch (key) {
-	case 27:
-		glutLeaveMainLoop();
-		break;
-	default:
-		break;
-	}
-}
-
-void motion(int x, int y) {
-
-}
-
-void special(int key, int x, int y) {
-
-}
-
-void idle() {
-	display();
-}
-
-
-int main(int argc, char* argv[]) {
-	glutInit(&argc, argv);
-	glutInitWindowSize(800, 600);
-	glutInitWindowPosition(50, 50);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutCreateWindow("Physics Engine -- dtk");
-
-	Breakout.Init();
-	glutDisplayFunc(&display);
-	glutReshapeFunc(&reshape);
-	glutMouseFunc(&mouse);
-	glutMotionFunc(&motion);
-	glutSpecialFunc(&special);
-	glutKeyboardFunc(&keyboard);
-	glutIdleFunc(&idle);
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-	glutMainLoop();
-	return 0;
-}*/
