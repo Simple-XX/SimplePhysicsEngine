@@ -103,7 +103,6 @@ void display() {
 	glVertex2f(0.0f, 0.85f);
 	glVertex2f(0.0f, 0.2f);
 	glEnd();
-
 	glutSwapBuffers();
 }
 
