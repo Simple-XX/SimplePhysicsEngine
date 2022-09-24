@@ -41,8 +41,6 @@ class dtkFemSimulation : public dtkScene
 
 private:
 	/* data */
-	vector<Eigen::Vector3f> points;//(n_node);  /**< 点的位置 */
-
 	vector<Vector3f> pre_points;//(n_node);  /**< 点之前的位置 */
 
 	vector<Eigen::Vector3f> points_force;
@@ -56,10 +54,6 @@ private:
 
 	std::vector<std::vector<int>> PyramidTable;//(n_fem_element, std::vector<int>(3,0)); /**< 四面体微元下标 */
 
-	Sphere3d sphere;//(dtk::dtkGraphicsKernel::Point2(0.5,0.2), 0.1);
-
-	Vector3f spherecenter;
-
 	Matrix3f compute_D(int i);
 
 	Matrix3f compute_P(int i);
@@ -71,13 +65,16 @@ private:
 	void compute_total_energy();
 
 public:
+	vector<Eigen::Vector3f> points;//(n_node);  /**< 点的位置 */
+	vector<vector<long long>> mesh_index_list;
+	Sphere3d sphere;//(dtk::dtkGraphicsKernel::Point2(0.5,0.2), 0.1);
 
 	dtkFemSimulation(unsigned int width, unsigned int height);
 	~dtkFemSimulation();
 	void Init();
+	void InitShell();
 
 	float getEnergy();
-
 	//loop
 
 	void moveBall(int x, int y);

@@ -32,17 +32,17 @@ using namespace Eigen;
 
 
 int dim = 3;
-int n_node_x = 50;
-int n_node_y = 6;
-int n_node_z = 6;
+int n_node_x = 30;
+int n_node_y = 4;
+int n_node_z = 4;
 float node_mass = 1.0f;
 int n_node = n_node_x * n_node_y * n_node_z;
 int n_fem_element = (n_node_x - 1) * (n_node_y - 1) * (n_node_z - 1) * 4;
 float deltat = 3e-4;
 float deltax = (1.0 / 32);
 
-float Young_E = 1000.0f; /**< 杨氏模量 */
-float Poisson_r = 0.3f; /**< 泊松比 [0 - 0.5] */
+float Young_E = 3000.0f; /**< 杨氏模量 */
+float Poisson_r = 0.2f; /**< 泊松比 [0 - 0.5] */
 float Lame_parameter_1 = Young_E / (2 * (1 + Poisson_r));
 float Lame_parameter_2 = Young_E * Poisson_r / ((1 + Poisson_r) * (1 - 2 * Poisson_r));
 float element_v = 0.01f; /**< 微元体积 */
@@ -61,8 +61,8 @@ inline int mesh(int i, int j, int k) {
 dtkFemSimulation::dtkFemSimulation(unsigned int width, unsigned int height)
 	: dtkScene(width, height),
 	points(n_node), pre_points(n_node), points_v(n_node), points_force(n_node), B(n_fem_element),
-	PyramidTable(n_fem_element, std::vector<int>(4, 0)), sphere(0.5, 0.25, 0.0, radius),
-	total_energy(0), pre_total_energy(0), spherecenter(0.5, 0.25, 0.0)
+	PyramidTable(n_fem_element, std::vector<int>(4, 0)), sphere(0.5, 0.5, 0.0, radius),
+	total_energy(0), pre_total_energy(0)
 {
 
 }
@@ -130,6 +130,40 @@ dtkFemSimulation::~dtkFemSimulation()
 {
 }
 
+void dtkFemSimulation::InitShell()
+{
+	int scale = 1;
+	//面x=x_min，x=x_max
+	for (int i = 0; i < n_node_y - scale; i += scale)
+	{
+		for (int j = 0; j < n_node_z - scale; j += scale)
+		{
+			mesh_index_list.push_back({ mesh(0,i,j), mesh(0,i + scale,j), mesh(0,i + scale,j + scale), mesh(0,i,j + scale) });
+			mesh_index_list.push_back({ mesh(n_node_x - scale,i,j), mesh(n_node_x - scale,i,j + scale), mesh(n_node_x - scale,i + scale,j + scale), mesh(n_node_x - scale,i + scale,j) });
+		}
+	}
+
+	//面y=y_min，x=y_max
+	for (int i = 0; i < n_node_z - scale; i++)
+	{
+		for (int j = 0; j < n_node_x - scale; j++)
+		{
+			mesh_index_list.push_back({ mesh(j,0,i), mesh(j,0,i + scale), mesh(j + scale,0,i + scale), mesh(j + scale,0,i) });
+			mesh_index_list.push_back({ mesh(j,n_node_y - scale,i), mesh(j + scale,n_node_y - scale,i), mesh(j + scale,n_node_y - scale,i + scale), mesh(j,n_node_y - scale,i + scale) });
+		}
+	}
+
+	//面z=z_min，z=z_max
+	for (int i = 0; i < n_node_x - scale; i++)
+	{
+		for (int j = 0; j < n_node_y - scale; j++)
+		{
+			mesh_index_list.push_back({ mesh(i,j,0), mesh(i + scale,j,0), mesh(i + scale,j + scale,0), mesh(i,j + scale,0) });
+			mesh_index_list.push_back({ mesh(i,j,n_node_z - scale), mesh(i,j + scale,n_node_z - scale), mesh(i + scale,j + scale,n_node_z - scale), mesh(i + scale,j,n_node_z - scale) });
+		}
+	}
+}
+
 void dtkFemSimulation::Init()
 {
 	dtkScene::Init();
@@ -151,9 +185,9 @@ void dtkFemSimulation::Init()
 				//this->points[idx][0] = -14 + i * deltax * 0.5;
 				//this->points[idx][1] = 8 + j * deltax * 0.5 + i * deltax * 0.05;
 
-				this->points[idx][0] = 0.1f + i * deltax * 0.5f;
+				this->points[idx][0] = -(deltax * 0.5f * n_node_x) / 2 + sphere.x + i * deltax * 0.5f;
 				this->points[idx][1] = 0.5f + j * deltax * 0.5f + i * deltax * 0.1f;
-				this->points[idx][2] = k * deltax * 0.5f;
+				this->points[idx][2] = -(deltax * 0.5f * n_node_z) / 2 + sphere.z + k * deltax * 0.5f;
 				this->points_v[idx][0] = 0.0f;
 				this->points_v[idx][1] = -1.0f;
 				this->points_v[idx][2] = 0.0f;
@@ -195,7 +229,8 @@ void dtkFemSimulation::Init()
 	}
 
 	compute_B();
-
+	InitShell();
+	this->State = SCENE_ACTIVE;
 	//TODO: audio
 }
 
@@ -280,56 +315,97 @@ void dtkFemSimulation::ProcessInput(float dt)
 }
 
 
+inline void GLSpherePoint(Vector3f center, int n, int i, int j)
+{
+	glVertex3f(center[0] + radius * cos(2 * M_PI / n * i) * sin(2 * M_PI / n * j), center[1] + radius * sin(2 * M_PI / n * i) * sin(2 * M_PI / n * j), center[2] + radius * cos(2 * M_PI / n * j));
+}
+
 void dtkFemSimulation::Render()
 {
-	//if(this->State == SCENE_ACTIVE){
-		//TODO: draw circle
+	Vector3f center = Vector3f(sphere.x, sphere.y, sphere.z);
 
-	Vector3f center = spherecenter;
-	//Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
-
-	glColor3f(0x06 * 1.0 / 0xff, 0x85 * 1.0 / 0xff, 0x87 * 1.0 / 0xff);
-	glBegin(GL_POLYGON);
-
-	int n = 100;
+	glEnable(GL_DEPTH_TEST);
+	int n = 20;
+	glColor3f(157.0 / 255.0, 184.0 / 255.0, 170.0 / 255.0);
 	for (int i = 0; i < n; i++)
 	{
-		glVertex2f(center[0] + radius * cos(2 * M_PI / n * i), center[1] + radius * sin(2 * M_PI / n * i));
-	}
-	glEnd();
-
-
-	//TODO: draw fem element(triangles here)
-	glColor3f(0x4f * 1.0 / 0xff, 0xb9 * 1.0 / 0xff, 0x9f * 1.0 / 0xff);
-	glBegin(GL_LINES);
-	int index[3] = { 0,1,3 };
-	for (int i = 0; i < n_fem_element; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			int a = this->PyramidTable[i][index[j]];
-			int b = this->PyramidTable[i][index[(j + 1) % 3]];
-
-			//draw line from a to b;
-			glVertex2f(this->points[a][0], this->points[a][1]);
-			glVertex2f(this->points[b][0], this->points[b][1]);
+		for (int j = 0; j < n; j++)
+		{
+			glBegin(GL_POLYGON);
+			GLSpherePoint(center, n, i, j);
+			GLSpherePoint(center, n, i + 1, j);
+			GLSpherePoint(center, n, i + 1, j + 1);
+			GLSpherePoint(center, n, i, j + 1);
+			glEnd();
 		}
 	}
-	//glEnd();
+	n = 30;
+	glColor3f(208.0 / 255.0, 211.0 / 255.0, 213.0 / 255.0);
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			glBegin(GL_LINE_LOOP);
+			GLSpherePoint(center, n, i, j);
+			GLSpherePoint(center, n, i + 1, j);
+			GLSpherePoint(center, n, i + 1, j + 1);
+			GLSpherePoint(center, n, i, j + 1);
+			glEnd();
+		}
+	}
 
-	glColor3f(1.0, 1.0, 1.0);
-	//glBegin(GL_LINES);
-	glVertex2f(0.0f, 0.2f);
-	glVertex2f(1.0f, 0.2f);
+	glColor3f(4.0 / 255.0, 108.0 / 255.0, 144.0 / 255.0);
+	int index[3] = { 0,1,3 };
+	int grid_cnt = mesh_index_list.size();
+	for (int i = 0; i < grid_cnt; ++i) {
+		glBegin(GL_POLYGON);
+		for (int j = 0; j < 4; ++j) {
+			int a = this->mesh_index_list[i][j];
+			glVertex3f(this->points[a][0], this->points[a][1], this->points[a][2]);
+		}
+		glEnd();
+	}
 
-	glVertex2f(1.0f, 0.85f);
-	glVertex2f(1.0f, 0.2f);
+	glColor3f(13.0 / 255.0, 151.0 / 255.0, 168.0 / 255.0);
+	for (int i = 0; i < grid_cnt; ++i) {
+		glBegin(GL_LINE_LOOP);
+		for (int j = 0; j < 4; ++j) {
+			int a = this->mesh_index_list[i][j];
+			glVertex3f(this->points[a][0], this->points[a][1], this->points[a][2]);
+		}
+		glEnd();
+	}
 
-	glVertex2f(1.0f, 0.85f);
-	glVertex2f(0.0f, 0.85f);
+	glColor3f(3.0 / 255.0, 95.0 / 255.0, 146.0 / 255.0);
 
-	glVertex2f(0.0f, 0.85f);
-	glVertex2f(0.0f, 0.2f);
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0.0f, 0.2f, 0.5f);
+	glVertex3f(1.0f, 0.2f, 0.5f);
+	glVertex3f(1.0f, 0.85f, 0.5f);
+	glVertex3f(0.0f, 0.85f, 0.5f);
 	glEnd();
-	// }
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0.0f, 0.2f, -0.5f);
+	glVertex3f(1.0f, 0.2f, -0.5f);
+	glVertex3f(1.0f, 0.85f, -0.5f);
+	glVertex3f(0.0f, 0.85f, -0.5f);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.2f, -0.5f);
+	glVertex3f(0.0f, 0.2f, 0.5f);
+
+	glVertex3f(1.0f, 0.2f, -0.5f);
+	glVertex3f(1.0f, 0.2f, 0.5f);
+
+	glVertex3f(1.0f, 0.85f, -0.5f);
+	glVertex3f(1.0f, 0.85f, 0.5f);
+
+	glVertex3f(0.0f, 0.85f, -0.5f);
+	glVertex3f(0.0f, 0.85f, 0.5f);
+	glEnd();
+
 }
 
 // collision detection
@@ -337,7 +413,7 @@ void dtkFemSimulation::Render()
 void dtkFemSimulation::DoCollisions()
 {
 	if (this->State == SCENE_ACTIVE) {
-		Vector3f center = spherecenter;
+		Vector3f center = Vector3f(sphere.x, sphere.y, sphere.z);
 		//Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
 		float radius = this->sphere.radius;
 
@@ -355,6 +431,16 @@ void dtkFemSimulation::DoCollisions()
 
 
 			// Collide with ground
+
+			if (this->points[i][2] < -0.5f) {
+				this->points[i][2] = -0.5f;
+				this->points_v[i][2] = 0.0f;
+			}
+
+			if (this->points[i][2] > 0.5f) {
+				this->points[i][2] = 0.5f;
+				this->points_v[i][2] = 0.0f;
+			}
 
 			if (this->points[i][1] < 0.2f) {
 				this->points[i][1] = 0.2f;
