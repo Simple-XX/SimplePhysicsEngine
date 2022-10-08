@@ -1,7 +1,7 @@
 
 # (SimplePhysicsEngine) dtk
 
-A deformable toolkit(dtk) used for deforamable physical simulation which is also caleed SimplePhysicsEngine. At first this repo is developed by dtk maintainer,  and currently this repo is maintained by SimpleXX community.
+SimplePhysicsEngine, as its name suggests, is a simple(at least for now) physics engine developed based on deformable toolkit(dtk) which is used for deformable physical simulation. At first this repo is developed by dtk maintainer, and currently this repo is maintained by Simple-XX community.
 - [(SimplePhysicsEngine) dtk](#simplephysicsengine-dtk)
   - [Dependencies](#dependencies)
     - [Boost](#boost)
@@ -20,13 +20,42 @@ A deformable toolkit(dtk) used for deforamable physical simulation which is also
     - [SPH methods Simulation](#sph-methods-simulation)
     - [Guidewire Simulation](#guidewire-simulation)
   - [Documentation](#documentation)
+
+## Project Structure
+
+```shell
+.
+|-- GUI
+|   `-- opengl
+|-- demo
+|   |-- FEMsimulation
+|   |-- RigidBodySimulation
+|   |-- SPHSimulation
+|   |-- guideWireSimulation
+|   |   |-- Resources
+|   |   |-- bak
+|   |   `-- data
+|   `-- img
+|-- doc
+|   `-- html
+|       `-- search
+|-- sim3D
+|-- simulation
+|   |-- include
+|   `-- src
+`-- src
+
+```
+
+This project is composed of several sub-projects, which can be built and compiled independently. The `/src` directory contains all the source and header files of dtk, which can be built and installed in your computer as developing dependency. In the `/demo`, there is 4 demos written based on dtk including FEM simulation, rigid body simulation, SPH simulation and guidewire simulation. `/simulation` is the general 2D simulation framework which integrates the FEM, polygon rigid body, and SPH simulation and `/sim3D` is the FEM simulation in 3D space.
+
 ## Dependencies
 
 ### [Boost](https://github.com/boostorg/boost)
 
-&emsp;&emsp;Boost is a mandatory dependency of CGAL. Binary versions of Boost are available on SourceForge. The Boost installers install both Boost headers and precompiled libraries. Please note that the CGAL project is not responsible for the files provided on this website. When CGAL 5.2.1 was released, the latest version of Boost was 1.71. A typical installation of Boost would consist of the following steps:
+Boost is a mandatory dependency of CGAL. Binary versions of Boost are available on SourceForge. The Boost installers install both Boost headers and precompiled libraries. Please note that the CGAL project is not responsible for the files provided on this website. When CGAL 5.2.1 was released, the latest version of Boost was 1.71. A typical installation of Boost would consist of the following steps:
 
-&emsp;&emsp;Download and run the file boost_1_71_0-msvc-XX.Y-64.exe (where XX.Y = 14.0 for VC 2015, XX.Y = 14.1 for 2017, XX.Y = 14.2 for VC 2019).
+Download and run the file boost_1_71_0-msvc-XX.Y-64.exe (where XX.Y = 14.0 for VC 2015, XX.Y = 14.1 for 2017, XX.Y = 14.2 for VC 2019).
 Extract the files to a new directory, e.g. c:\dev\libboost_1_71_0.
 Set the following two environment variables to point respectively to the path of the libraries and the headers
 
@@ -40,77 +69,98 @@ Add the path to the Boost dlls (C:\dev\libboost_1_71_0\lib64-msvc-XX.Y) files to
 
 ### [CGAL](https://github.com/CGAL/cgal)
 
-&emsp;&emsp;CGAL offers data structures and algorithms like triangulations, Voronoi diagrams, Polygons, Cell Complexes and Polyhedra, arrangements of curves, mesh generation, geometry processing, convex hull algorithms, to name just a few.
+CGAL offers data structures and algorithms like triangulations, Voronoi diagrams, Polygons, Cell Complexes and Polyhedral, arrangements of curves, mesh generation, geometry processing, convex hull algorithms, to name just a few.
 
-&emsp;&emsp;All these data structures and algorithms operate on geometric objects like points and segments, and perform geometric tests on them. These objects and predicates are regrouped in CGAL Kernels.
+All these data structures and algorithms operate on geometric objects like points and segments, and perform geometric tests on them. These objects and predicates are regrouped in CGAL Kernels.
 
-&emsp;&emsp;Finally, the Support Library offers geometric object generators and spatial sorting functions, as well as a matrix search framework and a solver for linear and quadratic programs. It further offers interfaces to third party software such as the GUI libraries Qt, Geomview, and the Boost Graph Library.
+Finally, the Support Library offers geometric object generators and spatial sorting functions, as well as a matrix search framework and a solver for linear and quadratic programs. It further offers interfaces to third party software such as the GUI libraries Qt, Geomview, and the Boost Graph Library.
 
-&emsp;&emsp;[How to install CGAL](https://doc.cgal.org/latest/Manual/index.html)
+[How to install CGAL](https://doc.cgal.org/latest/Manual/index.html)
 
 ### [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 
-&emsp;Eigen is a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.
+Eigen is a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.
 
-&emsp;&emsp;[How to build with Eigen](https://eigen.tuxfamily.org/dox/GettingStarted.html)
+[How to build with Eigen](https://eigen.tuxfamily.org/dox/GettingStarted.html)
 
 ### [GLM](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 
-&emsp;(GLM) is a header only C++ mathematics library for graphics software based on the OpenGL Shading Language (GLSL) specifications.
+(GLM) is a header only C++ mathematics library for graphics software based on the OpenGL Shading Language (GLSL) specifications.
 
-&emsp;GLM provides classes and functions designed and implemented with the same naming conventions and functionality than GLSL so that anyone who knows GLSL, can use GLM as well in C++.
+GLM provides classes and functions designed and implemented with the same naming conventions and functionality than GLSL so that anyone who knows GLSL, can use GLM as well in C++.
 
-&emsp;This project isn't limited to GLSL features. An extension system, based on the GLSL extension conventions, provides extended capabilities: matrix transformations, quaternions, data packing, random numbers, noise, etc...
+This project isn't limited to GLSL features. An extension system, based on the GLSL extension conventions, provides extended capabilities: matrix transformations, quaternions, data packing, random numbers, noise, etc...
 
-&emsp;This library works perfectly with OpenGL but it also ensures interoperability with other third party libraries and SDK. It is a good candidate for software rendering (raytracing / rasterisation), image processing, physics simulations and any development context that requires a simple and convenient mathematics library.
+This library works perfectly with OpenGL but it also ensures interoperability with other third party libraries and SDK. It is a good candidate for software rendering (raytracing / rasterization), image processing, physics simulations and any development context that requires a simple and convenient mathematics library.
 
-&emsp;&emsp;[How to build with glm](https://github.com/Groovounet/glm)
+[How to build with glm](https://github.com/Groovounet/glm)
 
 ### [freeglut](http://freeglut.sourceforge.net)
 
-&emsp;Freeglut, the Free OpenGL Utility Toolkit, is meant to be a free alternative to Mark Kilgard's GLUT library.
+Freeglut, the Free OpenGL Utility Toolkit, is meant to be a free alternative to Mark Kilgard's GLUT library.
 
-&emsp;dtk Render by Opengl.
+dtk Render by Opengl.
 
-&emsp;&emsp;[How to build freeglut with CMAKE](https://doc.qt.io/qt-5/cmake-get-started.html#build-a-gui-executable)
+[How to build freeglut with CMAKE](https://doc.qt.io/qt-5/cmake-get-started.html#build-a-gui-executable)
+
+## [VTK](https://vtk.org/)
+
+[ The Visualization ToolKit (VTK)](https://vtk.org/Wiki/VTK) is an open source, freely available software system for 3D computer graphics, image processing, and visualization used by thousands of researchers and developers around the world. VTK consists of a C++ class library, and several interpreted interface layers including Tcl/Tk, Java, and Python. Professional support and products for VTK are provided by [Kitware, Inc.](http://www.kitware.com/) VTK supports a wide variety of visualization algorithms including scalar, vector, tensor, texture, and volumetric methods; and advanced modeling techniques such as implicit modelling, polygon reduction, mesh smoothing, cutting, contouring, and Delaunay triangulation. In addition, dozens of imaging algorithms have been directly integrated to allow the user to mix 2D imaging / 3D graphics algorithms and data.
 
 ## How to build
 
-&emsp;&emsp;dtk is build by CMake. so you can build easily. You could build this project either in windows or linux. [tutorial on cmake build](https://preshing.com/20170511/how-to-build-a-cmake-based-project/)
+dtk is build by CMake. so you can build easily. You could build this project either in windows or linux. [tutorial on cmake build](https://preshing.com/20170511/how-to-build-a-cmake-based-project/)
 
-### build with CMake GUI
-If you are a beginner to cpp with Cmake, we advice you to use gui command to build.  Actually , build with CLI is similar to build with CLI.
+### Configure the Dependency Path
 
-&emsp;&emsp; First, modify the cmakelists.txt the correspondence library path.
+To start with, what we need to do is to modify the **Dependency Path** in the CMakeLists.txt. For example, the CMakeLists.txt in sim3D configure the dependency path like this:
 
-&emsp;&emsp; Second, click the config buttion and wait. After configuration if there are some library have problems, you could set the path in the red hint in the GUI.
+```cmake
+if(WIN32)
+    set(freeglut_include_dir D:\\Envs\\opengl\\freeglut-3.2.1\\include)
+    set(freeglut_libraries_dir D:\\Envs\\opengl\\freeglut-3.2.1\\build\\lib)
+    set(EIGEN_PATH D:\\Envs\\Eigen\\eigen-3.3.8)
+    set(vtk_include_dir D:\\Envs\\VTK\\include\\vtk-8.2)
+    set(vtk_libraries_dir D:\\Envs\\VTK\\lib)
+```
 
-&emsp;&emsp; In the final, click the genrate button, the project will generated and you could complie this by using Visual stdio.
+before building this sub-project, make sure that you set the paths above according to your own develop environment.
 
-### build with CLI
+### Build with CMake
 
-#### build static libary
-&emsp;&emsp;First，configuarte with command:
+#### build with CMake GUI
+If you are a beginner to cpp with CMake, we advice you to use GUI command to build.  Actually , build with CLI is similar to build with CLI.
+
+First, modify the CMakeLists.txt the correspondence library path.
+
+Second, click the config button and wait. After configuration if there are some library have problems, you could set the path in the red hint in the GUI.
+
+Finally, click the generate button, the project will generated and you could compile this by using Visual Studio.
+
+#### build with CLI
+
+##### build static libary
+First，configure with command:
 
 ```bash
 $ cmake -S "DTK_DIR" -B "DESTINATION_STATIC_DIR" -D CMAKE_INSTALL_PREFIX="PATH TO INSTALL STATIC LIBS" -G "Generates"
 ```
 
-&emsp;&emsp;second, install with:
+second, install with:
 
 ```bash
 $ cmake --build "DESTINATION_STATIC_DIR" --config Release --target install
 ```
 
-#### build dynamic library
+##### build dynamic library
 
-&emsp;&emsp;First，configuarte with command:
+First，configure with command:
 
 ```bash
 $ cmake -S "DTK_DIR" -B "DESTINATION_SHARED_DIR" -D BUILD_SHARED_LIBS=ON -D CMAKE_INSTALL_PREFIX="PATH TO INSTALL SHARED LIBS" -G "Generates"
 ```
 
-&emsp;&emsp;second, install with:
+second, install with:
 
 ```bash
 $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
@@ -118,38 +168,43 @@ $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 
 ## Demo with dtk
 
-### Rigid body Simulation demo
+### Rigid body Simulation Demo
 
-&emsp; A physical simulation demo for 2D rigid body in real time. It deals with the collision of the rigid body which has no deformation by SAT and AABB methods.
+ A physical simulation demo for 2D rigid body in real time. It deals with the collision of the rigid body which has no deformation by SAT and AABB methods.
 
 <div align="center">
   <img src="./demo/img/dtkRigidBodySimulation.gif" width = "50%", height = "50%"/>
 </div>
 
-### Finite element method simulation
+### Finite Element Method Simulation
 
-&emsp;A finite element method physical simulation for 2D hyperelasticity deformation meterial body in real time.
+A finite element method physical simulation for 2D hyperelasticity deformation meterial body in real time.
 
 <div align="center">
   <img src="./demo/img/dtkFemSimulation.gif" width = "50%", height = "50%"/>
 </div>
 
-### SPH methods Simulation
+### SPH Methods Simulation
 
-&emsp;A physical simulation demo for 2D fluid in real time. It deals with the fluid body by a series of SPH methods, which include WCSPH, PCISPH and DFSPH.
+A physical simulation demo for 2D fluid in real time. It deals with the fluid body by a series of SPH methods, which include WCSPH, PCISPH and DFSPH.
 
 <div align = center>
 <img src="./demo/img/WCSPH.gif" width = "30%", height = "30%" /><img src="./demo/img/PCISPH.gif" width = "30%", height = "30%"/><img src="./demo/img/DFSPH.gif" width = "30%", height = "30%"/>
 </div>
 
-&emsp;The SPH method is WCSPH, PCISPH and DFSPH from left to right.
+The SPH method is WCSPH, PCISPH and DFSPH from left to right.
 
 ### Guidewire Simulation
 
-&emsp;A blood flow induced physical simulation of guidewire shape for virtual vascular intervention training system in real time. Virtual vascular intervention training system, which is a low cost, safe and effective solution, is able to provide an immersive virtual training environment for trainees.
+A blood flow induced physical simulation of guidewire shape for virtual vascular intervention training system in real time. Virtual vascular intervention training system, which is a low cost, safe and effective solution, is able to provide an immersive virtual training environment for trainees.
 
 <div align="center">
   <img src="./demo/img/guideWire.jpg" width = "50%", height = "50%" />
+</div>
+### Finite Element Method Simulation in 3D
+
+<div align="center">
+  <img src="./demo/img/3dFEM.gif" width = "50%", height = "50%" />
 </div>
 
 ## Documentation

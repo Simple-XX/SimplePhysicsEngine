@@ -313,8 +313,8 @@ namespace dtk {
 				double l1 = length((*pa->shell)[idx] - vb), l2 = length((*pa->shell)[ia2] - vb);
 				Vector2f vn(Na.x, Na.y);
 				Vector2f v_sum = ((pa->points_v_[mesh_index1] + pa->points_v_[mesh_index2]).dot(vn)) * vn;
-				pa->points_v_[mesh_index1] += -(l2 / (l1 + l2)) * v_sum;
-				pa->points_v_[mesh_index2] += -(l1 / (l1 + l2)) * v_sum;
+				pa->points_v_[mesh_index1] = -(l2 / (l1 + l2)) * v_sum;
+				pa->points_v_[mesh_index2] = -(l1 / (l1 + l2)) * v_sum;
 
 				auto B1 = pa->points_[mesh_index1], B2 = pa->points_[mesh_index2];
 				auto P = Vector2f(vb.x, vb.y);

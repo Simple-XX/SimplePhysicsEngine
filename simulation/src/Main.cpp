@@ -310,6 +310,7 @@ void display() {
 	}
 
 	for (auto& mesh : world.get_meshes()) {
+		draw_mesh(*std::dynamic_pointer_cast<dtkMesh>(mesh).get());
 		draw_mesh_shell(*std::dynamic_pointer_cast<dtkMesh>(mesh).get());
 	}
 

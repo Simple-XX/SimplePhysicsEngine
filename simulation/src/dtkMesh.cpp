@@ -20,15 +20,15 @@ dtkMesh::dtkMesh(int id, int x_node, int y_node, Vector2f pos) :
 	dim_ = 2;
 
 
-	Young_E_ = 8000.0f;
-	Poisson_r_ = 0.1f;
+	Young_E_ = 4000.0f;
+	Poisson_r_ = 0.3f;
 	Lame_parameter_1_ = Young_E_ / (2 * (1 + Poisson_r_));
 	Lame_parameter_2_ = Young_E_ * Poisson_r_ / ((1 + Poisson_r_) * (1 - 2 * Poisson_r_));
 
 	//deltax = (1.0 / 32);
 	deltax = 1.0;
 	node_mass_ = 10.0f;
-	element_v_ = 30.0;
+	element_v_ = 20.0;
 }
 
 Matrix2f dtkMesh::compute_D(int i) {
