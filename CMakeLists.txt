@@ -12,8 +12,6 @@ project(
 # Uncomment to generate different binary files for Debug/Release version
 # set(CMAKE_DEBUG_POSTFIX d)
 
-set(SPE_ROOT_DIR ${CMAKE_SOURCE_DIR})
-
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE STRING "Installation directory of library files")
 
 # Installation directory of library files
@@ -44,7 +42,15 @@ message("DTK_INSTALL_INCLUDEDIR : ${DTK_INSTALL_INCLUDEDIR}")
 message("DTK_INSTALL_CMAKEDIR: ${DTK_INSTALL_CMAKEDIR}")
 
 # Set some frequently used vars
-# set(SPE_DEPS_DIR ${CMAKE_SOURCE_DIR}/_deps)
+set(SPE_ROOT_DIR ${CMAKE_SOURCE_DIR})
+set(SPE_DEPS "${CMAKE_SOURCE_DIR}/_deps")
+
+# Build Options
+set(VTK_OPT # whether to use VTK
+    "OFF"
+    CACHE BOOL "Choose whether to use VTK or not")
+
+# Add global definitions to project
 
 add_subdirectory(engine)
 add_subdirectory(demo2d)

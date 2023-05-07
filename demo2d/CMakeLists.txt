@@ -3,12 +3,10 @@ cmake_minimum_required(VERSION 2.6)
 project(demo2d)
 set(CMAKE_CXX_STANDARD 11)
 
-# find_package(CGAL)
-
-set(freeglut_include_dir D:\\Envs\\opengl\\freeglut-3.2.1\\include)
-set(freeglut_libraries_dir D:\\Envs\\opengl\\freeglut-3.2.1\\build\\lib)
-set(EIGEN_PATH D:\\Envs\\Eigen\\eigen-3.3.8)
-set(GLM_INCLUDE_DIR D:\\Envs\\glm)
+set(freeglut_include_dir "${SPE_DEPS}/freeglut/include")
+set(freeglut_libraries_dir "${SPE_DEPS}/freeglut/lib")
+set(EIGEN_PATH "${SPE_DEPS}/eigen")
+set(GLM_INCLUDE_DIR "${SPE_DEPS}/glm")
 
 include_directories(
 	"${freeglut_include_dir}"

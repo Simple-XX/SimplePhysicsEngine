@@ -16,6 +16,17 @@
 #include <thread>
 #include "dtkFemSimulation.h"
 
+static auto last_clock = std::chrono::high_resolution_clock::now();
+
+// The Width of the screen
+const unsigned int SCREEN_WIDTH = 800;
+// The height of the screen
+const unsigned int SCREEN_HEIGHT = 600;
+
+dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+#ifdef USE_VTK
+
 #include "vtkCellArray.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
@@ -38,17 +49,6 @@
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
-
-
-
-static auto last_clock = std::chrono::high_resolution_clock::now();
-
-// The Width of the screen
-const unsigned int SCREEN_WIDTH = 800;
-// The height of the screen
-const unsigned int SCREEN_HEIGHT = 600;
-
-dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 void vtk_vis() {
 
@@ -106,6 +106,8 @@ void vtk_vis() {
 	renWin->Delete();
 
 }
+
+#endif // VTK_OPT
 
 static void draw_text(int x, int y, const char* format, ...) {
 	glMatrixMode(GL_PROJECTION);
