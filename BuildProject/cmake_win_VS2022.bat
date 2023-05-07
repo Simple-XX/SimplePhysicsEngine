@@ -1,0 +1,1 @@
+cmake .. -B WIN_VS2022 -G "Visual Studio 17 2022" -A x64 %* -D CMAKE_TOOLCHAIN_FILE="D:/Envs/vcpkg/scripts/buildsystems/vcpkg.cmake"
