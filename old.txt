@@ -5,14 +5,10 @@ set(CMAKE_CXX_STANDARD 11)
 project(
     SimplePhysicsEngine
     VERSION 0.0.1
-    DESCRIPTION "A simple physics engine in developing..."
-    HOMEPAGE_URL "https://github.com/Simple-XX/SimplePhysicsEngine"
-    LANGUAGES CXX C)
+    DESCRIPTION "A ")
 
 # Uncomment to generate different binary files for Debug/Release version
 # set(CMAKE_DEBUG_POSTFIX d)
-
-set(SPE_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE STRING "Installation directory of library files")
 
@@ -43,9 +39,4 @@ message("DTK_INSTALL_LIBDIR : ${DTK_INSTALL_LIBDIR}")
 message("DTK_INSTALL_INCLUDEDIR : ${DTK_INSTALL_INCLUDEDIR}")
 message("DTK_INSTALL_CMAKEDIR: ${DTK_INSTALL_CMAKEDIR}")
 
-# Set some frequently used vars
-# set(SPE_DEPS_DIR ${CMAKE_SOURCE_DIR}/_deps)
-
-add_subdirectory(engine)
-add_subdirectory(demo2d)
-add_subdirectory(demo3d)
+add_subdirectory(src)
