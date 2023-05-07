@@ -14,7 +14,6 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Fortran module files
 *.mod
@@ -24,7 +23,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -36,16 +34,4 @@
 *.vs
 *.chm
 
-clang-build
 build
-clang-build
-build/
-
-install
-install/
-
-example
-example/
-
-demo/FEMsimulation/build
-simulation/build
