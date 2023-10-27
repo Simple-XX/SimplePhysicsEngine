@@ -9,8 +9,9 @@
 #define DTK_JOINT_H
 
 #include <memory>
-#include <engine/math/dtkTx.h>
-#include <engine/math/dtkMatrix.h>
+
+#include "../math/dtkTx.h"
+#include "math/dtkMatrix.h"
 
 #include "dtkRigidBody.h"
 

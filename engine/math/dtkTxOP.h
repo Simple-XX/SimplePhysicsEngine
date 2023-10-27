@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include <engine/dtk/dtkConfig.h>
+#include "dtk/dtkConfig.h"
 #include <cassert>
 
 #include "dtkTx.h"

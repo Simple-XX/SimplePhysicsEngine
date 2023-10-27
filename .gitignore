@@ -1,3 +1,9 @@
+
+# This file is a part of Simple-XX/SimplePhysicsEngine
+# (https://github.com/Simple-XX/SimplePhysicsEngine).
+#
+# .gitignore for Simple-XX/SimplePhysicsEngine.
+
 # Prerequisites
 *.d
 
@@ -35,3 +41,14 @@
 *.chm
 
 build
+
+*.o
+.DS_Store
+build
+cmake-build*
+.gdbinit
+.vscode
+.idea
+3rd
+Doxyfile
+src/include/config.h

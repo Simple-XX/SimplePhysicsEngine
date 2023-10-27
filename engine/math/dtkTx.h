@@ -1,8 +1,9 @@
 #ifndef DTK_TX_H
 #define DTK_TX_H
 
-#include <engine/dtk/dtkConfig.h>
-//#include "dtkAssert.h"
+#include "../dtk/dtkConfig.h"
+
+#include "../dtk/dtkAssert.h"
 
 namespace dtk
 {

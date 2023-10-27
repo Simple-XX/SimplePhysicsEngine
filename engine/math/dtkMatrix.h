@@ -1,7 +1,7 @@
 #ifndef DTK_MATRIX_H
 #define DTK_MATRIX_H
 
-#include <engine/dtk/dtkConfig.h>
+#include "dtk/dtkConfig.h"
 #include <vector>
 #include <cassert>
 

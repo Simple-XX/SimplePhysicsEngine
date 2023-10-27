@@ -1,7 +1,7 @@
 #ifndef DTK_MATRIXOP_H
 #define DTK_MATRIXOP_H
 
-#include <engine/dtk/dtkConfig.h>
+#include "dtk/dtkConfig.h"
 #include <cmath>
 #include <cassert>
 

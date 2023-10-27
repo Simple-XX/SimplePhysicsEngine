@@ -4,7 +4,7 @@
 #include <memory>
 #include <boost/utility.hpp>
 
-#include <engine/math/dtkTx.h>
+#include "math/dtkTx.h"
 #include "dtkConfig.h"
 #include "dtkIDTypes.h"
 

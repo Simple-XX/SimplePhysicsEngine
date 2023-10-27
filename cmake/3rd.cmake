@@ -57,60 +57,6 @@ CPMAddPackage(
         "gtest_force_shared_crt ON"
 )
 
-# https://github.com/aminosbh/sdl2-cmake-modules.git
-CPMAddPackage(
-        NAME sdl2-cmake-modules
-        GIT_REPOSITORY https://github.com/aminosbh/sdl2-cmake-modules.git
-        GIT_TAG ad006a3daae65a612ed87415037e32188b81071e
-        DOWNLOAD_ONLY True
-)
-if (sdl2-cmake-modules_ADDED)
-    list(APPEND CMAKE_MODULE_PATH ${sdl2-cmake-modules_SOURCE_DIR})
-endif ()
-
-## https://github.com/freetype/freetype
-#CPMAddPackage(
-#        NAME freetype
-#        GIT_REPOSITORY https://github.com/freetype/freetype.git
-#        GIT_TAG VER-2-13-0
-#        VERSION 2.13.0
-#)
-#if (freetype_ADDED)
-#    add_library(Freetype::Freetype ALIAS freetype)
-#endif ()
-
-# https://github.com/tinyobjloader/tinyobjloader.git
-CPMAddPackage(
-        NAME tinyobjloader
-        GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader.git
-        GIT_TAG 853f059d778058a43c954850e561a231934b33a7
-        DOWNLOAD_ONLY True
-)
-if (tinyobjloader_ADDED)
-    add_library(tinyobjloader INTERFACE)
-    target_sources(tinyobjloader INTERFACE
-            FILE_SET HEADERS
-            BASE_DIRS ${tinyobjloader_SOURCE_DIR}
-            FILES tiny_obj_loader.h
-    )
-endif ()
-
-# https://github.com/nothings/stb.git
-CPMAddPackage(
-        NAME stb
-        GIT_REPOSITORY https://github.com/nothings/stb.git
-        GIT_TAG 5736b15f7ea0ffb08dd38af21067c314d6a3aae9
-        DOWNLOAD_ONLY True
-)
-if (stb_ADDED)
-    add_library(stb INTERFACE)
-    target_sources(stb INTERFACE
-            FILE_SET HEADERS
-            BASE_DIRS ${stb_SOURCE_DIR}
-            FILES stb_image.h
-    )
-endif ()
-
 # https://gitlab.com/libeigen/eigen.git
 CPMAddPackage(
         NAME Eigen
@@ -124,12 +70,22 @@ if (Eigen_ADDED)
     target_include_directories(Eigen INTERFACE ${Eigen_SOURCE_DIR})
 endif ()
 
-# http://wenq.org/wqy2/index.cgi?ZenHei
+# https://www.glfw.org
 CPMAddPackage(
-        NAME wqy_font
-        URL https://sourceforge.net/projects/wqy/files/wqy-zenhei/0.8.38%20%28Pangu%29/wqy-zenhei-0.8.38-1.tar.gz
-        VERSION 0.8.38
-        DOWNLOAD_ONLY True
+        NAME GLFW
+        GITHUB_REPOSITORY glfw/glfw
+        GIT_TAG 3.3.8
+        OPTIONS
+          "GLFW_BUILD_TESTS OFF"
+          "GLFW_BUILD_EXAMPLES OFF"
+          "GLFW_BULID_DOCS OFF"
+)
+
+# https://github.com/g-truc/glm
+CPMAddPackage(
+        NAME glm
+        GITHUB_REPOSITORY g-truc/glm
+        GIT_TAG 0.9.9.8
 )
 
 # https://github.com/TheLartians/PackageProject.cmake
@@ -235,27 +191,26 @@ if (NOT LCOV_EXE)
             "Following https://github.com/linux-test-project/lcov to install.")
 endif ()
 
-find_package(SDL2 REQUIRED)
-if (NOT SDL2_FOUND)
-    message(FATAL_ERROR "sdl2 not found.\n"
-            "Following https://github.com/libsdl-org/SDL to install.")
-endif ()
-
-if (APPLE)
-    set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include/")
-    set(OpenMP_C_LIB_NAMES "omp")
-    set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include/")
-    set(OpenMP_CXX_LIB_NAMES "omp")
-    set(OpenMP_omp_LIBRARY /usr/local/opt/libomp/lib/libomp.dylib)
-endif ()
-find_package(OpenMP REQUIRED)
-if (NOT OpenMP_FOUND)
-    message(FATAL_ERROR "OpenMP not found.\n"
-            "Following https://www.openmp.org to install.")
-endif ()
-
 find_package(spdlog REQUIRED)
 if (NOT spdlog_FOUND)
     message(FATAL_ERROR "spdlog not found.\n"
             "Following https://github.com/gabime/spdlog to install.")
+endif ()
+
+find_package(CGAL REQUIRED)
+if (NOT CGAL_FOUND)
+    message(FATAL_ERROR "CGAL not found.\n"
+            "Following https://doc.cgal.org/latest/Manual/devman_create_and_use_a_cmakelist.html to install.")
+endif ()
+
+find_package(Boost REQUIRED)
+if (NOT Boost_FOUND)
+    message(FATAL_ERROR "Boost not found.\n"
+            "Following https://www.boost.org to install.")
+endif ()
+
+find_package(GLUT REQUIRED)
+if (NOT GLUT_FOUND)
+    message(FATAL_ERROR "GLUT not found.\n"
+            "Following https://www.opengl.org/resources/libraries/glut/ to install.")
 endif ()
