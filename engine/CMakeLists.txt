@@ -1,4 +1,11 @@
+
+# This file is a part of Simple-XX/SimplePhysicsEngine
+# (https://github.com/Simple-XX/SimplePhysicsEngine).
+#
+# CMakeLists.txt for Simple-XX/SimplePhysicsEngine.
+
 find_package(CGAL)
+
 project(dtk)
 
 option(GROUP_BY_EXPLORER ON)

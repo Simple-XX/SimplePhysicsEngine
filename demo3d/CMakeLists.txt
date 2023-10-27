@@ -1,3 +1,9 @@
+
+# This file is a part of Simple-XX/SimplePhysicsEngine
+# (https://github.com/Simple-XX/SimplePhysicsEngine).
+#
+# CMakeLists.txt for Simple-XX/SimplePhysicsEngine.
+
 cmake_minimum_required(VERSION 3.0)
 project(demo3d)
 set(CMAKE_CXX_STANDARD 11)
