@@ -51,7 +51,7 @@ float radius = 0.05;
 
 int iterate_time = 3;
 
-double M_PI = acos(-1);
+//double M_PI = acos(-1);
 
 inline int mesh(int i, int j, int k) {
 	return k * (n_node_y * n_node_x) + j * n_node_x + i;

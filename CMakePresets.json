@@ -44,6 +44,10 @@
         "COVERAGE_OUTPUT_DIR": {
           "type": "STRING",
           "value": "${sourceDir}/build/coverage"
+        },
+        "VTK_OPT": {
+          "type": "BOOL",
+          "value": "FALSE"
         }
       }
     },

@@ -220,3 +220,9 @@ if (NOT OpenGL_FOUND)
     message(FATAL_ERROR "OpenGL not found.\n"
             "Following https://www.opengl.org/ to install.")
 endif ()
+
+find_package(VTK REQUIRED)
+if (NOT VTK_FOUND)
+    message(FATAL_ERROR "VTK not found.\n"
+            "Following https://vtk.org/ to install.")
+endif ()

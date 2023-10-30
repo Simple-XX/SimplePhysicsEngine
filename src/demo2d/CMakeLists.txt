@@ -4,8 +4,6 @@
 #
 # CMakeLists.txt for Simple-XX/SimplePhysicsEngine.
 
-cmake_minimum_required(VERSION 2.6)
-
 project(demo2d)
 
 file(GLOB_RECURSE demo2d_FILES
