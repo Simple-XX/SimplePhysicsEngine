@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
-          sudo apt install --fix-missing -y gcc g++ libspdlog-dev
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev
 
       - name: Build
         run: |
@@ -48,7 +48,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
-          sudo apt install --fix-missing -y gcc g++ libspdlog-dev
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev
 
       - name: Build
         run: |
