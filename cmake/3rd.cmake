@@ -76,9 +76,9 @@ CPMAddPackage(
         GITHUB_REPOSITORY glfw/glfw
         GIT_TAG 3.3.8
         OPTIONS
-          "GLFW_BUILD_TESTS OFF"
-          "GLFW_BUILD_EXAMPLES OFF"
-          "GLFW_BULID_DOCS OFF"
+        "GLFW_BUILD_TESTS OFF"
+        "GLFW_BUILD_EXAMPLES OFF"
+        "GLFW_BULID_DOCS OFF"
 )
 
 # https://github.com/g-truc/glm
@@ -213,4 +213,10 @@ find_package(GLUT REQUIRED)
 if (NOT GLUT_FOUND)
     message(FATAL_ERROR "GLUT not found.\n"
             "Following https://www.opengl.org/resources/libraries/glut/ to install.")
+endif ()
+
+find_package(OpenGL REQUIRED)
+if (NOT OpenGL_FOUND)
+    message(FATAL_ERROR "OpenGL not found.\n"
+            "Following https://www.opengl.org/ to install.")
 endif ()

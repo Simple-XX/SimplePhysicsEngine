@@ -5,5 +5,5 @@
 # CMakeLists.txt for Simple-XX/SimplePhysicsEngine.
 
 add_subdirectory(engine)
-# add_subdirectory(demo2d)
+add_subdirectory(demo2d)
 # add_subdirectory(demo3d)
