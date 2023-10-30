@@ -1,8 +1,8 @@
 
-# This file is a part of Simple-XX/SimpleRenderer
-# (https://github.com/Simple-XX/SimpleRenderer).
+# This file is a part of Simple-XX/SimplePhysicsEngine
+# (https://github.com/Simple-XX/SimplePhysicsEngine).
 #
-# CMakeLists.txt for Simple-XX/SimpleRenderer.
+# CMakeLists.txt for Simple-XX/SimplePhysicsEngine.
 
 ---
 # @version clang-format version 15
