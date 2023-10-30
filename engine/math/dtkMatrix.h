@@ -1,7 +1,6 @@
 #ifndef DTK_MATRIX_H
 #define DTK_MATRIX_H
 
-#include "dtk/dtkConfig.h"
 #include <vector>
 #include <cassert>
 
@@ -11,6 +10,7 @@
 	#include <glm/gtc/type_ptr.hpp>
 #endif
 
+#include "dtkConfig.h"
 namespace dtk
 {
 	/**

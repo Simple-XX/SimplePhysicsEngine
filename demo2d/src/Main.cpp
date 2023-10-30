@@ -172,7 +172,8 @@ void draw_sph(SPHSolver& sph)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(-1.5f, -1.0f, -5.0f);
-	for each (auto & particle in sph.particles)
+	// for each (auto & particle in sph.particles)
+	for (auto & particle : sph.particles)
 	{
 		glColor3f(0.5, 1.0, 1.0);
 		drawParticle(particle.position[0], particle.position[1], 0.01);

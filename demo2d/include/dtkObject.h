@@ -1,6 +1,6 @@
 ﻿#ifndef DTKOBJECT_H
 #define DTKOBJECT_H
-#include <Eigen\Dense>
+#include <Eigen/Dense>
 
 class dtkObject
 {

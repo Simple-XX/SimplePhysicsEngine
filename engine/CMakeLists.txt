@@ -26,12 +26,115 @@ foreach(fileItem ${all_files})
     source_group("${GROUP}" FILES "${fileItem}")
 endforeach()
 
-add_library(dtk STATIC ${all_files})
+add_library(dtk STATIC 
+    dtk/dtk.cpp
+    dtk/dtk.h
+    dtk/dtkArray.h
+    dtk/dtkAssert.cpp
+    dtk/dtkAssert.h
+    dtk/dtkCollisionDetectBasic.cpp
+    dtk/dtkCollisionDetectBasic.h
+    dtk/dtkCollisionDetectHierarchy.cpp
+    dtk/dtkCollisionDetectHierarchy.h
+    dtk/dtkCollisionDetectHierarchyKDOPS.cpp
+    dtk/dtkCollisionDetectHierarchyKDOPS.h
+    dtk/dtkCollisionDetectNode.cpp
+    dtk/dtkCollisionDetectNode.h
+    dtk/dtkCollisionDetectNodeKDOPS.cpp
+    dtk/dtkCollisionDetectNodeKDOPS.h
+    dtk/dtkCollisionDetectPrimitive.cpp
+    dtk/dtkCollisionDetectPrimitive.h
+    dtk/dtkCollisionDetectStage.cpp
+    # dtk/dtkCollisionDetectStage.cpp.bak
+    dtk/dtkCollisionDetectStage.h
+    dtk/dtkConfig.h
+    dtk/dtkError.h
+    dtk/dtkErrorManager.cpp
+    dtk/dtkErrorManager.h
+    dtk/dtkExports.h
+    dtk/dtkGraphics.h
+    dtk/dtkGraphicsKernel.cpp
+    dtk/dtkGraphicsKernel.h
+    # dtk/dtkGraphicsKernel.h.bak
+    dtk/dtkGraphicsTools.h
+    dtk/dtkIDTypes.h
+    dtk/dtkImports.h
+    dtk/dtkInit.h
+    dtk/dtkIntersectTest.cpp
+    dtk/dtkIntersectTest.h
+    dtk/dtkIO.h
+    dtk/dtkMatrixAlgorithm.h
+    dtk/dtkPhysCore.cpp
+    # dtk/dtkPhysCore.cpp.bak
+    dtk/dtkPhysCore.h
+    dtk/dtkPhysKnotPlanner.cpp
+    dtk/dtkPhysKnotPlanner.h
+    dtk/dtkPhysMassPoint.cpp
+    dtk/dtkPhysMassPoint.h
+    dtk/dtkPhysMassSpring.cpp
+    dtk/dtkPhysMassSpring.h
+    # dtk/dtkPhysMassSpring.h.bak
+    dtk/dtkPhysMassSpringCollisionResponse.cpp
+    dtk/dtkPhysMassSpringCollisionResponse.h
+    dtk/dtkPhysMassSpringThread.cpp
+    dtk/dtkPhysMassSpringThread.h
+    dtk/dtkPhysMassSpringThreadCollisionResponse.cpp
+    dtk/dtkPhysMassSpringThreadCollisionResponse.h
+    dtk/dtkPhysParticle.cpp
+    dtk/dtkPhysParticle.h
+    dtk/dtkPhysParticleSystem.cpp
+    dtk/dtkPhysParticleSystem.h
+    dtk/dtkPhysSpring.cpp
+    dtk/dtkPhysSpring.h
+    dtk/dtkPhysTetraMassSpring.cpp
+    dtk/dtkPhysTetraMassSpring.h
+    dtk/dtkPoints.h
+    dtk/dtkPointsReader.cpp
+    dtk/dtkPointsReader.h
+    dtk/dtkPointsVector.h
+    dtk/dtkPointsWriter.cpp
+    dtk/dtkPointsWriter.h
+    dtk/dtkProperty.h
+    dtk/dtkRandom.h
+    dtk/dtkScene.cpp
+    dtk/dtkScene.h
+    dtk/dtkSign.cpp
+    dtk/dtkSign.h
+    dtk/dtkStaticMeshEliminator.cpp
+    dtk/dtkStaticMeshEliminator.h
+    dtk/dtkStaticTetraMesh.cpp
+    dtk/dtkStaticTetraMesh.h
+    dtk/dtkStaticTetraMeshReader.cpp
+    dtk/dtkStaticTetraMeshReader.h
+    dtk/dtkStaticTetraMeshWriter.cpp
+    dtk/dtkStaticTetraMeshWriter.h
+    dtk/dtkStaticTriangleMesh.cpp
+    dtk/dtkStaticTriangleMesh.h
+    dtk/dtkStaticTriangleMeshReader.cpp
+    dtk/dtkStaticTriangleMeshReader.h
+    dtk/dtkStaticTriangleMeshWriter.cpp
+    dtk/dtkStaticTriangleMeshWriter.h
+    dtk/dtkTime.h
+    dtk/dtkUtility.h
 
-target_include_directories(dtk PRIVATE 
-    ./
-    math
+    math/dtkMatrix.h
+    math/dtkMatrixOp.cpp
+    math/dtkMatrixOP.h
+    math/dtkTx.h
+    math/dtkTxIO.h
+    math/dtkTxOP.h
+
+    physics/dtkJoint.cpp
+    physics/dtkJoint.h
+    physics/dtkRigidBody.cpp
+    physics/dtkRigidBody.h
+    
+    ${all_files}
+)
+
+target_include_directories(dtk PRIVATE
     dtk
+    math
     physics
 ) 
 

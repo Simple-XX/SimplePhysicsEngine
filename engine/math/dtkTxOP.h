@@ -2,10 +2,9 @@
 #define DTK_TXOP_H
 
 #include <cmath>
-
-#include "dtk/dtkConfig.h"
 #include <cassert>
 
+#include "dtkConfig.h"
 #include "dtkTx.h"
 
 namespace dtk

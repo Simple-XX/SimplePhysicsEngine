@@ -4,10 +4,9 @@
 #include <memory>
 #include <boost/utility.hpp>
 
-#include "math/dtkTx.h"
+#include "dtkTx.h"
 #include "dtkConfig.h"
 #include "dtkIDTypes.h"
-
 #include "dtkGraphicsKernel.h"
 
 namespace dtk

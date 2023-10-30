@@ -2,9 +2,10 @@
 #define DTKMESH_H
 
 #include <vector>
-#include <Eigen\Dense>
-#include <engine\physics\dtkRigidBody.h>
 
+#include <Eigen/Dense>
+
+#include <engine/physics/dtkRigidBody.h>
 #include "dtkObject.h"
 
 using namespace Eigen;

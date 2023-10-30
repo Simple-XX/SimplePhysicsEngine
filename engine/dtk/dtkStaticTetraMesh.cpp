@@ -2,7 +2,7 @@
 
 #include <set>
 
-#include "math/dtkTx.h"
+#include "dtkTx.h"
 #include "dtkGraphicsTools.h"
 
 #ifdef DTK_DEBUG

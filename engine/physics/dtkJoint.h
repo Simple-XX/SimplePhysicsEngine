@@ -10,8 +10,8 @@
 
 #include <memory>
 
-#include "../math/dtkTx.h"
-#include "math/dtkMatrix.h"
+#include "dtkTx.h"
+#include "dtkMatrix.h"
 
 #include "dtkRigidBody.h"
 

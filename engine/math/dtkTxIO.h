@@ -5,7 +5,7 @@
 #include <iostream>
 
 //DTK
-#include "dtk/dtkConfig.h"
+#include "dtkConfig.h"
 #include "dtkTx.h"
 
 namespace dtk

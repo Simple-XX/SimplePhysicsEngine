@@ -1,7 +1,7 @@
 #ifndef DTK_PHYSPARTICLE_H
 #define DTK_PHYSPARTICLE_H
 
-#include "math/dtkTx.h"
+#include "dtkTx.h"
 #include "dtkGraphicsKernel.h"
 #include "dtkIDTypes.h"
 

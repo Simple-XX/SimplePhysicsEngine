@@ -1,4 +1,4 @@
-#include "math/dtkTx.h"
+#include "dtkTx.h"
 #include "dtkPhysMassPoint.h"
 
 namespace dtk

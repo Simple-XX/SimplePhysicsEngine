@@ -167,11 +167,11 @@
     #include "dtkCUDA.h"
 #endif
 
-#include "math/dtkTx.h"
-#include "math/dtkTxOP.h"
-#include "math/dtkMatrix.h"
-#include "math/dtkMatrixOP.h"
-#include "math/dtkTxIO.h"
+#include "dtkTx.h"
+#include "dtkTxOP.h"
+#include "dtkMatrix.h"
+#include "dtkMatrixOP.h"
+#include "dtkTxIO.h"
 
 #include "dtkPoints.h"
 #include "dtkPointsVector.h"

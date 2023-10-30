@@ -1,10 +1,10 @@
 #ifndef DTK_MATRIXOP_H
 #define DTK_MATRIXOP_H
 
-#include "dtk/dtkConfig.h"
 #include <cmath>
 #include <cassert>
 
+#include "dtkConfig.h"
 #include "dtkTx.h"
 #include "dtkMatrix.h"
 

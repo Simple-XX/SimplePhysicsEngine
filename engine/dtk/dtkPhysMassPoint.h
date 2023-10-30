@@ -1,7 +1,7 @@
 #ifndef dtkPHYSMASSPOINT_H
 #define dtkPHYSMASSPOINT_H
 
-#include "math/dtkTx.h"
+#include "dtkTx.h"
 #include "dtkGraphicsKernel.h"
 #include "dtkIDTypes.h"
 #include "dtkPoints.h"

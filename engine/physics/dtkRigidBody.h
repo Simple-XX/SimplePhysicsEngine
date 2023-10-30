@@ -11,8 +11,8 @@
 #include <vector>
 #include <memory>
 
-#include "math/dtkTx.h"
-#include "math/dtkMatrix.h"
+#include "dtkTx.h"
+#include "dtkMatrix.h"
 // #include "../dtk/dtkIDTypes.h"
 
 namespace dtk {
