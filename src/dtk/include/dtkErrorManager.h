@@ -17,54 +17,52 @@
 #ifndef DTK_ERRORMANAGER_H
 #define DTK_ERRORMANAGER_H
 
-//STL headers
-#include <vector>
+// STL headers
+#include <map>
 #include <stack>
 #include <string>
-#include <map>
+#include <vector>
 
 #include <iostream>
 
 #include <boost/utility.hpp>
 
-//DTK headers
+// DTK headers
 #include "dtkConfig.h"
 #include "dtkError.h"
 
-namespace dtk
-{
-	//! A standard error reporter
-    /*!
-     * Implemented in Singleton
-     */
-	class dtkErrorManager: public boost::noncopyable
-	{
-	public:
-		static dtkErrorManager& GetInstance();
+namespace dtk {
+//! A standard error reporter
+/*!
+ * Implemented in Singleton
+ */
+class dtkErrorManager : public boost::noncopyable {
+public:
+  static dtkErrorManager &GetInstance();
 
-		size_t GetNumberOfErrors();
-		
-		dtkError GetLatestError();
-		const std::string& GetErrorString(dtkError error);
+  size_t GetNumberOfErrors();
 
-		void PushError	(dtkError error);
-		void PopError	(dtkError error);
+  dtkError GetLatestError();
+  const std::string &GetErrorString(dtkError error);
 
-		void Reset();
+  void PushError(dtkError error);
+  void PopError(dtkError error);
 
-	private:
-		dtkErrorManager();
-		static dtkErrorManager msErrorMgr;
+  void Reset();
 
-		void InitErrorStrings();
-		void InitErrorString(dtkError id, const char* str);
-		
-	private:
-		std::map<dtkError, std::string> mErrStrs;
-		std::stack<dtkError> mErrors;
-	};
+private:
+  dtkErrorManager();
+  static dtkErrorManager msErrorMgr;
 
-	extern dtkErrorManager& dtkErrMgr;
-}
+  void InitErrorStrings();
+  void InitErrorString(dtkError id, const char *str);
 
-#endif //DTK_ERRORMANAGER_H
+private:
+  std::map<dtkError, std::string> mErrStrs;
+  std::stack<dtkError> mErrors;
+};
+
+extern dtkErrorManager &dtkErrMgr;
+} // namespace dtk
+
+#endif // DTK_ERRORMANAGER_H

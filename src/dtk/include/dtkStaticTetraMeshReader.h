@@ -19,37 +19,33 @@
 
 #include "dtkStaticTetraMesh.h"
 
+#include <boost/utility.hpp>
 #include <cstring>
 #include <memory>
-#include <boost/utility.hpp>
 
-namespace dtk
-{
-	class dtkStaticTetraMeshReader: public boost::noncopyable
-	{
-	public:
-		typedef std::shared_ptr<dtkStaticTetraMeshReader> Ptr;
+namespace dtk {
+class dtkStaticTetraMeshReader : public boost::noncopyable {
+public:
+  typedef std::shared_ptr<dtkStaticTetraMeshReader> Ptr;
 
-		static dtkStaticTetraMeshReader::Ptr New()
-		{
-			return dtkStaticTetraMeshReader::Ptr(new dtkStaticTetraMeshReader());
-		}
+  static dtkStaticTetraMeshReader::Ptr New() {
+    return dtkStaticTetraMeshReader::Ptr(new dtkStaticTetraMeshReader());
+  }
 
-	public:
-		virtual ~dtkStaticTetraMeshReader() {}
+public:
+  virtual ~dtkStaticTetraMeshReader() {}
 
-		void SetOutput(dtkStaticTetraMesh::Ptr mesh);
-		void SetFileName(const char* filePath);
+  void SetOutput(dtkStaticTetraMesh::Ptr mesh);
+  void SetFileName(const char *filePath);
 
-		bool Read();
+  bool Read();
 
-	private:
-        dtkStaticTetraMeshReader(); 
+private:
+  dtkStaticTetraMeshReader();
 
-		dtkStaticTetraMesh::Ptr	mMesh;
-		std::string			mFilePath;
-	};
-}
+  dtkStaticTetraMesh::Ptr mMesh;
+  std::string mFilePath;
+};
+} // namespace dtk
 
-#endif //DTK_STATICTETRAMESHREADER_H
-
+#endif // DTK_STATICTETRAMESHREADER_H

@@ -17,123 +17,116 @@
 #ifndef DTK_PHYSMASSSPRINGTHREADCOLLISIONRESPONSE_H
 #define DTK_PHYSMASSSPRINGTHREADCOLLISIONRESPONSE_H
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
 #include "dtkPhysMassSpringCollisionResponse.h"
 #include "dtkPhysMassSpringThread.h"
 
-#include <vector>
 #include <map>
+#include <vector>
 
-namespace dtk
-{
-	class dtkPhysMassSpringThreadCollisionResponse : public boost::noncopyable
-	{
-	public:
-        struct virtualNodeOnSegment
-        {
-            dtkDouble2 uv;
-            int segmentID;
-        };
-        
-        enum PiercedResultType
-        {
-            PIERCED_PRIMITIVE_1,
-            PIERCED_PRIMITIVE_2,
-            PIERCED_WEIGHT_1,
-            PIERCED_WEIGHT_2,
-            PIERCED_SEGMENTID,
-            PIERCED_SURFACE,
-            PIERCED_VALID
-        };
+namespace dtk {
+class dtkPhysMassSpringThreadCollisionResponse : public boost::noncopyable {
+public:
+  struct virtualNodeOnSegment {
+    dtkDouble2 uv;
+    int segmentID;
+  };
 
-        typedef dtkProperty<PiercedResultType> PiercedResult;
- 
-		typedef std::shared_ptr< dtkPhysMassSpringThreadCollisionResponse > Ptr;
+  enum PiercedResultType {
+    PIERCED_PRIMITIVE_1,
+    PIERCED_PRIMITIVE_2,
+    PIERCED_WEIGHT_1,
+    PIERCED_WEIGHT_2,
+    PIERCED_SEGMENTID,
+    PIERCED_SURFACE,
+    PIERCED_VALID
+  };
 
-		static Ptr New( dtkPhysMassSpringCollisionResponse::Ptr priorResponse ) 
-		{
-			return Ptr( new dtkPhysMassSpringThreadCollisionResponse( priorResponse ) );
-		}
+  typedef dtkProperty<PiercedResultType> PiercedResult;
 
-        //use for debug
-		std::pair< dtkDouble3, dtkDouble3 > GetVirtualPair( dtkID threadID, dtkID id );
-        //std::pair< dtkDouble3, dtkDouble3 > GetInternalVirtualPair( dtkID threadID, dtkID id );
+  typedef std::shared_ptr<dtkPhysMassSpringThreadCollisionResponse> Ptr;
 
-        size_t GetPiercedNum( dtkID i )
-        {
-            return mPiercedResults[i].size();
-        }
+  static Ptr New(dtkPhysMassSpringCollisionResponse::Ptr priorResponse) {
+    return Ptr(new dtkPhysMassSpringThreadCollisionResponse(priorResponse));
+  }
 
-        //size_t GetInternalPiercedNum( dtkID i )
-        //{
-        //    return mInternalPiercedResults[i].size();
-        //}
+  // use for debug
+  std::pair<dtkDouble3, dtkDouble3> GetVirtualPair(dtkID threadID, dtkID id);
+  // std::pair< dtkDouble3, dtkDouble3 > GetInternalVirtualPair( dtkID threadID,
+  // dtkID id );
 
-	public:
-		~dtkPhysMassSpringThreadCollisionResponse();
+  size_t GetPiercedNum(dtkID i) { return mPiercedResults[i].size(); }
 
-        void Update( double timeslice, std::vector<dtkIntersectTest::IntersectResult::Ptr>& internalPiercingResults );
+  // size_t GetInternalPiercedNum( dtkID i )
+  //{
+  //     return mInternalPiercedResults[i].size();
+  // }
 
-		void PostProcess(double range);
+public:
+  ~dtkPhysMassSpringThreadCollisionResponse();
 
-        void SetThread( dtkID i, dtkPhysMassSpringThread::Ptr thread )
-        {
-            mThreads[i] = thread;
+  void Update(double timeslice,
+              std::vector<dtkIntersectTest::IntersectResult::Ptr>
+                  &internalPiercingResults);
 
-            mThreadHeadInsides[i] = false;
-			mNumerOfSurfacePiercedResults[i] = 0;
-            mPiercedResults[i] = std::vector< PiercedResult::Ptr >();
-            mAvoidIntervals[i] = std::vector< dtkInterval<int> >();
-            mInternalIntervals[i] = std::vector< dtkInterval<int> >();
+  void PostProcess(double range);
 
-            //mInternalPiercedResults[i] = std::vector< PiercedResult::Ptr >();
-            //mInternalPiercingTriangleIDs[i] = dtkErrorID;
-        }
+  void SetThread(dtkID i, dtkPhysMassSpringThread::Ptr thread) {
+    mThreads[i] = thread;
 
-        dtkPhysMassSpringThread::Ptr GetThread( dtkID majorID )
-        {
-            assert( mThreads.find( majorID ) != mThreads.end() );
-            return mThreads[majorID];
-        }
+    mThreadHeadInsides[i] = false;
+    mNumerOfSurfacePiercedResults[i] = 0;
+    mPiercedResults[i] = std::vector<PiercedResult::Ptr>();
+    mAvoidIntervals[i] = std::vector<dtkInterval<int>>();
+    mInternalIntervals[i] = std::vector<dtkInterval<int>>();
 
-        const std::vector< dtkInterval<int> >& GetAvoidIntervals( dtkID i )
-        {
-            assert( mAvoidIntervals.find( i ) != mAvoidIntervals.end() );
-            return mAvoidIntervals[i];
-        }
+    // mInternalPiercedResults[i] = std::vector< PiercedResult::Ptr >();
+    // mInternalPiercingTriangleIDs[i] = dtkErrorID;
+  }
 
-        const std::vector< dtkInterval<int> >& GetInternalIntervals( dtkID i )
-        {
-            assert( mInternalIntervals.find( i ) != mInternalIntervals.end() );
-            return mInternalIntervals[i];
-        }
+  dtkPhysMassSpringThread::Ptr GetThread(dtkID majorID) {
+    assert(mThreads.find(majorID) != mThreads.end());
+    return mThreads[majorID];
+  }
 
-		bool stable;
+  const std::vector<dtkInterval<int>> &GetAvoidIntervals(dtkID i) {
+    assert(mAvoidIntervals.find(i) != mAvoidIntervals.end());
+    return mAvoidIntervals[i];
+  }
 
-    private:
-		dtkPhysMassSpringThreadCollisionResponse( dtkPhysMassSpringCollisionResponse::Ptr priorResponse );
+  const std::vector<dtkInterval<int>> &GetInternalIntervals(dtkID i) {
+    assert(mInternalIntervals.find(i) != mInternalIntervals.end());
+    return mInternalIntervals[i];
+  }
 
-    private:
-        dtkPhysMassSpringCollisionResponse::Ptr                     mPriorResponse;
+  bool stable;
 
-        std::map< dtkID, dtkPhysMassSpringThread::Ptr >     mThreads;// 线
+private:
+  dtkPhysMassSpringThreadCollisionResponse(
+      dtkPhysMassSpringCollisionResponse::Ptr priorResponse);
 
-        std::map< dtkID, bool >                                     mThreadHeadInsides; 
+private:
+  dtkPhysMassSpringCollisionResponse::Ptr mPriorResponse;
 
-		std::map< dtkID, int >										mNumerOfSurfacePiercedResults;
+  std::map<dtkID, dtkPhysMassSpringThread::Ptr> mThreads; // 线
 
-        std::map< dtkID, std::vector< PiercedResult::Ptr > >        mPiercedResults;
+  std::map<dtkID, bool> mThreadHeadInsides;
 
-        std::map< dtkID, std::vector< dtkInterval<int> > >          mAvoidIntervals;
+  std::map<dtkID, int> mNumerOfSurfacePiercedResults;
 
-        std::map< dtkID, std::vector< dtkInterval<int> > >          mInternalIntervals;
+  std::map<dtkID, std::vector<PiercedResult::Ptr>> mPiercedResults;
 
-        //std::map< dtkID, std::vector< PiercedResult::Ptr > >        mInternalPiercedResults;
+  std::map<dtkID, std::vector<dtkInterval<int>>> mAvoidIntervals;
 
-        //std::map< dtkID, std::vector< dtkID > >                     mInternalPiercingTriangleIDs;
-	};
-}
+  std::map<dtkID, std::vector<dtkInterval<int>>> mInternalIntervals;
+
+  // std::map< dtkID, std::vector< PiercedResult::Ptr > >
+  // mInternalPiercedResults;
+
+  // std::map< dtkID, std::vector< dtkID > > mInternalPiercingTriangleIDs;
+};
+} // namespace dtk
 
 #endif

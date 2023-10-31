@@ -46,7 +46,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 # )
 
 target_compile_definitions(demo3d PRIVATE
-#        $<VTK_OPT:USE_VTK>
+        #        $<VTK_OPT:USE_VTK>
 )
 
 #target_link_libraries(FemSimulation ${GLFW_LIBRARIES} glfw3dll.lib glfw3.dll ${Boost_LIBRARIES} CGAL)

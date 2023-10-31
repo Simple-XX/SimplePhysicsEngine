@@ -1,123 +1,117 @@
 #ifndef GUIDEWIRE_H
-#define  GUIDEWIRE_H
+#define GUIDEWIRE_H
 
-// dtkÖÐµÄÍ·ÎÄ¼þ
+// dtkï¿½Ðµï¿½Í·ï¿½Ä¼ï¿½
 #include "dtkPhysMassPoint.h"
 
-// stdÖÐµÄÍ·ÎÄ¼þ
+// stdï¿½Ðµï¿½Í·ï¿½Ä¼ï¿½
 #include <vector>
 using namespace std;
 
-namespace dtk
-{
-	class guideWire:public boost::noncopyable
-	{
-	//  ¹«ÓÐ³ÉÔ±º¯Êý
-	public :
-		typedef std::shared_ptr<guideWire>Ptr;
-		static Ptr New()
-		{
-			return Ptr(new guideWire());
-		}
+namespace dtk {
+class guideWire : public boost::noncopyable {
+  //  ï¿½ï¿½ï¿½Ð³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½
+public:
+  typedef std::shared_ptr<guideWire> Ptr;
+  static Ptr New() { return Ptr(new guideWire()); }
 
-		// µ¼Ë¿µÄ¶¯Ì¬¸üÐÂ
-		void Update(double timeslice,  ItrMethod method = Euler, dtkID iteration = 0);
-		void UpdateMassPoints(double timeslice, ItrMethod  method = Euler, dtkID iteration = 0);
-		void PreUpdate(double timeslice);
+  // ï¿½ï¿½Ë¿ï¿½Ä¶ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½
+  void Update(double timeslice, ItrMethod method = Euler, dtkID iteration = 0);
+  void UpdateMassPoints(double timeslice, ItrMethod method = Euler,
+                        dtkID iteration = 0);
+  void PreUpdate(double timeslice);
 
-		// µ¼Ë¿µÄ²ÎÊýÉèÖÃ
-		void SetPoints(dtkPoints::Ptr points);
-		void SetSegInterval(double segInterval);
-		void SetTipSegInterval(double tipSegInterval);
-		void SetLastTipID(dtkID lastTipID);
-		void SetBendModulus(double bendModulus);
-		void SetTipBendModulus(double tipBendModulus);
-		void Set3DBendModulus(double threeDBendModulus);
-		void SetTipOriginAngle(const vector<double>& tipOriginAngle);
-		void SetMass(double mass);
-		void SetPointResistence(double pointResistence);
-		void SetTipPointResistence(double tipPointResistence);
-		void SetContactForces(dtkID id, const dtkDouble3 & force);
-		void SetCollisionFlag(dtkID id, bool flag);
-		void ResetContactForces();
-		void ResetCollisionFlag();
-		void SetGuideWireStartPoint(const GK::Point3 & point);
-		void SetGuideWireStartDirection(const GK::Vector3 & direction);
-		
+  // ï¿½ï¿½Ë¿ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void SetPoints(dtkPoints::Ptr points);
+  void SetSegInterval(double segInterval);
+  void SetTipSegInterval(double tipSegInterval);
+  void SetLastTipID(dtkID lastTipID);
+  void SetBendModulus(double bendModulus);
+  void SetTipBendModulus(double tipBendModulus);
+  void Set3DBendModulus(double threeDBendModulus);
+  void SetTipOriginAngle(const vector<double> &tipOriginAngle);
+  void SetMass(double mass);
+  void SetPointResistence(double pointResistence);
+  void SetTipPointResistence(double tipPointResistence);
+  void SetContactForces(dtkID id, const dtkDouble3 &force);
+  void SetCollisionFlag(dtkID id, bool flag);
+  void ResetContactForces();
+  void ResetCollisionFlag();
+  void SetGuideWireStartPoint(const GK::Point3 &point);
+  void SetGuideWireStartDirection(const GK::Vector3 &direction);
 
-		// »ñÈ¡µ¼Ë¿µÄ²ÎÊý
-		dtkPoints::Ptr GetPoints() const;
-		double GetSegInterval() const;
-		double GetTipSegInterval() const;
-		dtkID GetLastTipID() const;
-		double GetBendModulus() const;
-		double Get3DBendModulus() const;
-		vector<double> GetTipOriginAngle() const;
-		double GetMass() const;
-		double GetPointResistence() const;
-		double GetTipPointResistence() const;
-		double GetTipBendModulus() const;
-		
-		// µ¼Ë¿µÄ¹¦ÄÜº¯Êý
-		void RemovePoint();		// ÒÆ³ýµ¼Ë¿Ìå²¿×îºóµÄÒ»¸öÖÊµãµÄ×ø±ê
-		void AddPoint(const GK::Point3 & point);				// Íùµ¼Ë¿Ìå²¿µÄºóÃæÔö¼ÓÒ»¸öÖÊµãµÄ×ø±ê
-		void DynamicGuideWirePoint();								// ¸ù¾Ýµ¼Ë¿µÄÔË¶¯À´ÔöÉ¾ÖÊµã
-		
-		// µ¼Ë¿µÄÄ£ÐÍº¯Êý
-		void ConstructGuideWireMassPoints() ;				// ½«µ¼Ë¿½¨Á¢³ÉÀëÉ¢µÄÖÊµãÄ£ÐÍ
-		dtkPhysMassPoint* GetMassPoint(dtkID id)  const;					
-		dtkID AddMassPoint(const dtkT3<double>& vel);
-		bool RemoveMassPoint();										// ÒÆ³ýÒ»¸öµ¼Ë¿ÖÊµã
-		void ResistStretch(double timeslice);						// µ¼Ë¿µÄ¿¹À­Éì
-		void AddBendForce(double timeslice);					// µ¼Ë¿ÊÜµ½µÄÍäÇúÁ¦
-		void ResistOverBend(double timeslice);				// ÓÃÎ»ÖÃ·¨À´ÏÞÖÆµ¼Ë¿¼â¶ËµÄÍäÇú
-		void Add3DBendForce(double timeslice);				// µ¼Ë¿ÊÜµ½µÄÆ½ÃæÍäÇúÁ¦
-		void AddTwistForce(double twistAngle);				// µ¼Ë¿ÊÜµ½µÄÅ¤ÇúÁ¦
-		void AddContactForce();								// µ¼Ë¿ÔÚÔË¶¯µÄ¹ý³ÌÊÜµ½Ñª¹Ü±ÚµÄ½Ó´¥Á¦
-		
-		// ¶Ôµ¼Ë¿µÄÊÜÁ¦¡¢Î»ÖÃºÍËÙ¶È½øÐÐ²Ù×÷
-		void AddForce(const dtkT3<double> & force, dtkID directionID, bool isPush);   // ÓÃ»§ÍÆÀ­µÄÁ¦µÄ´«²¥º¯Êý
-		// ÓÃ»§¶Ôµ¼Ë¿µÄÍâÁ¦²Ù×÷
-		void ApplyExternalForce(const dtkT3<double> & force);			//	ÓÃ»§µÄÍÆ¡¢À­ÍâÁ¦
-		void RotateMassPoint(dtkPoints::Ptr  points, dtkID rotatePointID, dtkID axisPointID1, dtkID axisPointID2, double angle);	
+  // ï¿½ï¿½È¡ï¿½ï¿½Ë¿ï¿½Ä²ï¿½ï¿½ï¿½
+  dtkPoints::Ptr GetPoints() const;
+  double GetSegInterval() const;
+  double GetTipSegInterval() const;
+  dtkID GetLastTipID() const;
+  double GetBendModulus() const;
+  double Get3DBendModulus() const;
+  vector<double> GetTipOriginAngle() const;
+  double GetMass() const;
+  double GetPointResistence() const;
+  double GetTipPointResistence() const;
+  double GetTipBendModulus() const;
 
-		// ¾²Ì¬Êý¾ÝÀàÐÍ×ª»»º¯Êý
-		static dtkT3<double> vector3TodtkT3(const GK::Vector3& v3)
-		{
-			return dtkT3<double>(v3.x(), v3.y(), v3.z());
-		}
+  // ï¿½ï¿½Ë¿ï¿½Ä¹ï¿½ï¿½Üºï¿½ï¿½ï¿½
+  void RemovePoint(); // ï¿½Æ³ï¿½ï¿½ï¿½Ë¿ï¿½å²¿ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void AddPoint(const GK::Point3 &point); // ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½å²¿ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void DynamicGuideWirePoint(); // ï¿½ï¿½ï¿½Ýµï¿½Ë¿ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½Êµï¿½
 
-	public:
-		vector<dtkDouble3> mContactForces;						// Ñª¹Ü±Ú¶Ôµ¼Ë¿µÄ½Ó´¥Á¦
+  // ï¿½ï¿½Ë¿ï¿½ï¿½Ä£ï¿½Íºï¿½ï¿½ï¿½
+  void ConstructGuideWireMassPoints(); // ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¢ï¿½ï¿½ï¿½Êµï¿½Ä£ï¿½ï¿½
+  dtkPhysMassPoint *GetMassPoint(dtkID id) const;
+  dtkID AddMassPoint(const dtkT3<double> &vel);
+  bool RemoveMassPoint();               // ï¿½Æ³ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½Êµï¿½
+  void ResistStretch(double timeslice); // ï¿½ï¿½Ë¿ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½
+  void AddBendForce(double timeslice); // ï¿½ï¿½Ë¿ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void ResistOverBend(double timeslice); // ï¿½ï¿½Î»ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ë¿ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½
+  void Add3DBendForce(double timeslice); // ï¿½ï¿½Ë¿ï¿½Üµï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void AddTwistForce(double twistAngle); // ï¿½ï¿½Ë¿ï¿½Üµï¿½ï¿½ï¿½Å¤ï¿½ï¿½ï¿½ï¿½
+  void AddContactForce(); // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½Üµï¿½Ñªï¿½Ü±ÚµÄ½Ó´ï¿½ï¿½ï¿½
 
+  // ï¿½Ôµï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ãºï¿½ï¿½Ù¶È½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
+  void AddForce(const dtkT3<double> &force, dtkID directionID,
+                bool isPush); // ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  // ï¿½Ã»ï¿½ï¿½Ôµï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void ApplyExternalForce(const dtkT3<double> &force); //	ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  void RotateMassPoint(dtkPoints::Ptr points, dtkID rotatePointID,
+                       dtkID axisPointID1, dtkID axisPointID2, double angle);
 
-	// Ë½ÓÐ³ÉÔ±º¯Êý
-	private:
-		guideWire();
+  // ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  static dtkT3<double> vector3TodtkT3(const GK::Vector3 &v3) {
+    return dtkT3<double>(v3.x(), v3.y(), v3.z());
+  }
 
-	// Ë½ÓÐÊý¾Ý³ÉÔ±
-		double mSegInterval;				// µ¼Ë¿µÄÔ­Ê¼¶Î³¤
-		double mTipSegInterval;			// µ¼Ë¿¼â¶ËµÄ¶Î³¤
-		dtkPoints::Ptr mPts;					// µ¼Ë¿µÄÖÊµã×ø±ê
-		dtkID mLastTipID;						// µ¼Ë¿¼â¶Ë×îÄ©¶ÎµÄID
-		double mBendModulus;			// µ¼Ë¿Ìå²¿·ÖµÄÍäÇúÄ£Êý
-		double mTipBendModulus;		// µ¼Ë¿¼â¶Ë²¿·ÖµÄ¶þÎ¬ÍäÇúÄ£Êý
-		double m3DBendModulus;		// µ¼Ë¿¼â¶Ë²¿·ÖµÄ3DÍäÇúÄ£Êý
-		vector<double> mTipOriginAngle;		// µ¼Ë¿¼â¶Ë²¿·ÖµÄÔ­Ê¼½Ç¶È
-		double mMass;										// µ¼Ë¿µÄÖÊÁ¿
-		double mTimeslice;                              //  µü´úµÄÊ±¼äÆ¬´óÐ¡
-		double mDefaultPointResistence;      // µ¼Ë¿Ìå²¿ÔÚÑª¹ÜÖÐµÄ×èÄáÏµÊý
-		double mDefaultTipPointResistence; // µ¼Ë¿¼â¶ËÔÚÑª¹ÜÖÐµÄ×èÄáÏµÊý
-		double mDefaultPointDamp;	            // µ¼Ë¿ÔÚÑª¹ÜÖÐËÙ¶ÈµÄ½µµÍ±¶Êý 
-		double mTwistSlice;								// µ¼Ë¿ÔÚÑª¹ÜÖÐµÄÅ¤Çú½Ç¶ÈÆ¬´óÐ¡
-		double mDefaultGravityAccel;				// Ä¬ÈÏµÄÖØÁ¦¼ÓËÙ¶È
-		double mIncompleteSegLength;			// ²»ÍêÕûµÄµ¼Ë¿¶Î³¤
-		GK::Point3 mGuideWireStartPoint;           // µ¼Ë¿µÄÆðÊ¼Î»ÖÃ
-		GK::Vector3 mGuideWireStartDirection;	// µ¼Ë¿µÄÆðÊ¼·½Ïò
-		vector<dtkPhysMassPoint *>  mMassPoints;			// µ¼Ë¿µÄÖÊµã
-		vector<bool> mMassPointsCollisionFlag;					// ÖÊµãÓëÑª¹Ü±Ú·¢ÉúÅö×²µÄFlag£¬ÆäÖÐ·¢ÉúÅö×²Îªtrue£¬·ñÔòÎªfalse
-		
+public:
+  vector<dtkDouble3> mContactForces; // Ñªï¿½Ü±Ú¶Ôµï¿½Ë¿ï¿½Ä½Ó´ï¿½ï¿½ï¿½
 
-	};
-}
+  // Ë½ï¿½Ð³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½
+private:
+  guideWire();
+
+  // Ë½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½Ô±
+  double mSegInterval;    // ï¿½ï¿½Ë¿ï¿½ï¿½Ô­Ê¼ï¿½Î³ï¿½
+  double mTipSegInterval; // ï¿½ï¿½Ë¿ï¿½ï¿½ËµÄ¶Î³ï¿½
+  dtkPoints::Ptr mPts;    // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½
+  dtkID mLastTipID;       // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½Ä©ï¿½Îµï¿½ID
+  double mBendModulus;    // ï¿½ï¿½Ë¿ï¿½å²¿ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
+  double mTipBendModulus; // ï¿½ï¿½Ë¿ï¿½ï¿½Ë²ï¿½ï¿½ÖµÄ¶ï¿½Î¬ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
+  double m3DBendModulus;  // ï¿½ï¿½Ë¿ï¿½ï¿½Ë²ï¿½ï¿½Öµï¿½3Dï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
+  vector<double> mTipOriginAngle; // ï¿½ï¿½Ë¿ï¿½ï¿½Ë²ï¿½ï¿½Öµï¿½Ô­Ê¼ï¿½Ç¶ï¿½
+  double mMass;                   // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  double mTimeslice;              //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Æ¬ï¿½ï¿½Ð¡
+  double mDefaultPointResistence; // ï¿½ï¿½Ë¿ï¿½å²¿ï¿½ï¿½Ñªï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+  double mDefaultTipPointResistence; // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+  double mDefaultPointDamp; // ï¿½ï¿½Ë¿ï¿½ï¿½Ñªï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ÈµÄ½ï¿½ï¿½Í±ï¿½ï¿½ï¿½
+  double mTwistSlice; // ï¿½ï¿½Ë¿ï¿½ï¿½Ñªï¿½ï¿½ï¿½Ðµï¿½Å¤ï¿½ï¿½ï¿½Ç¶ï¿½Æ¬ï¿½ï¿½Ð¡
+  double mDefaultGravityAccel;          // Ä¬ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+  double mIncompleteSegLength;          // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ë¿ï¿½Î³ï¿½
+  GK::Point3 mGuideWireStartPoint;      // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½Ê¼Î»ï¿½ï¿½
+  GK::Vector3 mGuideWireStartDirection; // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+  vector<dtkPhysMassPoint *> mMassPoints; // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½Êµï¿½
+  vector<bool>
+      mMassPointsCollisionFlag; // ï¿½Êµï¿½ï¿½ï¿½Ñªï¿½Ü±Ú·ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½Flagï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½×²Îªtrueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªfalse
+};
+} // namespace dtk
 #endif

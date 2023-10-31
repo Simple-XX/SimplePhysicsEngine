@@ -7,112 +7,101 @@ hduVector3Dd DevicePhantomOmni::mCurrentHaticForce;
 HDulong DevicePhantomOmni::mForceRate;
 HDulong DevicePhantomOmni::mHapticRate;
 bool DevicePhantomOmni::mPeriodStartFlag;
-int	 DevicePhantomOmni::mPeriodHapticTimes;
+int DevicePhantomOmni::mPeriodHapticTimes;
 
-DevicePhantomOmni::DevicePhantomOmni()
-{
-	ghHD = HD_INVALID_HANDLE;
-	hUpdateDeviceCallback = HD_INVALID_HANDLE;
-	mHapticRate = 1000;
-	mForceRate = 1000;
-	mCurrentHaticForce = hduVector3Dd(0, 0, 0);
-	mPeriodStartFlag = false;
-	mPeriodHapticTimes = 0;
+DevicePhantomOmni::DevicePhantomOmni() {
+  ghHD = HD_INVALID_HANDLE;
+  hUpdateDeviceCallback = HD_INVALID_HANDLE;
+  mHapticRate = 1000;
+  mForceRate = 1000;
+  mCurrentHaticForce = hduVector3Dd(0, 0, 0);
+  mPeriodStartFlag = false;
+  mPeriodHapticTimes = 0;
 }
 
-void DevicePhantomOmni::InitHD()
-{
-	ghHD = hdInitDevice(HD_DEFAULT_DEVICE);
+void DevicePhantomOmni::InitHD() {
+  ghHD = hdInitDevice(HD_DEFAULT_DEVICE);
 
-	hdEnable(HD_FORCE_OUTPUT);
-	hUpdateDeviceCallback = hdScheduleAsynchronous(
-		TouchScene, 0, HD_MAX_SCHEDULER_PRIORITY);
+  hdEnable(HD_FORCE_OUTPUT);
+  hUpdateDeviceCallback =
+      hdScheduleAsynchronous(TouchScene, 0, HD_MAX_SCHEDULER_PRIORITY);
 
-	hdStartScheduler();
+  hdStartScheduler();
 }
 
-void DevicePhantomOmni::SetHapticForce(hduVector3Dd force, HDulong forceRate)
-{
-	// ÅÐ¶ÏforceÊÇ²»ÊÇ³¬¹ýÁËphantom OmniµÄÊä³ö×î´óÖµ£¬Èç¹û³¬¹ýÔò¶Ô³¬¹ý²¿·Ö½øÐÐ½Ø¶Ì
-	HDdouble maxForce;
-	hdGetDoublev(HD_NOMINAL_MAX_CONTINUOUS_FORCE , &maxForce);
-	if (hduVecMagnitude(force) > maxForce)
-	{
-		hduVecNormalizeInPlace(force);
-		hduVecScaleInPlace(force, maxForce);
-	}
-	mLastForce = mForce;
-	mForce = force;
-	mForceRate = forceRate;
-	mPeriodStartFlag = true;
+void DevicePhantomOmni::SetHapticForce(hduVector3Dd force, HDulong forceRate) {
+  // ï¿½Ð¶ï¿½forceï¿½Ç²ï¿½ï¿½Ç³ï¿½ï¿½ï¿½ï¿½ï¿½phantom Omniï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½Ð½Ø¶ï¿½
+  HDdouble maxForce;
+  hdGetDoublev(HD_NOMINAL_MAX_CONTINUOUS_FORCE, &maxForce);
+  if (hduVecMagnitude(force) > maxForce) {
+    hduVecNormalizeInPlace(force);
+    hduVecScaleInPlace(force, maxForce);
+  }
+  mLastForce = mForce;
+  mForce = force;
+  mForceRate = forceRate;
+  mPeriodStartFlag = true;
 }
 
-void DevicePhantomOmni::SetHapticRate(HDulong hapticRate)
-{
-	mHapticRate = hapticRate;
-	hdSetSchedulerRate(hapticRate);
+void DevicePhantomOmni::SetHapticRate(HDulong hapticRate) {
+  mHapticRate = hapticRate;
+  hdSetSchedulerRate(hapticRate);
 }
 
-HDCallbackCode HDCALLBACK DevicePhantomOmni::TouchScene(void *pUserData)
-{
-	//¸ù¾ÝSetHapticForceÀ´²úÉúÁ¬ÐøµÄÁ¦´¥¾õ
-	//hduVector3Dd torqueV;
+HDCallbackCode HDCALLBACK DevicePhantomOmni::TouchScene(void *pUserData) {
+  // ï¿½ï¿½ï¿½ï¿½SetHapticForceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  // hduVector3Dd torqueV;
 
-	if (mPeriodStartFlag)
-		mPeriodHapticTimes = 0;
-	mPeriodStartFlag = false;
-	mPeriodHapticTimes ++;
-	hdBeginFrame(ghHD);
-	HDulong times = mHapticRate / mForceRate;
-	hduVector3Dd clampForce = (mForce - mLastForce) / times;
-	if (mPeriodHapticTimes <= times)
-		mCurrentHaticForce = mCurrentHaticForce + clampForce;
-	hdSetDoublev(HD_CURRENT_FORCE, mCurrentHaticForce);
-	hdSetDoublev(HD_CURRENT_TORQUE, hduVector3Dd(5, 5, 5)); 
-	//hdGetDoublev(HD_CURRENT_TORQUE, torqueV);
-	hdEndFrame(ghHD);
-	return HD_CALLBACK_CONTINUE;
+  if (mPeriodStartFlag)
+    mPeriodHapticTimes = 0;
+  mPeriodStartFlag = false;
+  mPeriodHapticTimes++;
+  hdBeginFrame(ghHD);
+  HDulong times = mHapticRate / mForceRate;
+  hduVector3Dd clampForce = (mForce - mLastForce) / times;
+  if (mPeriodHapticTimes <= times)
+    mCurrentHaticForce = mCurrentHaticForce + clampForce;
+  hdSetDoublev(HD_CURRENT_FORCE, mCurrentHaticForce);
+  hdSetDoublev(HD_CURRENT_TORQUE, hduVector3Dd(5, 5, 5));
+  // hdGetDoublev(HD_CURRENT_TORQUE, torqueV);
+  hdEndFrame(ghHD);
+  return HD_CALLBACK_CONTINUE;
 }
 
-HDCallbackCode HDCALLBACK DevicePhantomOmni::CopyHapticDisplayState(void *pUserData)
-{
-	int currentButtons;
-	HapticDisplayState *pState = (HapticDisplayState *) pUserData;
+HDCallbackCode HDCALLBACK
+DevicePhantomOmni::CopyHapticDisplayState(void *pUserData) {
+  int currentButtons;
+  HapticDisplayState *pState = (HapticDisplayState *)pUserData;
 
-	hdGetDoublev(HD_CURRENT_POSITION, pState->position);
-	hdGetDoublev(HD_CURRENT_TRANSFORM, pState->transform);
-	hdGetDoublev(HD_CURRENT_GIMBAL_ANGLES, pState->gimbalAngle);
-	//hdGetDoublev(HD_CURRENT_TORQUE, torqueV);
-	 
-	hdGetIntegerv(HD_CURRENT_BUTTONS, &currentButtons);
-	pState->button1 = currentButtons & HD_DEVICE_BUTTON_1;
-	pState->button2 = currentButtons & HD_DEVICE_BUTTON_2;
+  hdGetDoublev(HD_CURRENT_POSITION, pState->position);
+  hdGetDoublev(HD_CURRENT_TRANSFORM, pState->transform);
+  hdGetDoublev(HD_CURRENT_GIMBAL_ANGLES, pState->gimbalAngle);
+  // hdGetDoublev(HD_CURRENT_TORQUE, torqueV);
 
-	return HD_CALLBACK_DONE;
+  hdGetIntegerv(HD_CURRENT_BUTTONS, &currentButtons);
+  pState->button1 = currentButtons & HD_DEVICE_BUTTON_1;
+  pState->button2 = currentButtons & HD_DEVICE_BUTTON_2;
+
+  return HD_CALLBACK_DONE;
 }
 
-
-HapticDisplayState * DevicePhantomOmni::GetCurrentDisplayState()
-{
-	mLastDisplayState = mCurrentDisplayState;
-	hdScheduleSynchronous(CopyHapticDisplayState, &mCurrentDisplayState, HD_DEFAULT_SCHEDULER_PRIORITY);
-	return &mCurrentDisplayState;
+HapticDisplayState *DevicePhantomOmni::GetCurrentDisplayState() {
+  mLastDisplayState = mCurrentDisplayState;
+  hdScheduleSynchronous(CopyHapticDisplayState, &mCurrentDisplayState,
+                        HD_DEFAULT_SCHEDULER_PRIORITY);
+  return &mCurrentDisplayState;
 }
 
-HapticDisplayState * DevicePhantomOmni::GetLastDisplayState()
-{
-	return &mLastDisplayState;
+HapticDisplayState *DevicePhantomOmni::GetLastDisplayState() {
+  return &mLastDisplayState;
 }
 
-HDdouble * DevicePhantomOmni::GetWorkspaceModel(const HDdouble * modelMatrix, const HDdouble *projMatrix)
-{
-	hduMapWorkspaceModel(modelMatrix, projMatrix, mWorkspaceModel);
-	return mWorkspaceModel;
+HDdouble *DevicePhantomOmni::GetWorkspaceModel(const HDdouble *modelMatrix,
+                                               const HDdouble *projMatrix) {
+  hduMapWorkspaceModel(modelMatrix, projMatrix, mWorkspaceModel);
+  return mWorkspaceModel;
 }
 
-
-DevicePhantomOmni::~DevicePhantomOmni()
-{
-	// nothing
+DevicePhantomOmni::~DevicePhantomOmni() {
+  // nothing
 }
-

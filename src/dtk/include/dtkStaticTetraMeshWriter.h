@@ -21,37 +21,32 @@
 
 #include <cstring>
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
-namespace dtk
-{
-	class dtkStaticTetraMeshWriter: public boost::noncopyable
-	{
-	public:
+namespace dtk {
+class dtkStaticTetraMeshWriter : public boost::noncopyable {
+public:
+  typedef std::shared_ptr<dtkStaticTetraMeshWriter> Ptr;
 
-		typedef std::shared_ptr<dtkStaticTetraMeshWriter> Ptr;
+  static dtkStaticTetraMeshWriter::Ptr New() {
+    return dtkStaticTetraMeshWriter::Ptr(new dtkStaticTetraMeshWriter());
+  }
 
-		static dtkStaticTetraMeshWriter::Ptr New()
-		{
-			return dtkStaticTetraMeshWriter::Ptr(new dtkStaticTetraMeshWriter());
-		}
+public:
+  virtual ~dtkStaticTetraMeshWriter() {}
 
-	public:
-		virtual ~dtkStaticTetraMeshWriter() {}
+  void SetInput(dtkStaticTetraMesh::Ptr mesh);
+  void SetFileName(const char *filePath);
 
-		void SetInput(dtkStaticTetraMesh::Ptr mesh);
-		void SetFileName(const char* filePath);
+  bool Write();
 
-		bool Write();
+private:
+  dtkStaticTetraMeshWriter();
 
-	private:
-		dtkStaticTetraMeshWriter();
+  dtkStaticTetraMesh::Ptr mMesh;
+  std::string mFilePath;
+};
+} // namespace dtk
 
-		dtkStaticTetraMesh::Ptr	mMesh;
-		std::string			mFilePath;
-	};
-}
-
-#endif //DTK_STATICTETRAMESHWRITER_H
-
+#endif // DTK_STATICTETRAMESHWRITER_H

@@ -26,8 +26,7 @@
 #include "dtkStaticTriangleMeshReader.h"
 #include "dtkStaticTriangleMeshWriter.h"
 
-//#include "dtkGraphReader.h"
-//#include "dtkGraphWriter.h"
+// #include "dtkGraphReader.h"
+// #include "dtkGraphWriter.h"
 
-#endif //DTK_IO_H
-
+#endif // DTK_IO_H

@@ -20,17 +20,17 @@ set(DTK_INSTALL_CMAKEDIR "${CMAKE_BINARY_DIR}")
 # Installation directory for header files
 set(DTK_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}")
 
-if("${DTK_INSTALL_LIBDIR}" STREQUAL "")
+if ("${DTK_INSTALL_LIBDIR}" STREQUAL "")
     set(DTK_INSTALL_LIBDIR "lib")
-endif()
+endif ()
 
-if("${DTK_INSTALL_CMAKEDIR}" STREQUAL "")
+if ("${DTK_INSTALL_CMAKEDIR}" STREQUAL "")
     set(DTK_INSTALL_CMAKEDIR "bin")
-endif()
+endif ()
 
-if("${DTK_INSTALL_INCLUDEDIR}" STREQUAL "")
+if ("${DTK_INSTALL_INCLUDEDIR}" STREQUAL "")
     set(DTK_INSTALL_INCLUDEDIR "include")
-endif()
+endif ()
 
 set(DTK_INSTALL_INCLUDEDIR "include")
 
@@ -44,7 +44,7 @@ set(SPE_DEPS "${CMAKE_SOURCE_DIR}/_deps")
 
 # Build Options
 set(VTK_OPT # whether to use VTK
-    "OFF"
-    CACHE BOOL "Choose whether to use VTK or not")
+        "OFF"
+        CACHE BOOL "Choose whether to use VTK or not")
 
 # Add global definitions to project

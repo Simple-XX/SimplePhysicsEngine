@@ -17,59 +17,55 @@
 #ifndef DTK_COLLISIONDETECTNODEKDOPS_H
 #define DTK_COLLISIONDETECTNODEKDOPS_H
 
-#include "dtkConfig.h"
 #include "dtkCollisionDetectNode.h"
+#include "dtkConfig.h"
 
 #include "dtkGraphicsKernel.h"
 
-namespace dtk
-{
-    class dtkCollisionDetectHierarchyKDOPS;
+namespace dtk {
+class dtkCollisionDetectHierarchyKDOPS;
 
-    /**
-    * @class <dtkCollisionDetectNode> 
-    * @brief k-Dops算法冲突检测树结点
-    * @author <>
-    * @note
-    * k-Dops算法冲突检测树结点类，继承于dtkCollisionDetectNode基类。
-    */
+/**
+ * @class <dtkCollisionDetectNode>
+ * @brief k-Dops算法冲突检测树结点
+ * @author <>
+ * @note
+ * k-Dops算法冲突检测树结点类，继承于dtkCollisionDetectNode基类。
+ */
 
-	class dtkCollisionDetectNodeKDOPS : public dtkCollisionDetectNode
-	{
-	public:
-        dtkCollisionDetectNodeKDOPS( dtkCollisionDetectHierarchy* father, size_t half_k );
-        
-		~dtkCollisionDetectNodeKDOPS();
+class dtkCollisionDetectNodeKDOPS : public dtkCollisionDetectNode {
+public:
+  dtkCollisionDetectNodeKDOPS(dtkCollisionDetectHierarchy *father,
+                              size_t half_k);
 
-        /**
-         * @brief 递归划分k-Dops冲突检测树。
-         */
+  ~dtkCollisionDetectNodeKDOPS();
 
-        //递归划分
-        void Split();
-        
-        /**
-         * @brief 更新k-Dops冲突检测树轴向包围盒。
-         */
-        //更新包围盒
+  /**
+   * @brief 递归划分k-Dops冲突检测树。
+   */
 
-        void Update();
+  // 递归划分
+  void Split();
 
-        /**
-         * @brief 根据图元重心平均值划分为节点为左右分支。
-         */
-        //根据图元重心平均值划分为左右分支。
-        
-        void SplitRule();
+  /**
+   * @brief 更新k-Dops冲突检测树轴向包围盒。
+   */
+  // 更新包围盒
 
-        inline const GK::KDOP& GetKDOP() const
-        {
-            return mKDOP;
-        }
+  void Update();
 
-    private:
-        GK::KDOP mKDOP; /**< 轴向多面体包围盒 */
-	};
-}
+  /**
+   * @brief 根据图元重心平均值划分为节点为左右分支。
+   */
+  // 根据图元重心平均值划分为左右分支。
 
-#endif //DTK_COLLISIONDETECTNODEKDOPS_H
+  void SplitRule();
+
+  inline const GK::KDOP &GetKDOP() const { return mKDOP; }
+
+private:
+  GK::KDOP mKDOP; /**< 轴向多面体包围盒 */
+};
+} // namespace dtk
+
+#endif // DTK_COLLISIONDETECTNODEKDOPS_H

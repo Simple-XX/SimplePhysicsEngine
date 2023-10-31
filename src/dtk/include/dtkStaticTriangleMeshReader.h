@@ -19,36 +19,32 @@
 
 #include "dtkStaticTriangleMesh.h"
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
-namespace dtk
-{
-	class dtkStaticTriangleMeshReader: public boost::noncopyable
-	{
-	public:
-		typedef std::shared_ptr<dtkStaticTriangleMeshReader> Ptr;
+namespace dtk {
+class dtkStaticTriangleMeshReader : public boost::noncopyable {
+public:
+  typedef std::shared_ptr<dtkStaticTriangleMeshReader> Ptr;
 
-		static dtkStaticTriangleMeshReader::Ptr New()
-		{
-			return dtkStaticTriangleMeshReader::Ptr(new dtkStaticTriangleMeshReader());
-		}
+  static dtkStaticTriangleMeshReader::Ptr New() {
+    return dtkStaticTriangleMeshReader::Ptr(new dtkStaticTriangleMeshReader());
+  }
 
-	public:
-		virtual ~dtkStaticTriangleMeshReader() {}
+public:
+  virtual ~dtkStaticTriangleMeshReader() {}
 
-		void SetOutput(dtkStaticTriangleMesh::Ptr mesh);
-		void SetFileName(const char* filePath);
+  void SetOutput(dtkStaticTriangleMesh::Ptr mesh);
+  void SetFileName(const char *filePath);
 
-		bool Read();
+  bool Read();
 
-	private:
-		dtkStaticTriangleMeshReader();
+private:
+  dtkStaticTriangleMeshReader();
 
-		dtkStaticTriangleMesh::Ptr	mMesh;
-		std::string 				mFilePath;
-	};
-}
+  dtkStaticTriangleMesh::Ptr mMesh;
+  std::string mFilePath;
+};
+} // namespace dtk
 
-#endif //DTK_STATICTRIANGLEMESHREADER_H
-
+#endif // DTK_STATICTRIANGLEMESHREADER_H

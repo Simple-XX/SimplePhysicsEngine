@@ -19,34 +19,28 @@
 
 #include "dtkPoints.h"
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
-namespace dtk
-{
-	class dtkPointsReader: public boost::noncopyable
-	{
-	public:
-		typedef std::shared_ptr<dtkPointsReader> Ptr;
+namespace dtk {
+class dtkPointsReader : public boost::noncopyable {
+public:
+  typedef std::shared_ptr<dtkPointsReader> Ptr;
 
-		static dtkPointsReader::Ptr New()
-		{
-			return dtkPointsReader::Ptr(new dtkPointsReader());
-		}
+  static dtkPointsReader::Ptr New() {
+    return dtkPointsReader::Ptr(new dtkPointsReader());
+  }
 
-	public:
+public:
+  void SetFileName(const char *filePath);
+  void SetOutput(dtkPoints::Ptr pts);
 
-		void SetFileName(const char* filePath);
-		void SetOutput(dtkPoints::Ptr pts);
+  bool Read();
 
-		bool Read();
+private:
+  dtkPoints::Ptr mPts;
+  std::string mFilePath;
+};
+} // namespace dtk
 
-	private:
-
-		dtkPoints::Ptr	mPts;
-		std::string		mFilePath;
-	};
-}
-
-#endif //DTK_POINTSREADER_H
-
+#endif // DTK_POINTSREADER_H

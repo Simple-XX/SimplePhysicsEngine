@@ -16,8 +16,8 @@
 #ifndef DTK_GRAPHICS_H
 #define DTK_GRAPHICS_H
 
-#include "dtkIntersectTest.h"
 #include "dtkGraphicsKernel.h"
 #include "dtkGraphicsTools.h"
+#include "dtkIntersectTest.h"
 
-#endif //DTK_GRAPHICS_H
+#endif // DTK_GRAPHICS_H

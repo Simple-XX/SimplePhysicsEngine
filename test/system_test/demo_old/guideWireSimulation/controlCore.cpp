@@ -1,434 +1,446 @@
-#include "dtkStaticTriangleMeshReader.h"
 #include "dtkStaticTetraMeshReader.h"
-
+#include "dtkStaticTriangleMeshReader.h"
 
 #define K 3
 
-#include <set>
-#include <queue>
+#include "controlCore.h"
 #include <fstream>
+#include <queue>
+#include <set>
 #include <time.h>
 #include <windows.h>
-#include "controlCore.h"
-
 
 using namespace std;
 using namespace boost;
 
 int test = 0;
 
-namespace dtk
-{
-	controlCore::~controlCore()
-	{
-		// nothing
-		mCount = 0;
-	}
-
-	void controlCore::Update( double timeslice, const vector<dtkID3> & avoid )
-	{
-		mAvoid = avoid;
-
-		////--------------------------------------------
-		LARGE_INTEGER litmp;
-		LONGLONG qt1,qt2;
-		double dft,dff,dfm;
-		QueryPerformanceFrequency(&litmp);//»ñµÃÊ±ÖÓÆµÂÊ
-		dff=(double)litmp.QuadPart;
-		////--------------------------------------------
-
-		mTimeslice = timeslice;
-
-		//--------------------------------------------
-		QueryPerformanceCounter(&litmp);//»ñµÃ³õÊ¼Öµ
-		qt1=litmp.QuadPart;
-		//--------------------------------------------
-		//mStage->GetHierarchy(1)->Update();
-				
-		// reset contact force ÖØÐÂÅòÕÍ¼ì²â
-		mCollisionDetectResponse->ResetContactForces();
-		mCollisionDetectResponse->ResetCollisionFlag();
-
-		// µÚÒ»´Îµü´ú
-		for (map< dtkID, guideWire::Ptr>::iterator itr = mGuideWireMassPoints.begin();
-			itr != mGuideWireMassPoints.end(); itr++)
-		{
-			if (timeslice == 0)
-				continue;
-			// ¶¯Ì¬ÔöÉ¾µ¼Ë¿ÖÊµã
-			itr->second->DynamicGuideWirePoint();
-			itr->second->PreUpdate(timeslice);
-			itr->second->Update(timeslice, Collision, 0);
-		}
-
-		UpdateGuideWireHierarchy(1, mGuideWireMassPoints[1]->GetPoints());
-
-		QueryPerformanceCounter(&litmp);//»ñµÃÖÕÖ¹Öµ
-		qt2=litmp.QuadPart;
-		dfm=(double)(qt2-qt1);
-		dft=dfm/dff * 1000;//»ñµÃ¶ÔÓ¦µÄÊ±¼äÖµ
-		mUpdateGuideWireTime = dft;
-
-		// update hierarchy
-		//yzk add ¿ÉÄÜÊÇÓÃÓÚ¼ì²âÅö×²
-		mStage->Update();
-		//yzk add end
-
-		//--------------------------------------------
-		QueryPerformanceCounter(&litmp);	//»ñµÃ³õÊ¼Öµ
-		qt1=litmp.QuadPart;
-		//--------------------------------------------
-		//yzk add start
-		mStage->GetHierarchy(1)->Update();
-		mCollisionDetectHierarchies[1]->Update();
-		UpdateGuideWireHierarchy(1, mGuideWireMassPoints[1]->GetPoints());
-		//yzk add end
-			
-		QueryPerformanceCounter(&litmp);	//»ñµÃÖÕÖ¹Öµ
-		qt2=litmp.QuadPart;
-		dfm=(double)(qt2-qt1);
-		dft=dfm/dff * 1000;					//»ñµÃ¶ÔÓ¦µÄÊ±¼äÖµ
-
-		vector< dtkInterval<int> > emptyIntervals;
-
-		// ²âÊÔÅö×²¼ì²âµÄ¼ÆËãÊ±¼ä start
-		QueryPerformanceCounter(&litmp);//»ñµÃ³õÊ¼Öµ
-		qt1=litmp.QuadPart;
-
-		// ´´½¨Åö×²¼ì²â¶Ô
-		mCollisionDetectResponseSets.clear();
-		CreateCollisionResponse(0, 1, 2000);
-
-		for( map< dtkID, CollisionResponseSet >::iterator itr = mCollisionDetectResponseSets.begin();
-			itr != mCollisionDetectResponseSets.end(); itr++ )
-		{
-			//mCount = 0;
-			vector<dtkIntersectTest::IntersectResult::Ptr> intersectResults;
-			mStage->DoIntersect( itr->second.hierarchy_pair,  intersectResults,false, false );
-			mCollisionDetectResponse->Update( timeslice, intersectResults, avoid, (itr->second).strength);
-		}
-		// ²âÊÔÅö×²¼ì²âµÄ¼ÆËãÊ±¼ä end
-		QueryPerformanceCounter(&litmp);//»ñµÃÖÕÖ¹Öµ
-		qt2=litmp.QuadPart;
-		dfm=(double)(qt2-qt1);
-		dft=dfm/dff * 1000;//»ñµÃ¶ÔÓ¦µÄÊ±¼äÖµ
-		mCollisionDetectTime = dft;
-
-		// µÚ¶þ´Îµü´ú ? ÎªÊ²Ã´ÕâÃ´×ö
-		for (map< dtkID, guideWire::Ptr>::iterator itr = mGuideWireMassPoints.begin();
-			itr != mGuideWireMassPoints.end(); itr++)
-		{
-			if (timeslice == 0)
-				continue;
-			itr->second->DynamicGuideWirePoint();
-			itr->second->PreUpdate(timeslice);
-			itr->second->Update(timeslice, Collision, 1);
-		}
-	}
-
-	void controlCore::CreateMassSpring( const char* filename, dtkID id, double point_mass, double stiffness, double damp, double pointDamp, double pointResistence, dtkT3<double> gravityAccel, double specialExtend )
-	{
-		dtkPoints::Ptr targetPts = dtkPointsVector::New();
-
-		dtkPhysMassSpring::Ptr massSpring = dtkPhysMassSpring::New( point_mass, stiffness, damp, pointDamp, pointResistence, gravityAccel );
-		massSpring->SetPoints( targetPts );
-		mMassSprings[id] = massSpring;
-
-		mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New( K );
-
-		std::ifstream file(filename);
-		size_t numOfPts;
-		dtkID maxID;
-
-		file >> numOfPts >> maxID;
-
-		for (size_t i = 0; i < numOfPts; ++i)
-		{
-			dtkID id;
-			dtkFloat3 coord;
-
-			file >> id >> coord.x >> coord.y >> coord.z;
-			targetPts->SetPoint(id, GK::Point3(coord.x, coord.y, coord.z));
-		}
-
-		for( dtkID i = 0; i < targetPts->GetNumberOfPoints(); i++ )
-		{
-			massSpring->AddMassPoint( i, point_mass, dtkT3<double>(0,0,0), pointDamp, pointResistence, gravityAccel );
-		}
-
-		size_t numOfEdges;
-		file >> numOfEdges;
-		for (size_t i = 0; i < numOfEdges; ++i)
-		{
-			dtkID id0, id1;
-
-			file >> id0 >> id1;
-
-			massSpring->AddSpring( id0, id1, stiffness, damp );
-			dtkCollisionDetectPrimitive* primitive = mCollisionDetectHierarchies[id]->InsertSegment( targetPts, dtkID2( id0, id1 ) );
-			primitive->SetExtend( specialExtend );
-			primitive->mMajorID = id;
-			primitive->mMinorID = i;
-			primitive->mDetailIDs[0] = id0;
-			primitive->mDetailIDs[1] = id1;
-		}
-
-		file.close();
-
-		mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
-		mCollisionDetectHierarchies[id]->Build();
-
-		mStage->AddHierarchy( mCollisionDetectHierarchies[id] );
-		mCollisionDetectResponse->SetMassSpring( id, mMassSprings[id] );
-	}
-
-
-	void controlCore::CreateTriangleMassSpring( const char* filename, dtkID id, double point_mass, double stiffness, double damp, double pointDamp, double pointResistence, dtkT3<double> gravityAccel )
-	{
-		//Ã»ÓÐ±»ÓÃµ½ yzk added
-		dtkPoints::Ptr targetPts = dtkPointsVector::New();
-		dtkStaticTriangleMesh::Ptr targetMesh = dtkStaticTriangleMesh::New();
-		targetMesh->SetPoints(targetPts);
-
-		dtkStaticTriangleMeshReader::Ptr reader_trianglemesh = dtkStaticTriangleMeshReader::New();
-		reader_trianglemesh->SetOutput(targetMesh);
-		reader_trianglemesh->SetFileName( filename );
-		reader_trianglemesh->Read();
-
-		dtkPhysMassSpring::Ptr triangleMassSpring = dtkPhysMassSpring::New( point_mass, stiffness, damp, pointDamp, pointResistence, gravityAccel );
-		triangleMassSpring->SetTriangleMesh( targetMesh );
-		mMassSprings[id] = triangleMassSpring;
-
-		mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New( K );
-		mCollisionDetectHierarchies[id]->InsertTriangleMesh( targetMesh, id );
-		mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
-		mCollisionDetectHierarchies[id]->Build();
-
-		mStage->AddHierarchy( mCollisionDetectHierarchies[id] );
-		mCollisionDetectResponse->SetMassSpring( id, mMassSprings[id] );
-
-		mTriangleMeshes[id] = targetMesh;
-	}
-
-
-	void controlCore::CreateTetraMassSpring( const char* filename, dtkID id, double point_mass, double stiffness, double damp, double pointDamp, double pointResistence, dtkT3<double> gravityAccel)
-	{
-		// Target Mesh
-		dtkPoints::Ptr targetPts = dtkPointsVector::New();
-		dtkStaticTetraMesh::Ptr targetMesh = dtkStaticTetraMesh::New();
-		targetMesh->SetPoints(targetPts);
-		//¶ÁÈ¡Èý½ÇÃæÆ¬
-		dtkStaticTetraMeshReader::Ptr reader_tetramesh = dtkStaticTetraMeshReader::New();
-		reader_tetramesh->SetOutput(targetMesh);
-		reader_tetramesh->SetFileName( filename );
-		reader_tetramesh->Read();
-
-		mTetraMeshes[id] = targetMesh;
-		//¹¹Ôìµ¯»ÉÖÊµãÄ£ÐÍ
-		dtkPhysTetraMassSpring::Ptr tetraMassSpring = dtkPhysTetraMassSpring::New( false, point_mass, stiffness, damp, pointDamp, pointResistence, gravityAccel );
-		tetraMassSpring->SetTetraMesh(targetMesh);
-		mMassSprings[id] = tetraMassSpring;
-		mTetraMassSprings[id] = tetraMassSpring;
-		//¹¹ÔìÅö×²Ä£ÐÍ
-		mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New( K );
-		mCollisionDetectHierarchies[id]->InsertTetraMesh( targetMesh, id, dtkCollisionDetectHierarchy::SURFACE, mClothDepth );
-		mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
-		mCollisionDetectHierarchies[id]->Build();
-		mCollisionDetectHierarchies[id]->Update();
-
-		mStage->AddHierarchy( mCollisionDetectHierarchies[id] );
-		// get the surface mesh of tetra 
-		dtkStaticTriangleMesh::Ptr surface = dtkStaticTriangleMesh::New();
-		targetMesh->GetSurface(surface);
-		mTriangleMeshes[id] = surface;
-		mCollisionDetectResponse = collisionResponse::New(surface);
-		mCollisionDetectResponse->SetMassSpring( id, mMassSprings[id] );
-	}
-
-	void controlCore::CreateTriangleSurfaceMesh(const char* filename, dtkID id)
-	{
-		// Target Mesh
-		dtkPoints::Ptr targetPts = dtkPointsVector::New();
-		dtkStaticTriangleMesh::Ptr targetMesh = dtkStaticTriangleMesh::New();
-		targetMesh->SetPoints(targetPts);
-		//¶ÁÈ¡Èý½ÇÃæÆ¬
-		dtkStaticTriangleMeshReader::Ptr reader_tetramesh = dtkStaticTriangleMeshReader::New();
-		reader_tetramesh->SetOutput(targetMesh);
-		reader_tetramesh->SetFileName( filename );
-		reader_tetramesh->Read();
-
-		mTriangleMeshes[id] = targetMesh;
-
-		mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New( K );
-		mCollisionDetectHierarchies[id]->InsertTriangleMesh( targetMesh, id, mClothDepth);
-		mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
-		mCollisionDetectHierarchies[id]->Build();
-		mCollisionDetectHierarchies[id]->Update();
-
-		mStage->AddHierarchy( mCollisionDetectHierarchies[id] );
-		mCollisionDetectResponse = collisionResponse::New(targetMesh);
-	}
-
-	void controlCore::CreateCollisionResponse( dtkID object1_id, dtkID object2_id, double strength)
-	{
-		dtkID response_id = object1_id * mPairOffset + object2_id;
-
-		CollisionResponseSet newset;
-		newset.hierarchy_pair = dtkCollisionDetectStage::HierarchyPair(GetCollisionDetectHierarchy( object1_id), GetCollisionDetectHierarchy( object2_id) );
-		newset.strength = strength;
-		mCollisionDetectResponseSets[response_id] = newset;
-	}
-
-	void controlCore::UpdateCollisionResponse(dtkID object1_id, dtkID object2_id, double strength)
-	{
-		dtkID response_id = object1_id * mPairOffset + object2_id;
-		mCollisionDetectResponseSets[response_id].hierarchy_pair = dtkCollisionDetectStage::HierarchyPair(GetCollisionDetectHierarchy( object1_id), GetCollisionDetectHierarchy( object2_id) );
-		mCollisionDetectResponseSets[response_id].strength = strength;
-	}
-
-   void controlCore::CreateGuideWire(dtkID id, dtkPoints::Ptr points,  dtkID lastTipID, double segInterval, double tipSegInterval, const std::vector<double> & tipOriginAngle)
-	{
-		/*	if (points->GetNumberOfPoints() != curvatures.size())
-		assert(false);*/
-		guideWire::Ptr guidewire = guideWire::New();
-		guidewire->SetPoints(points);
-		guidewire->SetLastTipID(lastTipID);
-		guidewire->SetTipOriginAngle(tipOriginAngle);
-		guidewire->SetSegInterval(segInterval);
-		guidewire->SetTipSegInterval(tipSegInterval);
-		guidewire->SetMass(2.0);
-		guidewire->SetPointResistence(36.0 * guidewire->GetMass());			// ÉèÖÃµ¼Ë¿Ìå²¿²¿·ÖµÄÄ¦²ÁÏµÊý
-		guidewire->SetTipPointResistence(24.0 * guidewire->GetMass());		// ÉèÖÃµ¼Ë¿¼â¶Ë²¿·ÖµÄÄ¦²ÁÏµÊý
-		guidewire->SetBendModulus(240.0 * 4.0 * 0.05);						// 240.0 * 4.0  0.07
-		guidewire->SetTipBendModulus(240.0 * 4.0 * 0.02);					// 360 * 4.0 * 0.1
-		guidewire->Set3DBendModulus(360.0 * 4.0 * 0.1);						// 30000
-		mGuideWireMassPoints[id] = guidewire;
-		mGuideWireMassPoints[id]->ConstructGuideWireMassPoints();
-
-		mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New( K );
-
-		for (dtkID i = 0; i < points->GetNumberOfPoints(); i++)
-		{
-			dtkCollisionDetectPrimitive * primitive;
-			if (i < points->GetNumberOfPoints() )
-			{
-				primitive = mCollisionDetectHierarchies[id]->InsertSphere(points, i);
-				primitive->mMajorID = id;
-				primitive->mMinorID = i;
-				primitive->mDetailIDs[0] = i;
-				primitive->mInvert = 1;
-			}
-		}
-
-		mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
-		mCollisionDetectHierarchies[id]->Build();
-
-		mStage->AddHierarchy( mCollisionDetectHierarchies[id] );
-		mCollisionDetectResponse->SetGuideWire(id, guidewire);
-	}
-
-	void controlCore::UpdateGuideWireHierarchy(dtkID id, dtkPoints::Ptr points)
-	{
-		//	clean guide wire hierarchy
-		//	delete mCollisionDetectHierarchies[id];
-		//	rebuild 
-		mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New( K );
-		for (dtkID i = 0; i < points->GetNumberOfPoints(); i++)
-		{
-			dtkCollisionDetectPrimitive * primitive;
-			if (i < points->GetNumberOfPoints() )
-			{
-				primitive = mCollisionDetectHierarchies[id]->InsertSphere(points, i);
-				primitive->mMajorID = id;
-				primitive->mMinorID = i;
-				primitive->mDetailIDs[0] = i;
-				primitive->mInvert = 0;
-			}
-		}
-		mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
-		mCollisionDetectHierarchies[id]->Build();
-		mCollisionDetectHierarchies[id]->Update();
-	}
-
-	dtkPhysMassSpring::Ptr controlCore::GetMassSpring( dtkID id )
-	{
-		if( mMassSprings.find(id) == mMassSprings.end() )
-			assert( false );
-
-		return mMassSprings[id]; 
-	}
-
-	dtkPhysMassSpring::Ptr controlCore::GetTetraMassSpring( dtkID id )
-	{
-		if( mTetraMassSprings.find(id) == mTetraMassSprings.end() )
-			assert( false );
-
-		return mTetraMassSprings[id]; 
-	}
-
-	dtkCollisionDetectHierarchyKDOPS::Ptr controlCore::GetCollisionDetectHierarchy( dtkID id)
-	{
-		if( mCollisionDetectHierarchies.find(id) == mCollisionDetectHierarchies.end() )
-			assert( false );
-		return mCollisionDetectHierarchies[id];
-	}
-
-	dtkStaticTriangleMesh::Ptr controlCore::GetTriangleMesh( dtkID id )
-	{
-		if( mTriangleMeshes.find(id) == mTriangleMeshes.end() )
-			assert( false );
-		return mTriangleMeshes[id]; 
-	}
-
-	controlCore::controlCore( double clothDepth)
-	{
-		mStage = dtkCollisionDetectStage::New();
-		mClothDepth = clothDepth;
-
-		// test
-		responseTag = true;
-
-		// collision detect time
-		mCollisionDetectTime = 0;
-	}
-
-	void controlCore::ApplyExternalForce(dtkID id, dtkT3<double> force)
-	{
-		mExternalForce = force;
-		//Èç¹ûµ½Ä©¶Ë
-		if ( mGuideWireMassPoints.find(id) == mGuideWireMassPoints.end() )
-			assert(false);
-
-		if ((mGuideWireMassPoints[id]->GetPoints()->GetMaxID() <= 2 * (mGuideWireMassPoints[id]->GetLastTipID() + 1)) && force.y < 0)
-			return;
-		mGuideWireMassPoints[id]->ApplyExternalForce(force);
-	}
-
-	void controlCore::ApplyExternalTwist(dtkID id, double twist)
-	{
-		// µ¼Ë¿µÄÌå²¿½øÐÐÁ¦µÄ¼ÆËã
-		if (mGuideWireMassPoints.find(id) == mGuideWireMassPoints.end())
-			assert(false);
-		mGuideWireMassPoints[id]->AddTwistForce(twist);
-
-		// µ¼Ë¿µÄ¼â¶Ë½øÐÐÐý×ª
-		dtkID lastTipID = mGuideWireMassPoints[id]->GetLastTipID();
-		for (dtkID i = 0; i < lastTipID; i++)
-		{
-			mGuideWireMassPoints[id]->RotateMassPoint(mGuideWireMassPoints[id]->GetPoints(), i, lastTipID + 1, lastTipID, twist);
-		}
-	}
-
-	dtkT3<double> controlCore::GetHapticTranslationForce()
-	{
-		// assume the max ID of guidewire is 400
-		double coefficient = 1.0 /( 400 * 400 * 2);
-		return coefficient * (mGuideWireMassPoints[1]->GetPoints()->GetMaxID() + 1) * mExternalForce;
-	}
-
-	dtkT3<double> controlCore::GetHapticCollisionForce()
-	{
-		double coefficient = mTimeslice * mTimeslice * 2.0;
-		return dtkT3<double>(0, length(mGuideWireMassPoints[1]->mContactForces[0]) * coefficient, 0);
-	}
+namespace dtk {
+controlCore::~controlCore() {
+  // nothing
+  mCount = 0;
 }
+
+void controlCore::Update(double timeslice, const vector<dtkID3> &avoid) {
+  mAvoid = avoid;
+
+  ////--------------------------------------------
+  LARGE_INTEGER litmp;
+  LONGLONG qt1, qt2;
+  double dft, dff, dfm;
+  QueryPerformanceFrequency(&litmp); // ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Æµï¿½ï¿½
+  dff = (double)litmp.QuadPart;
+  ////--------------------------------------------
+
+  mTimeslice = timeslice;
+
+  //--------------------------------------------
+  QueryPerformanceCounter(&litmp); // ï¿½ï¿½Ã³ï¿½Ê¼Öµ
+  qt1 = litmp.QuadPart;
+  //--------------------------------------------
+  // mStage->GetHierarchy(1)->Update();
+
+  // reset contact force ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
+  mCollisionDetectResponse->ResetContactForces();
+  mCollisionDetectResponse->ResetCollisionFlag();
+
+  // ï¿½ï¿½Ò»ï¿½Îµï¿½ï¿½ï¿½
+  for (map<dtkID, guideWire::Ptr>::iterator itr = mGuideWireMassPoints.begin();
+       itr != mGuideWireMassPoints.end(); itr++) {
+    if (timeslice == 0)
+      continue;
+    // ï¿½ï¿½Ì¬ï¿½ï¿½É¾ï¿½ï¿½Ë¿ï¿½Êµï¿½
+    itr->second->DynamicGuideWirePoint();
+    itr->second->PreUpdate(timeslice);
+    itr->second->Update(timeslice, Collision, 0);
+  }
+
+  UpdateGuideWireHierarchy(1, mGuideWireMassPoints[1]->GetPoints());
+
+  QueryPerformanceCounter(&litmp); // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹Öµ
+  qt2 = litmp.QuadPart;
+  dfm = (double)(qt2 - qt1);
+  dft = dfm / dff * 1000; // ï¿½ï¿½Ã¶ï¿½Ó¦ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+  mUpdateGuideWireTime = dft;
+
+  // update hierarchy
+  // yzk add ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½×²
+  mStage->Update();
+  // yzk add end
+
+  //--------------------------------------------
+  QueryPerformanceCounter(&litmp); // ï¿½ï¿½Ã³ï¿½Ê¼Öµ
+  qt1 = litmp.QuadPart;
+  //--------------------------------------------
+  // yzk add start
+  mStage->GetHierarchy(1)->Update();
+  mCollisionDetectHierarchies[1]->Update();
+  UpdateGuideWireHierarchy(1, mGuideWireMassPoints[1]->GetPoints());
+  // yzk add end
+
+  QueryPerformanceCounter(&litmp); // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹Öµ
+  qt2 = litmp.QuadPart;
+  dfm = (double)(qt2 - qt1);
+  dft = dfm / dff * 1000; // ï¿½ï¿½Ã¶ï¿½Ó¦ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+
+  vector<dtkInterval<int>> emptyIntervals;
+
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ start
+  QueryPerformanceCounter(&litmp); // ï¿½ï¿½Ã³ï¿½Ê¼Öµ
+  qt1 = litmp.QuadPart;
+
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½
+  mCollisionDetectResponseSets.clear();
+  CreateCollisionResponse(0, 1, 2000);
+
+  for (map<dtkID, CollisionResponseSet>::iterator itr =
+           mCollisionDetectResponseSets.begin();
+       itr != mCollisionDetectResponseSets.end(); itr++) {
+    // mCount = 0;
+    vector<dtkIntersectTest::IntersectResult::Ptr> intersectResults;
+    mStage->DoIntersect(itr->second.hierarchy_pair, intersectResults, false,
+                        false);
+    mCollisionDetectResponse->Update(timeslice, intersectResults, avoid,
+                                     (itr->second).strength);
+  }
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ end
+  QueryPerformanceCounter(&litmp); // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹Öµ
+  qt2 = litmp.QuadPart;
+  dfm = (double)(qt2 - qt1);
+  dft = dfm / dff * 1000; // ï¿½ï¿½Ã¶ï¿½Ó¦ï¿½ï¿½Ê±ï¿½ï¿½Öµ
+  mCollisionDetectTime = dft;
+
+  // ï¿½Ú¶ï¿½ï¿½Îµï¿½ï¿½ï¿½ ? ÎªÊ²Ã´ï¿½ï¿½Ã´ï¿½ï¿½
+  for (map<dtkID, guideWire::Ptr>::iterator itr = mGuideWireMassPoints.begin();
+       itr != mGuideWireMassPoints.end(); itr++) {
+    if (timeslice == 0)
+      continue;
+    itr->second->DynamicGuideWirePoint();
+    itr->second->PreUpdate(timeslice);
+    itr->second->Update(timeslice, Collision, 1);
+  }
+}
+
+void controlCore::CreateMassSpring(const char *filename, dtkID id,
+                                   double point_mass, double stiffness,
+                                   double damp, double pointDamp,
+                                   double pointResistence,
+                                   dtkT3<double> gravityAccel,
+                                   double specialExtend) {
+  dtkPoints::Ptr targetPts = dtkPointsVector::New();
+
+  dtkPhysMassSpring::Ptr massSpring = dtkPhysMassSpring::New(
+      point_mass, stiffness, damp, pointDamp, pointResistence, gravityAccel);
+  massSpring->SetPoints(targetPts);
+  mMassSprings[id] = massSpring;
+
+  mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New(K);
+
+  std::ifstream file(filename);
+  size_t numOfPts;
+  dtkID maxID;
+
+  file >> numOfPts >> maxID;
+
+  for (size_t i = 0; i < numOfPts; ++i) {
+    dtkID id;
+    dtkFloat3 coord;
+
+    file >> id >> coord.x >> coord.y >> coord.z;
+    targetPts->SetPoint(id, GK::Point3(coord.x, coord.y, coord.z));
+  }
+
+  for (dtkID i = 0; i < targetPts->GetNumberOfPoints(); i++) {
+    massSpring->AddMassPoint(i, point_mass, dtkT3<double>(0, 0, 0), pointDamp,
+                             pointResistence, gravityAccel);
+  }
+
+  size_t numOfEdges;
+  file >> numOfEdges;
+  for (size_t i = 0; i < numOfEdges; ++i) {
+    dtkID id0, id1;
+
+    file >> id0 >> id1;
+
+    massSpring->AddSpring(id0, id1, stiffness, damp);
+    dtkCollisionDetectPrimitive *primitive =
+        mCollisionDetectHierarchies[id]->InsertSegment(targetPts,
+                                                       dtkID2(id0, id1));
+    primitive->SetExtend(specialExtend);
+    primitive->mMajorID = id;
+    primitive->mMinorID = i;
+    primitive->mDetailIDs[0] = id0;
+    primitive->mDetailIDs[1] = id1;
+  }
+
+  file.close();
+
+  mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
+  mCollisionDetectHierarchies[id]->Build();
+
+  mStage->AddHierarchy(mCollisionDetectHierarchies[id]);
+  mCollisionDetectResponse->SetMassSpring(id, mMassSprings[id]);
+}
+
+void controlCore::CreateTriangleMassSpring(const char *filename, dtkID id,
+                                           double point_mass, double stiffness,
+                                           double damp, double pointDamp,
+                                           double pointResistence,
+                                           dtkT3<double> gravityAccel) {
+  // Ã»ï¿½Ð±ï¿½ï¿½Ãµï¿½ yzk added
+  dtkPoints::Ptr targetPts = dtkPointsVector::New();
+  dtkStaticTriangleMesh::Ptr targetMesh = dtkStaticTriangleMesh::New();
+  targetMesh->SetPoints(targetPts);
+
+  dtkStaticTriangleMeshReader::Ptr reader_trianglemesh =
+      dtkStaticTriangleMeshReader::New();
+  reader_trianglemesh->SetOutput(targetMesh);
+  reader_trianglemesh->SetFileName(filename);
+  reader_trianglemesh->Read();
+
+  dtkPhysMassSpring::Ptr triangleMassSpring = dtkPhysMassSpring::New(
+      point_mass, stiffness, damp, pointDamp, pointResistence, gravityAccel);
+  triangleMassSpring->SetTriangleMesh(targetMesh);
+  mMassSprings[id] = triangleMassSpring;
+
+  mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New(K);
+  mCollisionDetectHierarchies[id]->InsertTriangleMesh(targetMesh, id);
+  mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
+  mCollisionDetectHierarchies[id]->Build();
+
+  mStage->AddHierarchy(mCollisionDetectHierarchies[id]);
+  mCollisionDetectResponse->SetMassSpring(id, mMassSprings[id]);
+
+  mTriangleMeshes[id] = targetMesh;
+}
+
+void controlCore::CreateTetraMassSpring(const char *filename, dtkID id,
+                                        double point_mass, double stiffness,
+                                        double damp, double pointDamp,
+                                        double pointResistence,
+                                        dtkT3<double> gravityAccel) {
+  // Target Mesh
+  dtkPoints::Ptr targetPts = dtkPointsVector::New();
+  dtkStaticTetraMesh::Ptr targetMesh = dtkStaticTetraMesh::New();
+  targetMesh->SetPoints(targetPts);
+  // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬
+  dtkStaticTetraMeshReader::Ptr reader_tetramesh =
+      dtkStaticTetraMeshReader::New();
+  reader_tetramesh->SetOutput(targetMesh);
+  reader_tetramesh->SetFileName(filename);
+  reader_tetramesh->Read();
+
+  mTetraMeshes[id] = targetMesh;
+  // ï¿½ï¿½ï¿½ìµ¯ï¿½ï¿½ï¿½Êµï¿½Ä£ï¿½ï¿½
+  dtkPhysTetraMassSpring::Ptr tetraMassSpring =
+      dtkPhysTetraMassSpring::New(false, point_mass, stiffness, damp, pointDamp,
+                                  pointResistence, gravityAccel);
+  tetraMassSpring->SetTetraMesh(targetMesh);
+  mMassSprings[id] = tetraMassSpring;
+  mTetraMassSprings[id] = tetraMassSpring;
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²Ä£ï¿½ï¿½
+  mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New(K);
+  mCollisionDetectHierarchies[id]->InsertTetraMesh(
+      targetMesh, id, dtkCollisionDetectHierarchy::SURFACE, mClothDepth);
+  mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
+  mCollisionDetectHierarchies[id]->Build();
+  mCollisionDetectHierarchies[id]->Update();
+
+  mStage->AddHierarchy(mCollisionDetectHierarchies[id]);
+  // get the surface mesh of tetra
+  dtkStaticTriangleMesh::Ptr surface = dtkStaticTriangleMesh::New();
+  targetMesh->GetSurface(surface);
+  mTriangleMeshes[id] = surface;
+  mCollisionDetectResponse = collisionResponse::New(surface);
+  mCollisionDetectResponse->SetMassSpring(id, mMassSprings[id]);
+}
+
+void controlCore::CreateTriangleSurfaceMesh(const char *filename, dtkID id) {
+  // Target Mesh
+  dtkPoints::Ptr targetPts = dtkPointsVector::New();
+  dtkStaticTriangleMesh::Ptr targetMesh = dtkStaticTriangleMesh::New();
+  targetMesh->SetPoints(targetPts);
+  // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬
+  dtkStaticTriangleMeshReader::Ptr reader_tetramesh =
+      dtkStaticTriangleMeshReader::New();
+  reader_tetramesh->SetOutput(targetMesh);
+  reader_tetramesh->SetFileName(filename);
+  reader_tetramesh->Read();
+
+  mTriangleMeshes[id] = targetMesh;
+
+  mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New(K);
+  mCollisionDetectHierarchies[id]->InsertTriangleMesh(targetMesh, id,
+                                                      mClothDepth);
+  mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
+  mCollisionDetectHierarchies[id]->Build();
+  mCollisionDetectHierarchies[id]->Update();
+
+  mStage->AddHierarchy(mCollisionDetectHierarchies[id]);
+  mCollisionDetectResponse = collisionResponse::New(targetMesh);
+}
+
+void controlCore::CreateCollisionResponse(dtkID object1_id, dtkID object2_id,
+                                          double strength) {
+  dtkID response_id = object1_id * mPairOffset + object2_id;
+
+  CollisionResponseSet newset;
+  newset.hierarchy_pair = dtkCollisionDetectStage::HierarchyPair(
+      GetCollisionDetectHierarchy(object1_id),
+      GetCollisionDetectHierarchy(object2_id));
+  newset.strength = strength;
+  mCollisionDetectResponseSets[response_id] = newset;
+}
+
+void controlCore::UpdateCollisionResponse(dtkID object1_id, dtkID object2_id,
+                                          double strength) {
+  dtkID response_id = object1_id * mPairOffset + object2_id;
+  mCollisionDetectResponseSets[response_id].hierarchy_pair =
+      dtkCollisionDetectStage::HierarchyPair(
+          GetCollisionDetectHierarchy(object1_id),
+          GetCollisionDetectHierarchy(object2_id));
+  mCollisionDetectResponseSets[response_id].strength = strength;
+}
+
+void controlCore::CreateGuideWire(dtkID id, dtkPoints::Ptr points,
+                                  dtkID lastTipID, double segInterval,
+                                  double tipSegInterval,
+                                  const std::vector<double> &tipOriginAngle) {
+  /*	if (points->GetNumberOfPoints() != curvatures.size())
+  assert(false);*/
+  guideWire::Ptr guidewire = guideWire::New();
+  guidewire->SetPoints(points);
+  guidewire->SetLastTipID(lastTipID);
+  guidewire->SetTipOriginAngle(tipOriginAngle);
+  guidewire->SetSegInterval(segInterval);
+  guidewire->SetTipSegInterval(tipSegInterval);
+  guidewire->SetMass(2.0);
+  guidewire->SetPointResistence(36.0 *
+                                guidewire->GetMass()); // ï¿½ï¿½ï¿½Ãµï¿½Ë¿ï¿½å²¿ï¿½ï¿½ï¿½Öµï¿½Ä¦ï¿½ï¿½Ïµï¿½ï¿½
+  guidewire->SetTipPointResistence(24.0 *
+                                   guidewire->GetMass()); // ï¿½ï¿½ï¿½Ãµï¿½Ë¿ï¿½ï¿½Ë²ï¿½ï¿½Öµï¿½Ä¦ï¿½ï¿½Ïµï¿½ï¿½
+  guidewire->SetBendModulus(240.0 * 4.0 * 0.05);    // 240.0 * 4.0  0.07
+  guidewire->SetTipBendModulus(240.0 * 4.0 * 0.02); // 360 * 4.0 * 0.1
+  guidewire->Set3DBendModulus(360.0 * 4.0 * 0.1);   // 30000
+  mGuideWireMassPoints[id] = guidewire;
+  mGuideWireMassPoints[id]->ConstructGuideWireMassPoints();
+
+  mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New(K);
+
+  for (dtkID i = 0; i < points->GetNumberOfPoints(); i++) {
+    dtkCollisionDetectPrimitive *primitive;
+    if (i < points->GetNumberOfPoints()) {
+      primitive = mCollisionDetectHierarchies[id]->InsertSphere(points, i);
+      primitive->mMajorID = id;
+      primitive->mMinorID = i;
+      primitive->mDetailIDs[0] = i;
+      primitive->mInvert = 1;
+    }
+  }
+
+  mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
+  mCollisionDetectHierarchies[id]->Build();
+
+  mStage->AddHierarchy(mCollisionDetectHierarchies[id]);
+  mCollisionDetectResponse->SetGuideWire(id, guidewire);
+}
+
+void controlCore::UpdateGuideWireHierarchy(dtkID id, dtkPoints::Ptr points) {
+  //	clean guide wire hierarchy
+  //	delete mCollisionDetectHierarchies[id];
+  //	rebuild
+  mCollisionDetectHierarchies[id] = dtkCollisionDetectHierarchyKDOPS::New(K);
+  for (dtkID i = 0; i < points->GetNumberOfPoints(); i++) {
+    dtkCollisionDetectPrimitive *primitive;
+    if (i < points->GetNumberOfPoints()) {
+      primitive = mCollisionDetectHierarchies[id]->InsertSphere(points, i);
+      primitive->mMajorID = id;
+      primitive->mMinorID = i;
+      primitive->mDetailIDs[0] = i;
+      primitive->mInvert = 0;
+    }
+  }
+  mCollisionDetectHierarchies[id]->AutoSetMaxLevel();
+  mCollisionDetectHierarchies[id]->Build();
+  mCollisionDetectHierarchies[id]->Update();
+}
+
+dtkPhysMassSpring::Ptr controlCore::GetMassSpring(dtkID id) {
+  if (mMassSprings.find(id) == mMassSprings.end())
+    assert(false);
+
+  return mMassSprings[id];
+}
+
+dtkPhysMassSpring::Ptr controlCore::GetTetraMassSpring(dtkID id) {
+  if (mTetraMassSprings.find(id) == mTetraMassSprings.end())
+    assert(false);
+
+  return mTetraMassSprings[id];
+}
+
+dtkCollisionDetectHierarchyKDOPS::Ptr
+controlCore::GetCollisionDetectHierarchy(dtkID id) {
+  if (mCollisionDetectHierarchies.find(id) == mCollisionDetectHierarchies.end())
+    assert(false);
+  return mCollisionDetectHierarchies[id];
+}
+
+dtkStaticTriangleMesh::Ptr controlCore::GetTriangleMesh(dtkID id) {
+  if (mTriangleMeshes.find(id) == mTriangleMeshes.end())
+    assert(false);
+  return mTriangleMeshes[id];
+}
+
+controlCore::controlCore(double clothDepth) {
+  mStage = dtkCollisionDetectStage::New();
+  mClothDepth = clothDepth;
+
+  // test
+  responseTag = true;
+
+  // collision detect time
+  mCollisionDetectTime = 0;
+}
+
+void controlCore::ApplyExternalForce(dtkID id, dtkT3<double> force) {
+  mExternalForce = force;
+  // ï¿½ï¿½ï¿½ï¿½ï¿½Ä©ï¿½ï¿½
+  if (mGuideWireMassPoints.find(id) == mGuideWireMassPoints.end())
+    assert(false);
+
+  if ((mGuideWireMassPoints[id]->GetPoints()->GetMaxID() <=
+       2 * (mGuideWireMassPoints[id]->GetLastTipID() + 1)) &&
+      force.y < 0)
+    return;
+  mGuideWireMassPoints[id]->ApplyExternalForce(force);
+}
+
+void controlCore::ApplyExternalTwist(dtkID id, double twist) {
+  // ï¿½ï¿½Ë¿ï¿½ï¿½ï¿½å²¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+  if (mGuideWireMassPoints.find(id) == mGuideWireMassPoints.end())
+    assert(false);
+  mGuideWireMassPoints[id]->AddTwistForce(twist);
+
+  // ï¿½ï¿½Ë¿ï¿½Ä¼ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½×ª
+  dtkID lastTipID = mGuideWireMassPoints[id]->GetLastTipID();
+  for (dtkID i = 0; i < lastTipID; i++) {
+    mGuideWireMassPoints[id]->RotateMassPoint(
+        mGuideWireMassPoints[id]->GetPoints(), i, lastTipID + 1, lastTipID,
+        twist);
+  }
+}
+
+dtkT3<double> controlCore::GetHapticTranslationForce() {
+  // assume the max ID of guidewire is 400
+  double coefficient = 1.0 / (400 * 400 * 2);
+  return coefficient * (mGuideWireMassPoints[1]->GetPoints()->GetMaxID() + 1) *
+         mExternalForce;
+}
+
+dtkT3<double> controlCore::GetHapticCollisionForce() {
+  double coefficient = mTimeslice * mTimeslice * 2.0;
+  return dtkT3<double>(
+      0, length(mGuideWireMassPoints[1]->mContactForces[0]) * coefficient, 0);
+}
+} // namespace dtk

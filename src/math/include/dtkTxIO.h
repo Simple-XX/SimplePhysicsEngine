@@ -17,35 +17,32 @@
 #ifndef DTK_TXIO_H
 #define DTK_TXIO_H
 
-//STL
+// STL
 #include <iostream>
 
-//DTK
+// DTK
 #include "dtkConfig.h"
 #include "dtkTx.h"
 
-namespace dtk
-{
-	template <class T>
-	inline std::ostream& operator<<(std::ostream& stream, const dtkT2<T>& data)
-	{
-		stream<<'('<<data.x<<','<<data.y<<')';
-		return stream;
-	}
-
-	template <class T>
-	inline std::ostream& operator<<(std::ostream& stream, const dtkT3<T>& data)
-	{
-		stream<<'('<<data.x<<','<<data.y<<','<<data.z<<')';
-		return stream;
-	}
-
-	template <class T>
-	inline std::ostream& operator<<(std::ostream& stream, const dtkT4<T>& data)
-	{
-		stream<<'('<<data.x<<','<<data.y<<','<<data.z<<','<<data.w<<')';
-		return stream;
-	}
+namespace dtk {
+template <class T>
+inline std::ostream &operator<<(std::ostream &stream, const dtkT2<T> &data) {
+  stream << '(' << data.x << ',' << data.y << ')';
+  return stream;
 }
 
-#endif //DTK_TXIO_H
+template <class T>
+inline std::ostream &operator<<(std::ostream &stream, const dtkT3<T> &data) {
+  stream << '(' << data.x << ',' << data.y << ',' << data.z << ')';
+  return stream;
+}
+
+template <class T>
+inline std::ostream &operator<<(std::ostream &stream, const dtkT4<T> &data) {
+  stream << '(' << data.x << ',' << data.y << ',' << data.z << ',' << data.w
+         << ')';
+  return stream;
+}
+} // namespace dtk
+
+#endif // DTK_TXIO_H

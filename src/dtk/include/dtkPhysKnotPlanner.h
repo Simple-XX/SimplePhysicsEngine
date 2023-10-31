@@ -17,93 +17,79 @@
 #ifndef DTK_PHYSKNOTPLANNER_H
 #define DTK_PHYSKNOTPLANNER_H
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
-#include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>
+#include <boost/thread/thread.hpp>
 
-#include "dtkPhysTetraMassSpring.h"
 #include "dtkPhysMassSpringThread.h"
+#include "dtkPhysTetraMassSpring.h"
 
 #include "dtkCollisionDetectPrimitive.h"
 #include "dtkIntersectTest.h"
 
-#include <vector>
 #include <map>
+#include <vector>
 
-namespace dtk
-{
-	class dtkPhysKnotPlanner : public boost::noncopyable
-	{
-		//结
+namespace dtk {
+class dtkPhysKnotPlanner : public boost::noncopyable {
+  // 结
 
-	public:
-		typedef std::shared_ptr<dtkPhysKnotPlanner> Ptr;
+public:
+  typedef std::shared_ptr<dtkPhysKnotPlanner> Ptr;
 
-	public:
-		~dtkPhysKnotPlanner();
-		void KnotRecognition(std::vector<dtkIntersectTest::IntersectResult::Ptr> &);
+public:
+  ~dtkPhysKnotPlanner();
+  void KnotRecognition(std::vector<dtkIntersectTest::IntersectResult::Ptr> &);
 
-		void DoKnotFormation();
+  void DoKnotFormation();
 
-		//更新朝向 
-		
-		void UpdateKnotOrientations();
+  // 更新朝向
 
-		void UpdateKnot(double timeslice);
+  void UpdateKnotOrientations();
 
-		std::vector<dtkID2> GetKnots()
-		{
-			return mKnots;
-		}
+  void UpdateKnot(double timeslice);
 
-		std::vector<dtkDouble3> GetKnotOrientations()
-		{
-			return mKnotOrientations;
-		}
+  std::vector<dtkID2> GetKnots() { return mKnots; }
 
-		std::vector<dtkDouble3> GetKnotCenterPoints()
-		{
-			return mKnotCenterPoints;
-		}
+  std::vector<dtkDouble3> GetKnotOrientations() { return mKnotOrientations; }
 
-		std::vector<dtkID> GetSegmentInKnots()
-		{
-			return mSegmentInKnots;
-		}
+  std::vector<dtkDouble3> GetKnotCenterPoints() { return mKnotCenterPoints; }
 
-		std::vector<double> GetPointOnSegmentPercent()
-		{
-			return mPointOnSegmentPercents;
-		}
-		void UpdateKnotCenterPoints();
+  std::vector<dtkID> GetSegmentInKnots() { return mSegmentInKnots; }
 
-		void UpdateSegmentInKnot();
+  std::vector<double> GetPointOnSegmentPercent() {
+    return mPointOnSegmentPercents;
+  }
+  void UpdateKnotCenterPoints();
 
-		static Ptr New(dtkPhysMassSpringThread::Ptr newSutureThread)
-		{
-			return Ptr(new dtkPhysKnotPlanner(newSutureThread));
-		}
+  void UpdateSegmentInKnot();
 
-		const std::vector<dtkInterval<int>> &GetAvoidIntervals() { return mAvoidIntervals; }
+  static Ptr New(dtkPhysMassSpringThread::Ptr newSutureThread) {
+    return Ptr(new dtkPhysKnotPlanner(newSutureThread));
+  }
 
-	public:
-		dtkPhysKnotPlanner(dtkPhysMassSpringThread::Ptr newSutureThread);
+  const std::vector<dtkInterval<int>> &GetAvoidIntervals() {
+    return mAvoidIntervals;
+  }
 
-		bool mDoKnotPlanning;
+public:
+  dtkPhysKnotPlanner(dtkPhysMassSpringThread::Ptr newSutureThread);
 
-		std::vector<dtkID2> mKnots; //结 
-		dtkID mNumberOfFormatedKnots;
-		std::vector<dtkID> mSegmentInKnots;			   //线段数 
-		std::vector<dtkDouble3> mKnotCenterPoints;	   //中心点 
-		std::vector<double> mPointOnSegmentPercents;   //线段细分 
-		std::vector<dtkDouble3> mKnotOrientations;	   //朝向 
-		std::vector<bool> mSegmentInKnotOrientations;  //段的朝向 
-		std::vector<dtkInterval<int>> mAvoidIntervals; //间隔 
+  bool mDoKnotPlanning;
 
-	public:
-		dtkPhysMassSpringThread::Ptr mSutureThread; //缝合线 
-	};
+  std::vector<dtkID2> mKnots; // 结
+  dtkID mNumberOfFormatedKnots;
+  std::vector<dtkID> mSegmentInKnots;            // 线段数
+  std::vector<dtkDouble3> mKnotCenterPoints;     // 中心点
+  std::vector<double> mPointOnSegmentPercents;   // 线段细分
+  std::vector<dtkDouble3> mKnotOrientations;     // 朝向
+  std::vector<bool> mSegmentInKnotOrientations;  // 段的朝向
+  std::vector<dtkInterval<int>> mAvoidIntervals; // 间隔
+
+public:
+  dtkPhysMassSpringThread::Ptr mSutureThread; // 缝合线
 };
+}; // namespace dtk
 #endif

@@ -19,5 +19,4 @@
 TEST(example, 示例) {
   EXPECT_EQ(1, 1);
   EXPECT_TRUE(true == true);
-
 }

@@ -21,26 +21,25 @@
 #include "dtkError.h"
 #include "dtkErrorManager.h"
 
-namespace dtk
-{
+namespace dtk {
 #ifdef DTK_DEBUG
-	inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR)
-    {
-        if (!cond) dtkErrMgr.PushError(err);
-        if (cond) return true;
+inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR) {
+  if (!cond)
+    dtkErrMgr.PushError(err);
+  if (cond)
+    return true;
 
-        assert(cond);
-        return cond;
-    }
-#else
-    //#define dtkAssert( cond, err ) ( (void) 0 )
-	inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR)
-	{
-		if (!cond) 
-			dtkErrMgr.PushError(err);
-		return cond;
-	}
-#endif //DTK_DEBUG
+  assert(cond);
+  return cond;
 }
+#else
+// #define dtkAssert( cond, err ) ( (void) 0 )
+inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR) {
+  if (!cond)
+    dtkErrMgr.PushError(err);
+  return cond;
+}
+#endif // DTK_DEBUG
+} // namespace dtk
 
-#endif //DTK_ASSERT_H
+#endif // DTK_ASSERT_H

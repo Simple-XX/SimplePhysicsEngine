@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(guideWireSimulation)
 
-if(WIN32)
-	set(Qt5_DIR "C:\\Qt\\5.15.0\\msvc2019_64\\lib\\cmake\\Qt5")
-elseif(UNIX)
-	set(Qt5_DIR /home/dai/Qt/5.15.2/gcc_64/lib/cmake/Qt5)
-endif()
+if (WIN32)
+    set(Qt5_DIR "C:\\Qt\\5.15.0\\msvc2019_64\\lib\\cmake\\Qt5")
+elseif (UNIX)
+    set(Qt5_DIR /home/dai/Qt/5.15.2/gcc_64/lib/cmake/Qt5)
+endif ()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
@@ -19,57 +19,57 @@ FIND_PACKAGE(Qt5 COMPONENTS Core Gui Qml Quick Widgets REQUIRED)
 #FIND_PACKAGE(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(CGAL)
 find_package(Boost)
-if(WIN32)
-	#Boost
-	set(Boost_INCLUDE_DIR D:\\boost\\boost_1_71_0)
-	set(Boost_LIBRARIES_DIR D:\\boost\\boost_1_71_0\\lib64-msvc-14.2)
+if (WIN32)
+    #Boost
+    set(Boost_INCLUDE_DIR D:\\boost\\boost_1_71_0)
+    set(Boost_LIBRARIES_DIR D:\\boost\\boost_1_71_0\\lib64-msvc-14.2)
 
-	#dtk
-	set(DTK_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\include)
-	set(DTK_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\lib)
+    #dtk
+    set(DTK_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\include)
+    set(DTK_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\dtk\\install\\lib)
 
-	#freeglut
-	set(FREEGLUT_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\include)
-	set(FREEGLUT_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\build\\lib)
+    #freeglut
+    set(FREEGLUT_INCLUDE_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\include)
+    set(FREEGLUT_LIBRARIES_DIR D:\\PROJECTS\\SimplerRenderer\\freeglut-3.2.1\\build\\lib)
 
-	#gmp
-	set(GMP_INCLUDE_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\include)
-	set(GMP_LIBRARIES_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\lib)
-elseif(UNIX)
-	#boost
-	set(Boost_INCLUDE_DIR /usr/include/boost)
-	set(Boost_LIBRARIES_DIR /usr/lib/x86_64-linux-gnu)
-	
-	#dtk
+    #gmp
+    set(GMP_INCLUDE_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\include)
+    set(GMP_LIBRARIES_DIR D:\\CGAL\\CGAL-4.14.3\\auxiliary\\gmp\\lib)
+elseif (UNIX)
+    #boost
+    set(Boost_INCLUDE_DIR /usr/include/boost)
+    set(Boost_LIBRARIES_DIR /usr/lib/x86_64-linux-gnu)
+
+    #dtk
     set(DTK_INCLUDE_DIR /usr/local/include)
     set(DTK_LIBRARIES_DIR /usr/local/lib)
 
-	#freeglut
+    #freeglut
     set(freeglut_include_dir /usr/include/GL)
     set(freeglut_libraries_dir /usr/lib/x86_64-linux-gnu)
 
-	#gmp
-	set(GMP_INCLUDE_DIR /usr/include)
-	set(GMP_LIBRARIES_DIR /usr/lib/x86_64-linux-gnu)	
-endif()
+    #gmp
+    set(GMP_INCLUDE_DIR /usr/include)
+    set(GMP_LIBRARIES_DIR /usr/lib/x86_64-linux-gnu)
+endif ()
 
 
 aux_source_directory(. SOURCE_FILES)
 file(GLOB HEADER_FILES *.h)
 
-set(GUIDEWIRE_HEADERS 
-	glDrawer.h
-	glThread.h
-	guideWireSimulation.h
+set(GUIDEWIRE_HEADERS
+        glDrawer.h
+        glThread.h
+        guideWireSimulation.h
 )
 
-set(GUIDEWIRE_FORMS 
-	simulationParameters.ui
-	guideWireSimulation.ui
+set(GUIDEWIRE_FORMS
+        simulationParameters.ui
+        guideWireSimulation.ui
 )
 
-set(GUIDEWIRE_RESOURCES 
-	guideWireSimulation.qrc
+set(GUIDEWIRE_RESOURCES
+        guideWireSimulation.qrc
 )
 
 #调用预编译器moc，需要使用 QT5_WRAP_CPP宏
@@ -95,13 +95,13 @@ LINK_DIRECTORIES(${GMP_LIBRARIES_DIR})
 
 
 #生成可执行文件
-ADD_EXECUTABLE(GUIDEWIRE 
-	${GUIDEWIRE_SOURCES} 
-	${GUIDEWIRE_MOC_HEADERS} 
-    	${GUIDEWIRE_FORMS_HEADERS}
-	${GUIDEWIRE_RCC_SOURCES} 
-	${SOURCE_FILES}
-	${HEADER_FILES}
+ADD_EXECUTABLE(GUIDEWIRE
+        ${GUIDEWIRE_SOURCES}
+        ${GUIDEWIRE_MOC_HEADERS}
+        ${GUIDEWIRE_FORMS_HEADERS}
+        ${GUIDEWIRE_RCC_SOURCES}
+        ${SOURCE_FILES}
+        ${HEADER_FILES}
 )
 
 #为target添加需要链接的共享库
@@ -115,7 +115,7 @@ TARGET_LINK_LIBRARIES(GUIDEWIRE libgmp-10.lib libgmp-10.dll)
 TARGET_LINK_LIBRARIES(GUIDEWIRE libmpfr-4.lib libmpfr-4.dll)
 
 INSTALL(TARGETS GUIDEWIRE
-    RUNTIME DESTINATION lib
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION lib
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
 )

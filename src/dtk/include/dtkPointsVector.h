@@ -19,118 +19,88 @@
 
 #include "dtkConfig.h"
 
-#include <memory>
 #include "dtkPoints.h"
+#include <memory>
 
-namespace dtk
-{
-	class dtkPointsVector: public dtkPoints
-	{
-	public:
-		typedef std::shared_ptr<dtkPointsVector> Ptr;
+namespace dtk {
+class dtkPointsVector : public dtkPoints {
+public:
+  typedef std::shared_ptr<dtkPointsVector> Ptr;
 
-		static dtkPointsVector::Ptr New()
-		{
-			return dtkPointsVector::Ptr(new dtkPointsVector());
-		}
+  static dtkPointsVector::Ptr New() {
+    return dtkPointsVector::Ptr(new dtkPointsVector());
+  }
 
-		static dtkPointsVector::Ptr New(size_t size)
-		{
-			return dtkPointsVector::Ptr(new dtkPointsVector(size));
-		}
+  static dtkPointsVector::Ptr New(size_t size) {
+    return dtkPointsVector::Ptr(new dtkPointsVector(size));
+  }
 
-		static dtkPointsVector::Ptr New(const std::vector<GK::Point3> &coords)
-		{
-			return dtkPointsVector::Ptr(new dtkPointsVector(coords));
-		}
+  static dtkPointsVector::Ptr New(const std::vector<GK::Point3> &coords) {
+    return dtkPointsVector::Ptr(new dtkPointsVector(coords));
+  }
 
-	public:
-		inline const GK::Point3& GetPoint(dtkID id) const
-		{
-            //dtkAssert(id < mCoords.size(), OUT_OF_RANGE);
-            //assert( id < mCoords.size() );
-			return mCoords[id];
-		}
+public:
+  inline const GK::Point3 &GetPoint(dtkID id) const {
+    // dtkAssert(id < mCoords.size(), OUT_OF_RANGE);
+    // assert( id < mCoords.size() );
+    return mCoords[id];
+  }
 
-		inline bool SetPoint(dtkID id, const GK::Point3 &coord)
-		{
-			if (id < mCoords.size())
-			{
-				mCoords[id] = coord;
-				return true;
-			}
-			else
-			{
-				//expand the vector
-				mCoords.resize(id + 1);
-				mCoords[id] = coord;
-				return true;
-			}
-		}
+  inline bool SetPoint(dtkID id, const GK::Point3 &coord) {
+    if (id < mCoords.size()) {
+      mCoords[id] = coord;
+      return true;
+    } else {
+      // expand the vector
+      mCoords.resize(id + 1);
+      mCoords[id] = coord;
+      return true;
+    }
+  }
 
-		inline void InsertPoint(dtkID id, const GK::Point3 & coord)
-		{
-			dtkAssert(id <= mCoords.size() && id >= 0);
-			mCoords.insert(mCoords.begin() + id, coord);
-		}
+  inline void InsertPoint(dtkID id, const GK::Point3 &coord) {
+    dtkAssert(id <= mCoords.size() && id >= 0);
+    mCoords.insert(mCoords.begin() + id, coord);
+  }
 
-		inline void DeletePoint(dtkID id)
-		{
-			dtkAssert(id >=0 && id < mCoords.size());
-			mCoords.erase(mCoords.begin() + id);
-		}
+  inline void DeletePoint(dtkID id) {
+    dtkAssert(id >= 0 && id < mCoords.size());
+    mCoords.erase(mCoords.begin() + id);
+  }
 
-		size_t GetNumberOfPoints() const
-		{
-			return mCoords.size();
-		}
+  size_t GetNumberOfPoints() const { return mCoords.size(); }
 
-		dtkID GetMaxID() const
-		{
-			return static_cast<dtkID>(mCoords.size() - 1);
-		}
+  dtkID GetMaxID() const { return static_cast<dtkID>(mCoords.size() - 1); }
 
-		void Begin() const
-		{
-			mCurPos = 0;
-		}
+  void Begin() const { mCurPos = 0; }
 
-		bool Next(dtkID &id, GK::Point3 &coord) const
-		{
-			bool retVal = false;
+  bool Next(dtkID &id, GK::Point3 &coord) const {
+    bool retVal = false;
 
-			if (mCurPos < mCoords.size())
-			{
-				id = static_cast<dtkID>(mCurPos);
-				coord = mCoords[mCurPos++];
-				retVal = true;
-			}
-			
-			return retVal;
-		}
+    if (mCurPos < mCoords.size()) {
+      id = static_cast<dtkID>(mCurPos);
+      coord = mCoords[mCurPos++];
+      retVal = true;
+    }
 
-	private:
-		dtkPointsVector()
-		{
-			//nothing.
-		}
+    return retVal;
+  }
 
-		dtkPointsVector(size_t size)
-		{
-			mCoords.resize(size);
-		}
+private:
+  dtkPointsVector() {
+    // nothing.
+  }
 
-		dtkPointsVector(const std::vector<GK::Point3> &coords)
-		{
-			mCoords = coords;
-		}
+  dtkPointsVector(size_t size) { mCoords.resize(size); }
 
-	private:
-		std::vector<GK::Point3> mCoords;
+  dtkPointsVector(const std::vector<GK::Point3> &coords) { mCoords = coords; }
 
-		//MCurPos's value is modified all the time, even in a const member function.
-		mutable size_t mCurPos;
-	};
-}
+private:
+  std::vector<GK::Point3> mCoords;
 
-#endif //DTK_POINTSVECTOR_H
+  // MCurPos's value is modified all the time, even in a const member function.
+  mutable size_t mCurPos;
+};
+} // namespace dtk
+
+#endif // DTK_POINTSVECTOR_H

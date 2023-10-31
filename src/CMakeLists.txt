@@ -54,7 +54,7 @@ add_library(${PROJECT_NAME}-shared SHARED
         ${lib_src}
 )
 
-target_include_directories(${PROJECT_NAME}-shared PRIVATE 
+target_include_directories(${PROJECT_NAME}-shared PRIVATE
         $<BUILD_INTERFACE:
         ${PROJECT_SOURCE_DIR}/src/dtk/include
         ${PROJECT_SOURCE_DIR}/src/math/include
@@ -77,7 +77,7 @@ add_library(${PROJECT_NAME}-static STATIC
         ${lib_src}
 )
 
-target_include_directories(${PROJECT_NAME}-static PRIVATE 
+target_include_directories(${PROJECT_NAME}-static PRIVATE
         $<BUILD_INTERFACE:
         ${PROJECT_SOURCE_DIR}/src/dtk/include
         ${PROJECT_SOURCE_DIR}/src/math/include
@@ -85,7 +85,7 @@ target_include_directories(${PROJECT_NAME}-static PRIVATE
         >
 
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
-        
+
 )
 
 target_link_libraries(${PROJECT_NAME}-static PRIVATE

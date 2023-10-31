@@ -17,78 +17,66 @@
 #ifndef DTK_PHYSMASSSPRINGCOLLISIONRESPONSE_H
 #define DTK_PHYSMASSSPRINGCOLLISIONRESPONSE_H
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
-#include "dtkPhysMassSpring.h"
 #include "dtkIntersectTest.h"
-#include <vector>
+#include "dtkPhysMassSpring.h"
 #include <map>
+#include <vector>
 
-namespace dtk
-{
-	class dtkPhysMassSpringCollisionResponse : public boost::noncopyable
-	{
-    public:
-	    enum ResponseType
-	    {
-		    TRIANGLE_SEGMENT = 0, /**< 三角形与线段相交 */
-		    SEGMENT_SEGMENT, /**< 线段与线段相交 */
-		    TRIANGLE_TRIANGLE /**< 三角形与三角形相交 */
-	    };
-	public:
-		typedef std::shared_ptr< dtkPhysMassSpringCollisionResponse > Ptr;
+namespace dtk {
+class dtkPhysMassSpringCollisionResponse : public boost::noncopyable {
+public:
+  enum ResponseType {
+    TRIANGLE_SEGMENT = 0, /**< 三角形与线段相交 */
+    SEGMENT_SEGMENT,      /**< 线段与线段相交 */
+    TRIANGLE_TRIANGLE     /**< 三角形与三角形相交 */
+  };
 
-		static Ptr New() 
-		{
-			return Ptr( new dtkPhysMassSpringCollisionResponse() );
-		}
+public:
+  typedef std::shared_ptr<dtkPhysMassSpringCollisionResponse> Ptr;
 
-	public:
-		~dtkPhysMassSpringCollisionResponse();
+  static Ptr New() { return Ptr(new dtkPhysMassSpringCollisionResponse()); }
 
-        void Update( double timeslice, 
-                std::vector<dtkIntersectTest::IntersectResult::Ptr>& intersectResults,
-                const std::vector< dtkInterval<int> >& avoid_1,
-                const std::vector< dtkInterval<int> >& avoid_2,
-				double stiffness );
+public:
+  ~dtkPhysMassSpringCollisionResponse();
 
-        void AddPierceSegment( dtkID majorID, dtkID minorID )
-        {
-            mPierceSegments.push_back( dtkID2( majorID, minorID ) );
-        }
+  void
+  Update(double timeslice,
+         std::vector<dtkIntersectTest::IntersectResult::Ptr> &intersectResults,
+         const std::vector<dtkInterval<int>> &avoid_1,
+         const std::vector<dtkInterval<int>> &avoid_2, double stiffness);
 
-        void SetMassSpring( dtkID i, dtkPhysMassSpring::Ptr massSpring )
-        {
-            mMassSprings[i] = massSpring;
-        }
+  void AddPierceSegment(dtkID majorID, dtkID minorID) {
+    mPierceSegments.push_back(dtkID2(majorID, minorID));
+  }
 
-		void RemoveMassSpring( dtkID i )
-		{
-			mMassSprings.erase( i );
-		}
+  void SetMassSpring(dtkID i, dtkPhysMassSpring::Ptr massSpring) {
+    mMassSprings[i] = massSpring;
+  }
 
-        dtkPhysMassSpring::Ptr GetMassSpring( dtkID majorID )
-        {
-            assert( mMassSprings.find( majorID ) != mMassSprings.end() );
-            return mMassSprings[majorID];
-        }
+  void RemoveMassSpring(dtkID i) { mMassSprings.erase(i); }
 
-        std::vector< dtkIntersectTest::IntersectResult::Ptr >& GetPiercingResults()
-        {
-            return mPiercingResults;
-        }
+  dtkPhysMassSpring::Ptr GetMassSpring(dtkID majorID) {
+    assert(mMassSprings.find(majorID) != mMassSprings.end());
+    return mMassSprings[majorID];
+  }
 
-    private:
-		dtkPhysMassSpringCollisionResponse();
+  std::vector<dtkIntersectTest::IntersectResult::Ptr> &GetPiercingResults() {
+    return mPiercingResults;
+  }
 
-    private:
-        std::map< dtkID, dtkPhysMassSpring::Ptr > mMassSprings;
+private:
+  dtkPhysMassSpringCollisionResponse();
 
-        std::vector< dtkID2 > mPierceSegments;
+private:
+  std::map<dtkID, dtkPhysMassSpring::Ptr> mMassSprings;
 
-        std::vector< dtkIntersectTest::IntersectResult::Ptr > mPiercingResults;
-	};
-}
+  std::vector<dtkID2> mPierceSegments;
+
+  std::vector<dtkIntersectTest::IntersectResult::Ptr> mPiercingResults;
+};
+} // namespace dtk
 
 #endif

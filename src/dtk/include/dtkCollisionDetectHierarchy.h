@@ -16,136 +16,109 @@
 #ifndef DTK_COLLISIONDETECTHIERARCHY_H
 #define DTK_COLLISIONDETECTHIERARCHY_H
 
-#include <memory>
 #include <boost/utility.hpp>
+#include <memory>
 
-#include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>
+#include <boost/thread/thread.hpp>
 
 #include "dtkConfig.h"
 #include "dtkIDTypes.h"
 
 #include "dtkCollisionDetectBasic.h"
-#include "dtkStaticTriangleMesh.h"
 #include "dtkStaticTetraMesh.h"
+#include "dtkStaticTriangleMesh.h"
 
-namespace dtk
-{
-	class dtkCollisionDetectHierarchy: public boost::noncopyable
-	{
-	public:
+namespace dtk {
+class dtkCollisionDetectHierarchy : public boost::noncopyable {
+public:
+  enum InsertOption { SURFACE, INTERIOR };
+  typedef std::shared_ptr<dtkCollisionDetectHierarchy> Ptr;
 
-        enum InsertOption
-        {
-            SURFACE,
-            INTERIOR
-        };
-		typedef std::shared_ptr<dtkCollisionDetectHierarchy> Ptr;
+  typedef dtkCollisionDetectPrimitive Primitive;
 
-		typedef dtkCollisionDetectPrimitive Primitive;
+public:
+  virtual ~dtkCollisionDetectHierarchy();
 
-	public:
-		virtual ~dtkCollisionDetectHierarchy();
+  virtual void Build() = 0;
 
-        virtual void Build() = 0;
+  virtual void Rebuild() = 0;
 
-        virtual void Rebuild() = 0;
+  virtual void Update() = 0;
 
-        virtual void Update() = 0;
-        
-        void UpdateAllPrimitives();
-        
-        Primitive* InsertTriangle( dtkPoints::Ptr pts, dtkID3 ids );
+  void UpdateAllPrimitives();
 
-        Primitive* InsertSegment( dtkPoints::Ptr pts, dtkID2 ids );
+  Primitive *InsertTriangle(dtkPoints::Ptr pts, dtkID3 ids);
 
-		Primitive* InsertSphere( dtkPoints::Ptr pts, dtkID id );
+  Primitive *InsertSegment(dtkPoints::Ptr pts, dtkID2 ids);
 
-        void InsertTriangleMesh( dtkStaticTriangleMesh::Ptr triMesh, dtkID majorID, double extend = 0 );
+  Primitive *InsertSphere(dtkPoints::Ptr pts, dtkID id);
 
-        void InsertTetraMesh( dtkStaticTetraMesh::Ptr tetraMesh, dtkID majorID, InsertOption opt, double extend);
+  void InsertTriangleMesh(dtkStaticTriangleMesh::Ptr triMesh, dtkID majorID,
+                          double extend = 0);
 
-        void SetMaxLevel( size_t maxLevel );
+  void InsertTetraMesh(dtkStaticTetraMesh::Ptr tetraMesh, dtkID majorID,
+                       InsertOption opt, double extend);
 
-		void AutoSetMaxLevel();
+  void SetMaxLevel(size_t maxLevel);
 
-        void SetNumberOfThreads( size_t n );
+  void AutoSetMaxLevel();
 
-        inline Primitive* GetPrimitive( dtkID id )
-        {
-            assert( id < mPrimitives.size() );
+  void SetNumberOfThreads(size_t n);
 
-            return mPrimitives[id];
-        }
-        
-        inline size_t GetNumberOfPrimitives() const
-        {
-            return mPrimitives.size();
-        }
+  inline Primitive *GetPrimitive(dtkID id) {
+    assert(id < mPrimitives.size());
 
-        size_t GetNumberOfIntersectedPrimitives() const;
+    return mPrimitives[id];
+  }
 
-        inline const GK::BBox3& GetBox() const
-        {
-            return mBox;
-        }
+  inline size_t GetNumberOfPrimitives() const { return mPrimitives.size(); }
 
-        inline const GK::Point3& GetOrigin() const
-        {
-            return mOrigin;
-        }
+  size_t GetNumberOfIntersectedPrimitives() const;
 
-        inline dtkCollisionDetectNode* GetRoot()
-        {
-            return mRoot;
-        }
+  inline const GK::BBox3 &GetBox() const { return mBox; }
 
-        size_t GetNumberOfNodes() const
-        {
-            return mNodes.size();
-        }
+  inline const GK::Point3 &GetOrigin() const { return mOrigin; }
 
-        inline void AddNode( dtkCollisionDetectNode* node )
-        {
-            mNodes.push_back( node );
-        }
+  inline dtkCollisionDetectNode *GetRoot() { return mRoot; }
 
-        inline dtkCollisionDetectNode* GetNode( dtkID i )
-        {
-            return mNodes[i];
-        }
+  size_t GetNumberOfNodes() const { return mNodes.size(); }
 
-    protected:
-		dtkCollisionDetectHierarchy();
+  inline void AddNode(dtkCollisionDetectNode *node) { mNodes.push_back(node); }
 
-		void AddPrimitive( Primitive* primitive );
+  inline dtkCollisionDetectNode *GetNode(dtkID i) { return mNodes[i]; }
 
-        dtkCollisionDetectNode* mRoot; /**< 碰撞检测树根结点 */
-        
-        std::vector< dtkCollisionDetectNode* > mNodes;  /**< 当前层结点集 */
+protected:
+  dtkCollisionDetectHierarchy();
 
-        std::vector< Primitive* > mPrimitives; /**< 图元集 */
+  void AddPrimitive(Primitive *primitive);
 
-        GK::BBox3 mBox;  /**< AABB包围盒 */
+  dtkCollisionDetectNode *mRoot; /**< 碰撞检测树根结点 */
 
-        GK::Point3 mOrigin;  /**< 原点 */
+  std::vector<dtkCollisionDetectNode *> mNodes; /**< 当前层结点集 */
 
-        bool mLive;  /**< 碰撞检测更新线程是否运行 */
+  std::vector<Primitive *> mPrimitives; /**< 图元集 */
 
-		size_t mMaxLevel; /**< 最大层数 */
+  GK::BBox3 mBox; /**< AABB包围盒 */
 
-    private:
-        void _UpdateAllPrimitives_s();  /**< 单线程更新图元 */
+  GK::Point3 mOrigin; /**< 原点 */
 
-        void _UpdateAllPrimitives_mt(); /**< 多线程更新图元 */
+  bool mLive; /**< 碰撞检测更新线程是否运行 */
 
-    private:
-        size_t mNumberOfThreads;
+  size_t mMaxLevel; /**< 最大层数 */
 
-        boost::thread_group* mThreadGroup;
-        boost::barrier* mEnterBarrier;
-        boost::barrier* mExitBarrier;
-	};
-}
+private:
+  void _UpdateAllPrimitives_s(); /**< 单线程更新图元 */
 
-#endif //DTK_COLLISIONDETECTHIERARCHY_H
+  void _UpdateAllPrimitives_mt(); /**< 多线程更新图元 */
+
+private:
+  size_t mNumberOfThreads;
+
+  boost::thread_group *mThreadGroup;
+  boost::barrier *mEnterBarrier;
+  boost::barrier *mExitBarrier;
+};
+} // namespace dtk
+
+#endif // DTK_COLLISIONDETECTHIERARCHY_H
