@@ -28,11 +28,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         Boost::headers
         Boost::dynamic_linking
         CGAL
+        Eigen
         GLUT::GLUT
         glfw
         glm
-        Eigen
         OpenGL::GL
-        glut
-        GLU
+        OpenGL::GLU 
 )
