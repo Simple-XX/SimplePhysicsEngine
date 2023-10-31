@@ -29,9 +29,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         Boost::dynamic_linking
         CGAL
         Eigen
+        glut
         GLUT::GLUT
         glfw
         glm
         OpenGL::GL
         OpenGL::GLU 
 )
+
+message("GLUT_glut_LIBRARY: ${GLUT_glut_LIBRARY}")

@@ -12,15 +12,19 @@ project(
 
 enable_language(CXX)
 
-add_executable(system_test
-        main.cpp
-        display.cpp
-)
+# add_executable(system_test
+#         main.cpp
+#         display.cpp
+# )
 
-target_compile_options(system_test PRIVATE
-        ${DEFAULT_TEST_COMPILE_OPTIONS}
-)
+# target_compile_options(system_test PRIVATE
+#         ${DEFAULT_TEST_COMPILE_OPTIONS}
+# )
 
-target_link_options(system_test PRIVATE
-        ${DEFAULT_TEST_LINK_OPTIONS}
-)
+# target_link_options(system_test PRIVATE
+#         ${DEFAULT_TEST_LINK_OPTIONS}
+# )
+
+add_subdirectory(demo2d)
+# add_subdirectory(demo3d)
+# add_subdirectory(demo_old)

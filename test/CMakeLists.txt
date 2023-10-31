@@ -38,9 +38,9 @@ link_libraries(
         SimplePhysicsEngine-static
 )
 
-#add_subdirectory(unit_test)
+add_subdirectory(unit_test)
 #add_subdirectory(integration_test)
-#add_subdirectory(system_test)
+add_subdirectory(system_test)
 
 add_coverage_target(
         DEPENDS unit_test

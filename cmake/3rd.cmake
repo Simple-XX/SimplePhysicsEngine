@@ -82,6 +82,8 @@ CPMAddPackage(
 )
 
 # https://github.com/g-truc/glm
+set(gRPC_INSTALL ON CACHE BOOL "")
+set(gRPC_BUILD_TESTS OFF CACHE BOOL "")
 CPMAddPackage(
         NAME glm
         GITHUB_REPOSITORY g-truc/glm

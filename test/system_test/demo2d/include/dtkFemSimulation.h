@@ -6,7 +6,14 @@
  */
 
 
-#include <engine/physics/dtkJoint.h>
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <unordered_map>
+
+#include <Eigen/Dense>
+
+#include <dtkJoint.h>
 
 #include "dtkScene.h"
 #include "dtkMesh.h"
@@ -14,12 +21,6 @@
 #include "dtkCollisionPair.h"
 #include "Constants.h"
 #include "SPHSolver.h"
-
-#include <Eigen/Dense>
-#include <iostream>
-#include <vector>
-#include <memory>
-#include <unordered_map>
 
 using namespace std;
 using namespace Eigen;
