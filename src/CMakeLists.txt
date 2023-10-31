@@ -45,7 +45,6 @@ set(lib_src
         dtk/dtkStaticTriangleMeshWriter.cpp
 
         math/dtkMatrixOp.cpp
-        math/dtkMatrixOP.h
 
         physics/dtkJoint.cpp
         physics/dtkRigidBody.cpp
@@ -57,13 +56,12 @@ add_library(${PROJECT_NAME}-shared SHARED
 
 target_include_directories(${PROJECT_NAME}-shared PRIVATE 
         $<BUILD_INTERFACE:
-        ${PROJECT_SOURCE_DIR}/src/dtk
-        ${PROJECT_SOURCE_DIR}/src/math
-        ${PROJECT_SOURCE_DIR}/src/physics
+        ${PROJECT_SOURCE_DIR}/src/dtk/include
+        ${PROJECT_SOURCE_DIR}/src/math/include
+        ${PROJECT_SOURCE_DIR}/src/physics/include
         >
 
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
-        
 )
 
 target_link_libraries(${PROJECT_NAME}-shared PRIVATE
@@ -81,9 +79,9 @@ add_library(${PROJECT_NAME}-static STATIC
 
 target_include_directories(${PROJECT_NAME}-static PRIVATE 
         $<BUILD_INTERFACE:
-        ${PROJECT_SOURCE_DIR}/src/dtk
-        ${PROJECT_SOURCE_DIR}/src/math
-        ${PROJECT_SOURCE_DIR}/src/physics
+        ${PROJECT_SOURCE_DIR}/src/dtk/include
+        ${PROJECT_SOURCE_DIR}/src/math/include
+        ${PROJECT_SOURCE_DIR}/src/physics/include
         >
 
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
@@ -109,7 +107,7 @@ packageProject(
         # 生成文件目录
         BINARY_DIR ${PROJECT_BINARY_DIR}
         # 头文件路径
-        INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/dtk ${PROJECT_SOURCE_DIR}/src/math ${PROJECT_SOURCE_DIR}/src/physics
+        INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/dtk/include ${PROJECT_SOURCE_DIR}/src/math/include ${PROJECT_SOURCE_DIR}/src/physics/include
         # 与 target 的 INSTALL_INTERFACE 一致
         INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
         # 头文件过滤
