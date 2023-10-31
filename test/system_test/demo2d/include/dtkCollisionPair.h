@@ -5,7 +5,9 @@
 
 #include <memory>
 #include <array>
-#include <engine/physics/dtkRigidBody.h>
+
+#include <dtkRigidBody.h>
+
 #include "dtkMesh.h"
 
 namespace dtk {

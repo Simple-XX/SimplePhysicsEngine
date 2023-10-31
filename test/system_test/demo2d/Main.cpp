@@ -1,7 +1,9 @@
-﻿#include "GL/freeglut.h"
+﻿
 #include <chrono>
 #include <cmath>
 #include <iostream>
+
+#include "GL/freeglut.h"
 
 #include "dtkScene.h"
 #include "dtkFemSimulation.h"

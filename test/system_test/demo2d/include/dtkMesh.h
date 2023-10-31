@@ -5,7 +5,8 @@
 
 #include <Eigen/Dense>
 
-#include <engine/physics/dtkRigidBody.h>
+#include <dtkRigidBody.h>
+
 #include "dtkObject.h"
 
 using namespace Eigen;

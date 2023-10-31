@@ -13,8 +13,12 @@ project(
 enable_testing()
 include(GoogleTest)
 
+enable_language(CXX)
+
 include_directories(
-        ${SimplePhysicsEngine_SOURCE_DIR}/src/include
+        ${SimplePhysicsEngine_SOURCE_DIR}/src/dtk
+        ${SimplePhysicsEngine_SOURCE_DIR}/src/math
+        ${SimplePhysicsEngine_SOURCE_DIR}/src/physics
 )
 
 list(APPEND DEFAULT_TEST_COMPILE_OPTIONS
@@ -35,7 +39,7 @@ link_libraries(
         ${DEFAULT_LINK_LIB}
         gtest_main
         ${glog_LIBRARIES}
-        SimplePhysicsEngine-static
+        SimplePhysicsEngine-shared
 )
 
 add_subdirectory(unit_test)

@@ -6,35 +6,26 @@
 
 project(demo2d)
 
-file(GLOB_RECURSE demo2d_FILES
-        "${PROJECT_SOURCE_DIR}/include/*.h"
-        "${PROJECT_SOURCE_DIR}/src/*.cpp"
-)
-
 add_executable(${PROJECT_NAME}
-        ${demo2d_FILES}
+        Constants.cpp
+        dtkCollisionPair.cpp
+        dtkFemSimulation.cpp
+        dtkMesh.cpp
+        dtkObject.cpp
+        dtkScene.cpp
+        Grid.cpp
+        Main.cpp
+        Particle.cpp
+        SPHSolver.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
-        ../
-        ../engine/dtk
-        ../engine/math
-        ../engine/physics
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-        dtk
-        Boost::headers
-        Boost::dynamic_linking
-        CGAL
         Eigen
-        glut
         GLUT::GLUT
-        glfw
         glm
         OpenGL::GL
-        OpenGL::GLU 
 )
-
-message("GLUT_glut_LIBRARY: ${GLUT_glut_LIBRARY}")
