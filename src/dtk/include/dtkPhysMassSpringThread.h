@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSMASSSPRINGTHREAD_H
-#define DTK_PHYSMASSSPRINGTHREAD_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGTHREAD_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGTHREAD_H
 
 #include "dtkPhysTetraMassSpring.h"
 #include <boost/utility.hpp>
@@ -108,4 +108,4 @@ private:
 };
 }; // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGTHREAD_H */

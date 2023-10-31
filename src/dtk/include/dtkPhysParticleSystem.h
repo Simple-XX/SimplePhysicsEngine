@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSPARTICLESYSTEM_H
-#define DTK_PHYSPARTICLESYSTEM_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSPARTICLESYSTEM_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSPARTICLESYSTEM_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -111,4 +111,4 @@ private:
 };
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSPARTICLESYSTEM_H */

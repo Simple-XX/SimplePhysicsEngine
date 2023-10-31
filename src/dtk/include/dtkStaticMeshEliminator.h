@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_STATICMESHELIMINATOR_H
-#define DTK_STATICMESHELIMINATOR_H
+#ifndef SIMPLEPHYSICSENGINE_DTKSTATICMESHELIMINATOR_H
+#define SIMPLEPHYSICSENGINE_DTKSTATICMESHELIMINATOR_H
 #include "dtkCollisionDetectHierarchy.h"
 #include "dtkIDTypes.h"
 #include "dtkPhysTetraMassSpring.h"
@@ -144,4 +144,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_STATICMESHELIMINATOR_H
+#endif /* SIMPLEPHYSICSENGINE_DTKSTATICMESHELIMINATOR_H */

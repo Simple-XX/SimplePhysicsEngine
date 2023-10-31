@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_IDTYPES_H
-#define DTK_IDTYPES_H
+#ifndef SIMPLEPHYSICSENGINE_DTKIDTYPES_H
+#define SIMPLEPHYSICSENGINE_DTKIDTYPES_H
 
 #include "dtkAssert.h"
 #include "dtkConfig.h"
@@ -240,4 +240,4 @@ inline std::ostream &operator<<(std::ostream &out, const dtkID4 &id) {
 }
 } // namespace dtk
 
-#endif // DTK_IDTYPES_H
+#endif /* SIMPLEPHYSICSENGINE_DTKIDTYPES_H */

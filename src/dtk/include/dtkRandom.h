@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_RANDOM_H
-#define DTK_RANDOM_H
+#ifndef SIMPLEPHYSICSENGINE_DTKRANDOM_H
+#define SIMPLEPHYSICSENGINE_DTKRANDOM_H
 
 namespace dtk {
 // Get a random int x which between a <= x < b
@@ -33,4 +33,4 @@ inline double dtkRandomDouble() {
 }
 } // namespace dtk
 
-#endif // DTK_RANDOM_H
+#endif /* SIMPLEPHYSICSENGINE_DTKRANDOM_H */

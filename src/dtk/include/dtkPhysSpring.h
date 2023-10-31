@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef dtkPHYSSPRING_H
-#define dtkPHYSSPRING_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSSPRING_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSSPRING_H
 
 #include "dtkIDTypes.h"
 #include "dtkPhysMassPoint.h"
@@ -50,4 +50,4 @@ private:
 };
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSSPRING_H */

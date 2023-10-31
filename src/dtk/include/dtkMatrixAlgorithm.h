@@ -19,8 +19,8 @@
  include :	Determinant
                         cholesky decompression
 */
-#ifndef _DTK_MATRIX_ALGORITHM_
-#define _DTK_MATRIX_ALGORITHM_
+#ifndef SIMPLEPHYSICSENGINE_DTKMATRIXALGORITHM_H
+#define SIMPLEPHYSICSENGINE_DTKMATRIXALGORITHM_H
 
 #include <dtkConfig.h>
 
@@ -119,4 +119,4 @@ extern bool getEigen(const size_t &n, // degree of K & M
 } // namespace MatrixAlgo
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKMATRIXALGORITHM_H */

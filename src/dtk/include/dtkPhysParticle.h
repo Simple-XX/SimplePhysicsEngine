@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSPARTICLE_H
-#define DTK_PHYSPARTICLE_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSPARTICLE_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSPARTICLE_H
 
 #include "dtkGraphicsKernel.h"
 #include "dtkIDTypes.h"
@@ -91,4 +91,4 @@ private:
 };
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSPARTICLE_H */

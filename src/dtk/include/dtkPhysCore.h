@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSCORE_H
-#define DTK_PHYSCORE_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSCORE_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSCORE_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -399,4 +399,4 @@ public:
 };
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSCORE_H */

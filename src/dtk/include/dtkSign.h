@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_SIGN_H
-#define DTK_SIGN_H
+#ifndef SIMPLEPHYSICSENGINE_DTKSIGN_H
+#define SIMPLEPHYSICSENGINE_DTKSIGN_H
 
 #include <ostream>
 #include <string>
@@ -62,4 +62,4 @@ inline std::ostream &operator<<(std::ostream &stream, const dtkSign &sign) {
 }
 }; // namespace dtk
 
-#endif // DTK_SIGN_H
+#endif /* SIMPLEPHYSICSENGINE_DTKSIGN_H */

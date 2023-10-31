@@ -13,11 +13,11 @@
  * </table>
  */
 
-#ifndef DTK_GRAPHICS_H
-#define DTK_GRAPHICS_H
+#ifndef SIMPLEPHYSICSENGINE_DTKGRAPHICS_H
+#define SIMPLEPHYSICSENGINE_DTKGRAPHICS_H
 
 #include "dtkGraphicsKernel.h"
 #include "dtkGraphicsTools.h"
 #include "dtkIntersectTest.h"
 
-#endif // DTK_GRAPHICS_H
+#endif /* SIMPLEPHYSICSENGINE_DTKGRAPHICS_H */

@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSMASSSPRING_H
-#define DTK_PHYSMASSSPRING_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRING_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRING_H
 
 #ifdef DTK_CL
 #include <CL/cl.h>
@@ -284,4 +284,5 @@ protected:
 #endif
 };
 }; // namespace dtk
-#endif
+
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRING_H */

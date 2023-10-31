@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_IMPORTS_H
-#define DTK_IMPORTS_H
+#ifndef SIMPLEPHYSICSENGINE_DTKIMPORTS_H
+#define SIMPLEPHYSICSENGINE_DTKIMPORTS_H
 
 #include "dtkPointsImporter.h"
 #include "dtkStaticTetraMeshImporter.h"
@@ -84,4 +84,4 @@ void Import(dtkStaticTriangleMesh::Ptr &dst, IMPORTER_PTR &src) {
 }
 } // namespace dtk
 
-#endif // DTK_IMPORTS_H
+#endif /* SIMPLEPHYSICSENGINE_DTKIMPORTS_H */

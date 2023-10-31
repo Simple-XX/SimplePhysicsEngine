@@ -14,10 +14,10 @@
  * </table>
  */
 
-#ifndef DTK_CONFIG_H
-#define DTK_CONFIG_H
+#ifndef SIMPLEPHYSICSENGINE_DTKCONFIG_H
+#define SIMPLEPHYSICSENGINE_DTKCONFIG_H
 
-#ifndef NDEBUG
+#ifndef SIMPLEPHYSICSENGINE_NDEBUG
 //    #define DTK_DEBUG
 #endif // DEBUG
 
@@ -61,4 +61,4 @@ typedef unsigned long long dtkDWORD;
 const auto inf = std::numeric_limits<double>::infinity();
 }; // namespace dtk
 
-#endif // DTK_CONFIG_H
+#endif /* SIMPLEPHYSICSENGINE_DTKCONFIG_H */

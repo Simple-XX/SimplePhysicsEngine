@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_TXOP_H
-#define DTK_TXOP_H
+#ifndef SIMPLEPHYSICSENGINE_DTKTXOP_H
+#define SIMPLEPHYSICSENGINE_DTKTXOP_H
 
 #include <cassert>
 #include <cmath>
@@ -256,4 +256,4 @@ inline dtkT3<T> barycentricWeight(const dtkT3<T> &p0, const dtkT3<T> &p1,
 }
 } // namespace dtk
 
-#endif // DTK_TXOP_H
+#endif /* SIMPLEPHYSICSENGINE_DTKTXOP_H */

@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_POINTS_H
-#define DTK_POINTS_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPOINTS_H
+#define SIMPLEPHYSICSENGINE_DTKPOINTS_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -52,4 +52,4 @@ public:
 
 #include "dtkPointsVector.h"
 
-#endif // DTK_POINTS
+#endif /* SIMPLEPHYSICSENGINE_DTKPOINTS_H */

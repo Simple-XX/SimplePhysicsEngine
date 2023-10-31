@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_INTERSECTTEST_H
-#define DTK_INTERSECTTEST_H
+#ifndef SIMPLEPHYSICSENGINE_DTKINTERSECTTEST_H
+#define SIMPLEPHYSICSENGINE_DTKINTERSECTTEST_H
 
 #include "dtkGraphicsKernel.h"
 #include "dtkIDTypes.h"
@@ -143,4 +143,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_INTERSECTTEST_H
+#endif /* SIMPLEPHYSICSENGINE_DTKINTERSECTTEST_H */

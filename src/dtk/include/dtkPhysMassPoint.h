@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef dtkPHYSMASSPOINT_H
-#define dtkPHYSMASSPOINT_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSMASSPOINT_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSMASSPOINT_H
 
 #include "dtkGraphicsKernel.h"
 #include "dtkIDTypes.h"
@@ -279,4 +279,4 @@ public:
 };
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSMASSPOINT_H */

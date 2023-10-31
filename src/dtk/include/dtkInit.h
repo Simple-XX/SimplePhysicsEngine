@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_INIT_H
-#define DTK_INIT_H
+#ifndef SIMPLEPHYSICSENGINE_DTKINIT_H
+#define SIMPLEPHYSICSENGINE_DTKINIT_H
 
 namespace dtk {
 
@@ -33,4 +33,4 @@ extern bool dtkInited;
 extern "C" void Init();
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKINIT_H */

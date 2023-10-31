@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_MATRIXOP_H
-#define DTK_MATRIXOP_H
+#ifndef SIMPLEPHYSICSENGINE_DTKMATRIXOP_H
+#define SIMPLEPHYSICSENGINE_DTKMATRIXOP_H
 
 #include <cassert>
 #include <cmath>
@@ -268,4 +268,4 @@ dtkMatrix22 rotate(double theta);
 #endif
 } // namespace dtk
 
-#endif // DTK_MATRIXOP_H
+#endif /* SIMPLEPHYSICSENGINE_DTKMATRIXOP_H */

@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_COLLISIONDETECTSTAGE_H
-#define DTK_COLLISIONDETECTSTAGE_H
+#ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTSTAGE_H
+#define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTSTAGE_H
 
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
@@ -199,4 +199,4 @@ inline std::ostream &operator<<(std::ostream &stream,
 }
 } // namespace dtk
 
-#endif // DTK_COLLISIONDETECTSTAGE_H
+#endif /* SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTSTAGE_H */

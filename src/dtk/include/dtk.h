@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_H
-#define DTK_H
+#ifndef SIMPLEPHYSICSENGINE_DTK_H
+#define SIMPLEPHYSICSENGINE_DTK_H
 /*!
  * \mainpage Deformation Toolkit Documentation
  *
@@ -272,4 +272,4 @@
 
 #include "dtkInit.h"
 
-#endif // DTK_H
+#endif /* SIMPLEPHYSICSENGINE_DTK_H */

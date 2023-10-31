@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_COLLISIONDETECTPRIMITIVE_H
-#define DTK_COLLISIONDETECTPRIMITIVE_H
+#ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTPRIMITIVE_H
+#define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTPRIMITIVE_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -136,4 +136,4 @@ inline std::ostream &operator<<(std::ostream &stream,
 }
 } // namespace dtk
 
-#endif // DTK_COLLISIONDETECTPRIMITIVE_H
+#endif /* SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTPRIMITIVE_H */

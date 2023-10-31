@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_IO_H
-#define DTK_IO_H
+#ifndef SIMPLEPHYSICSENGINE_DTKIO_H
+#define SIMPLEPHYSICSENGINE_DTKIO_H
 
 #include "dtkPointsReader.h"
 #include "dtkPointsWriter.h"
@@ -29,4 +29,4 @@
 // #include "dtkGraphReader.h"
 // #include "dtkGraphWriter.h"
 
-#endif // DTK_IO_H
+#endif /* SIMPLEPHYSICSENGINE_DTKIO_H */

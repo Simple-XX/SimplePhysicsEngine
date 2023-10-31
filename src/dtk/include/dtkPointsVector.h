@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_POINTSVECTOR_H
-#define DTK_POINTSVECTOR_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPOINTSVECTOR_H
+#define SIMPLEPHYSICSENGINE_DTKPOINTSVECTOR_H
 
 #include "dtkConfig.h"
 
@@ -103,4 +103,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_POINTSVECTOR_H
+#endif /* SIMPLEPHYSICSENGINE_DTKPOINTSVECTOR_H */

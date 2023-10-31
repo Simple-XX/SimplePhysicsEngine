@@ -29,8 +29,8 @@
  * </table>
  */
 
-#ifndef DTK_POINTSWRITER_H
-#define DTK_POINTSWRITER_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPOINTSWRITER_H
+#define SIMPLEPHYSICSENGINE_DTKPOINTSWRITER_H
 
 #include <boost/utility.hpp>
 #include <cstring>
@@ -64,4 +64,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_POINTSWRITER_H
+#endif /* SIMPLEPHYSICSENGINE_DTKPOINTSWRITER_H */

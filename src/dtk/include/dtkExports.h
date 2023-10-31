@@ -14,7 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_EXPORTS
+#ifndef SIMPLEPHYSICSENGINE_DTKEXPORTS_H
+#define SIMPLEPHYSICSENGINE_DTKEXPORTS_H
 
 #include <vector>
 
@@ -68,4 +69,4 @@ inline void Export(const EXPORTER_PTR &dst, dtkStaticTriangleMesh::Ptr src) {
 }
 } // namespace dtk
 
-#endif // DTK_EXPORTS
+#endif /* SIMPLEPHYSICSENGINE_DTKEXPORTS_H */

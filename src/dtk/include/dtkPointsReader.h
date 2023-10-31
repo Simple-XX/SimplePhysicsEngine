@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_POINTSREADER_H
-#define DTK_POINTSREADER_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPOINTSREADER_H
+#define SIMPLEPHYSICSENGINE_DTKPOINTSREADER_H
 
 #include "dtkPoints.h"
 
@@ -43,4 +43,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_POINTSREADER_H
+#endif /* SIMPLEPHYSICSENGINE_DTKPOINTSREADER_H */

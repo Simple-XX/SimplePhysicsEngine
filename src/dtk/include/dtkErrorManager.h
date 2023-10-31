@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_ERRORMANAGER_H
-#define DTK_ERRORMANAGER_H
+#ifndef SIMPLEPHYSICSENGINE_DTKERRORMANAGER_H
+#define SIMPLEPHYSICSENGINE_DTKERRORMANAGER_H
 
 // STL headers
 #include <map>
@@ -65,4 +65,4 @@ private:
 extern dtkErrorManager &dtkErrMgr;
 } // namespace dtk
 
-#endif // DTK_ERRORMANAGER_H
+#endif /* SIMPLEPHYSICSENGINE_DTKERRORMANAGER_H */

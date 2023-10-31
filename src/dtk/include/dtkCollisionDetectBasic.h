@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_DTKCOLLISIONDETECTBASIC_H
-#define DTK_DTKCOLLISIONDETECTBASIC_H
+#ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTBASIC_H
+#define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTBASIC_H
 
 #include "dtkCollisionDetectNode.h"
 #include "dtkCollisionDetectPrimitive.h"
@@ -60,4 +60,4 @@ public:
 typedef dtkCollisionDetectBasic CDBasic;
 }; // namespace dtk
 
-#endif // DTK_DTKCOLLISIONDETECTBASIC_H
+#endif /* SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTBASIC_H */

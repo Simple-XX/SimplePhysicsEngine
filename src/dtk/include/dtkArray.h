@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_ARRAY_H
-#define DTK_ARRAY_H
+#ifndef SIMPLEPHYSICSENGINE_DTKARRAY_H
+#define SIMPLEPHYSICSENGINE_DTKARRAY_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -66,4 +66,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_ARRAY_H
+#endif /* SIMPLEPHYSICSENGINE_DTKARRAY_H */

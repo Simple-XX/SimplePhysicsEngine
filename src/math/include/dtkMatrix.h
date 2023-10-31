@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_MATRIX_H
-#define DTK_MATRIX_H
+#ifndef SIMPLEPHYSICSENGINE_DTKMATRIX_H
+#define SIMPLEPHYSICSENGINE_DTKMATRIX_H
 
 #include <cassert>
 #include <vector>
@@ -317,4 +317,4 @@ typedef glm::mat4x4 dtkMatrix44;
 
 #include "dtkMatrixOP.h"
 
-#endif // DTK_MATRIX_H
+#endif /* SIMPLEPHYSICSENGINE_DTKMATRIX_H */

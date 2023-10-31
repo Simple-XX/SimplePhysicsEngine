@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_ERROR_H
-#define DTK_ERROR_H
+#ifndef SIMPLEPHYSICSENGINE_DTKERROR_H
+#define SIMPLEPHYSICSENGINE_DTKERROR_H
 
 #include <cassert>
 
@@ -53,4 +53,4 @@ enum dtkError {
 };
 } // namespace dtk
 
-#endif // DTK_ERROR_H
+#endif /* SIMPLEPHYSICSENGINE_DTKERROR_H */

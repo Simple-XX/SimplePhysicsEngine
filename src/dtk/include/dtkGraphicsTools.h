@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_GRAPHICSTOOLS_H
-#define DTK_GRAPHICSTOOLS_H
+#ifndef SIMPLEPHYSICSENGINE_DTKGRAPHICSTOOLS_H
+#define SIMPLEPHYSICSENGINE_DTKGRAPHICSTOOLS_H
 
 #include "dtkPoints.h"
 
@@ -64,4 +64,4 @@ extern int Inclusion_TetraPoint(const dtkFloat3 &pt, const dtkFloat3 &pa,
                                 dtkFloat3 &pb, dtkFloat3 &pc, dtkFloat3 &pd);
 } // namespace dtk
 
-#endif // DTK_GRAPHICSTOOLS_H
+#endif /* SIMPLEPHYSICSENGINE_DTKGRAPHICSTOOLS_H */

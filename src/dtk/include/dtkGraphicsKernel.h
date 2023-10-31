@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_GRAPHICSKERNEL_H
-#define DTK_GRAPHICSKERNEL_H
+#ifndef SIMPLEPHYSICSENGINE_DTKGRAPHICSKERNEL_H
+#define SIMPLEPHYSICSENGINE_DTKGRAPHICSKERNEL_H
 
 #include "dtkConfig.h"
 
@@ -340,4 +340,4 @@ public:
 typedef dtkGraphicsKernel GK;
 }; // namespace dtk
 
-#endif // DTK_GRAPHICSKERNELCGAL_H
+#endif /* SIMPLEPHYSICSENGINE_DTKGRAPHICSKERNEL_H */

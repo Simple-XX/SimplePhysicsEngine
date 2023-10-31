@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_TX_H
-#define DTK_TX_H
+#ifndef SIMPLEPHYSICSENGINE_DTKTX_H
+#define SIMPLEPHYSICSENGINE_DTKTX_H
 
 #include "dtkConfig.h"
 
@@ -121,4 +121,4 @@ typedef dtkT4<double> dtkDouble4;
 #include "dtkTxIO.h"
 #include "dtkTxOP.h"
 
-#endif // DTK_TX_H
+#endif /* SIMPLEPHYSICSENGINE_DTKTX_H */

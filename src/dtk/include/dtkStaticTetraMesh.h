@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_STATICTETRAMESH_H
-#define DTK_STATICTETRAMESH_H
+#ifndef SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESH_H
+#define SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESH_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -298,4 +298,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_STATICTETRAMESH_H
+#endif /* SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESH_H */

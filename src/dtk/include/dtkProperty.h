@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PROPERTY_H
-#define DTK_PROPERTY_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPROPERTY_H
+#define SIMPLEPHYSICSENGINE_DTKPROPERTY_H
 
 #include <map>
 
@@ -92,4 +92,4 @@ private:
 };
 } // namespace dtk
 
-#endif // DTK_PROPERTY_H
+#endif /* SIMPLEPHYSICSENGINE_DTKPROPERTY_H */

@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSTETRAMASSSPRING_H
-#define DTK_PHYSTETRAMASSSPRING_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSTETRAMASSSPRING_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSTETRAMASSSPRING_H
 
 #include "dtkPhysMassSpring.h"
 #include "dtkStaticTetraMesh.h"
@@ -110,4 +110,4 @@ dtkT3<T> mForceD;
 };
 } // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSTETRAMASSSPRING_H */

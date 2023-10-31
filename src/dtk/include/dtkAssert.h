@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_ASSERT_H
-#define DTK_ASSERT_H
+#ifndef SIMPLEPHYSICSENGINE_DTKASSERT_H
+#define SIMPLEPHYSICSENGINE_DTKASSERT_H
 
 #include "dtkConfig.h"
 #include "dtkError.h"
@@ -42,4 +42,4 @@ inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR) {
 #endif // DTK_DEBUG
 } // namespace dtk
 
-#endif // DTK_ASSERT_H
+#endif /* SIMPLEPHYSICSENGINE_DTKASSERT_H */

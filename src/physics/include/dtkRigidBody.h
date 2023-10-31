@@ -21,8 +21,8 @@
  * @Last Modified time: 2021-08-06 19:37:12
  */
 
-#ifndef DTK_RIGIBODY_H
-#define DTK_RIGIBODY_H
+#ifndef SIMPLEPHYSICSENGINE_DTKRIGIBODY_H
+#define SIMPLEPHYSICSENGINE_DTKRIGIBODY_H
 
 #include <memory>
 #include <vector>
@@ -175,4 +175,4 @@ protected:
 
 } // namespace dtk
 
-#endif // DTK_RIGIBODY_H
+#endif /* SIMPLEPHYSICSENGINE_DTKRIGIBODY_H */

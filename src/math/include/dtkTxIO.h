@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_TXIO_H
-#define DTK_TXIO_H
+#ifndef SIMPLEPHYSICSENGINE_DTKTXIO_H
+#define SIMPLEPHYSICSENGINE_DTKTXIO_H
 
 // STL
 #include <iostream>
@@ -45,4 +45,4 @@ inline std::ostream &operator<<(std::ostream &stream, const dtkT4<T> &data) {
 }
 } // namespace dtk
 
-#endif // DTK_TXIO_H
+#endif /* SIMPLEPHYSICSENGINE_DTKTXIO_H */

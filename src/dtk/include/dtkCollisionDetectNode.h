@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_COLLISIONDETECTNODE_H
-#define DTK_COLLISIONDETECTNODE_H
+#ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTNODE_H
+#define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTNODE_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -91,4 +91,4 @@ protected:
 
 // #include "impl/dtkCollisionDetectNodeImpl.hpp"
 
-#endif // DTK_COLLISIONDETECTNODE_H
+#endif /* SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTNODE_H */

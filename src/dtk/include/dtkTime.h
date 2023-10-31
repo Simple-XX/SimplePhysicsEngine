@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_TIME_H
-#define DTK_TIME_H
+#ifndef SIMPLEPHYSICSENGINE_DTKTIME_H
+#define SIMPLEPHYSICSENGINE_DTKTIME_H
 
 #include <ctime>
 
@@ -50,4 +50,4 @@ inline dtkTime operator-(const dtkTime &lhs, const dtkTime &rhs) {
 }
 } // namespace dtk
 
-#endif // DTK_TIME
+#endif /* SIMPLEPHYSICSENGINE_DTKTIME_H */

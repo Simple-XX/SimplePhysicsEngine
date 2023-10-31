@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_UTILITY_H
-#define DTK_UTILITY_H
+#ifndef SIMPLEPHYSICSENGINE_DTKUTILITY_H
+#define SIMPLEPHYSICSENGINE_DTKUTILITY_H
 
 namespace dtk {
 // return true if low <= val <= up
@@ -50,4 +50,5 @@ template <class T> inline void Sort(T &a, T &b, T &c) {
     std::swap(b, c);
 }
 } // namespace dtk
-#endif // DTK_UTILITY_H
+
+#endif /* SIMPLEPHYSICSENGINE_DTKUTILITY_H */

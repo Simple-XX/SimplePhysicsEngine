@@ -21,8 +21,8 @@
  * @Last Modified time: 2021-09-03 16:35:44
  */
 
-#ifndef DTKSCENE_H
-#define DTKSCENE_H
+#ifndef SIMPLEPHYSICSENGINE_DTKSCENE_H
+#define SIMPLEPHYSICSENGINE_DTKSCENE_H
 
 namespace dtk {
 
@@ -54,4 +54,4 @@ public:
 };
 }; // namespace dtk
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKSCENE_H */

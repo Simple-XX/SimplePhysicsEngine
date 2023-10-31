@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTK_PHYSKNOTPLANNER_H
-#define DTK_PHYSKNOTPLANNER_H
+#ifndef SIMPLEPHYSICSENGINE_DTKPHYSKNOTPLANNER_H
+#define SIMPLEPHYSICSENGINE_DTKPHYSKNOTPLANNER_H
 
 #include <boost/utility.hpp>
 #include <memory>
@@ -92,4 +92,5 @@ public:
   dtkPhysMassSpringThread::Ptr mSutureThread; // 缝合线
 };
 }; // namespace dtk
-#endif
+
+#endif /* SIMPLEPHYSICSENGINE_DTKPHYSKNOTPLANNER_H */

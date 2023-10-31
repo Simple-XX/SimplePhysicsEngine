@@ -21,8 +21,8 @@
  * @Last Modified time: 2021-08-06 17:40:23
  */
 
-#ifndef DTK_JOINT_H
-#define DTK_JOINT_H
+#ifndef SIMPLEPHYSICSENGINE_DTKJOINT_H
+#define SIMPLEPHYSICSENGINE_DTKJOINT_H
 
 #include <memory>
 
@@ -97,4 +97,4 @@ protected:
 };
 } // namespace dtk
 
-#endif // DTK_JOINT_H
+#endif /* SIMPLEPHYSICSENGINE_DTKJOINT_H */
