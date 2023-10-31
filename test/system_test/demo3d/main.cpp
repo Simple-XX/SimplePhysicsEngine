@@ -196,7 +196,7 @@ void keyboard(unsigned char key, int x, int y) {
 			break;
 		}
 	case 27:
-		glutLeaveMainLoop();
+		// glutLeaveMainLoop();
 		break;
 	default:
 		break;
@@ -215,7 +215,7 @@ void gl_vis(int argc, char* argv[])
 	glutDisplayFunc(&display);
 	glutReshapeFunc(&reshape);
 	glutIdleFunc(&idle);
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+	// glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutMainLoop();
 }
 

@@ -20,27 +20,30 @@ add_executable(demo3d
         dtkScene.cpp
 )
 
-target_include_directories(demo3d PRIVATE
-        ./
-        ../
-        ../engine/dtk
-        ../engine/math
-        ../engine/physics
+target_include_directories(${PROJECT_NAME} PRIVATE
+        include
 )
 
-target_link_libraries(demo3d PRIVATE
-        dtk
-        Boost::headers
-        Boost::dynamic_linking
-        CGAL
-        GLUT::GLUT
-        glfw
-        glm
+target_link_libraries(${PROJECT_NAME} PRIVATE
         Eigen
+        GLUT::GLUT
+        glm
         OpenGL::GL
-        glut
-        GLU
 )
+
+# target_link_libraries(demo3d PRIVATE
+#         dtk
+#         Boost::headers
+#         Boost::dynamic_linking
+#         CGAL
+#         GLUT::GLUT
+#         glfw
+#         glm
+#         Eigen
+#         OpenGL::GL
+#         glut
+#         GLU
+# )
 
 target_compile_definitions(demo3d PRIVATE
 #        $<VTK_OPT:USE_VTK>

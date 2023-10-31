@@ -11,5 +11,5 @@ project(
 )
 
 add_subdirectory(demo2d)
-# add_subdirectory(demo3d)
+add_subdirectory(demo3d)
 # add_subdirectory(demo_old)
