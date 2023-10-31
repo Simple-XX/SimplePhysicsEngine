@@ -385,7 +385,8 @@ void keyboard(unsigned char key, int x, int y) {
 		world.set_pause(!world.is_pause());
 		break;
 	case 27:
-		glutLeaveMainLoop();
+		/// @todo not found
+		// glutLeaveMainLoop();
 		break;
 	default:
 		break;
@@ -418,7 +419,8 @@ int main(int argc, char* argv[]) {
 	glutSpecialFunc(&special);
 	glutKeyboardFunc(&keyboard);
 	glutIdleFunc(&idle);
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+	/// @todo not found
+	// glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutMainLoop();
 	return 0;
 }
