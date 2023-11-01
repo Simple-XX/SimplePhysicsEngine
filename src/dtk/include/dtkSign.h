@@ -59,7 +59,10 @@ inline std::ostream &operator<<(std::ostream &stream, const dtkSign &sign) {
   stream << (sign == dtkSign::ZERO
                  ? strZERO
                  : (sign == dtkSign::POSITIVE ? strPOSITIVE : strNEGATIVE));
+
+  return stream;
 }
+
 }; // namespace dtk
 
 #endif /* SIMPLEPHYSICSENGINE_DTKSIGN_H */

@@ -176,6 +176,9 @@ bool dtkPhysMassSpring::Update_s(double timeslice, ItrMethod method,
       UpdateMassPoints(timeslice, method, i);
       PostUpdate(method, i);
     }
+  default: {
+    // not handle
+  }
   }
 
   return true;

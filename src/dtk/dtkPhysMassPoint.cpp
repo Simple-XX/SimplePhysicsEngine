@@ -110,6 +110,9 @@ bool dtkPhysMassPoint::Update(double timeslice, ItrMethod method,
       }
       return true;
     }
+    default: {
+      // not handle
+    }
     }
   }
 
@@ -264,6 +267,9 @@ bool dtkPhysMassPoint::Update(double timeslice, ItrMethod method,
       mVel = mVel * mPointDamp;
     }
     break;
+  default: {
+    // not handle
+  }
   }
   return true;
 }
@@ -292,6 +298,9 @@ dtkT3<double> dtkPhysMassPoint::GetPosition(ItrMethod method, dtkID iteration) {
     const GK::Point3 &vec = mPts->GetPoint(mID);
     return dtkT3<double>(vec.x(), vec.y(), vec.z());
   }
+  default: {
+    // not handle
+  }
   }
   return dtkT3<double>(0.0, 0.0, 0.0);
 }
@@ -314,6 +323,9 @@ dtkT3<double> dtkPhysMassPoint::GetVel(ItrMethod method, dtkID iteration) {
     }
   case Collision:
     return mVel;
+  default: {
+    // not handle
+  }
   }
   return dtkT3<double>(0.0, 0.0, 0.0);
 }
@@ -332,6 +344,9 @@ dtkT3<double> dtkPhysMassPoint::GetAccel(ItrMethod method, dtkID iteration) {
     }
   case Collision:
     return mAccel;
+  default: {
+    // not handle
+  }
   }
   return dtkT3<double>(0.0, 0.0, 0.0);
 }
