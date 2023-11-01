@@ -1,1 +1,0 @@
-cmake .. -B WIN_VS2019 -G "Visual Studio 16 2019" -A x64 %* -D CMAKE_TOOLCHAIN_FILE="D:/Envs/vcpkg/scripts/buildsystems/vcpkg.cmake"
