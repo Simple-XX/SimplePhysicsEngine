@@ -20,11 +20,9 @@
 #include <cassert>
 #include <vector>
 
-#ifdef DTK_GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#endif
 
 #include "dtkConfig.h"
 namespace dtk {
@@ -301,7 +299,6 @@ typedef dtkMatrix<unsigned short, std::vector<unsigned short>> dtkMatrixUShort;
 typedef dtkMatrix<char, std::vector<char>> dtkMatrixChar;
 typedef dtkMatrix<unsigned char, std::vector<unsigned char>> dtkMatrixUChar;
 
-#ifdef DTK_GLM
 typedef glm::mat2x2 dtkMatrix22;
 typedef glm::mat2x3 dtkMatrix23;
 typedef glm::mat3x2 dtkMatrix32;
@@ -311,7 +308,6 @@ typedef glm::mat4x2 dtkMatrix42;
 typedef glm::mat3x4 dtkMatrix34;
 typedef glm::mat4x3 dtkMatrix43;
 typedef glm::mat4x4 dtkMatrix44;
-#endif
 
 } // namespace dtk
 
