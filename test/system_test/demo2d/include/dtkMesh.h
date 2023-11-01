@@ -53,16 +53,19 @@ public:
   void updateShell();
 
   inline int vertex(int i) {
+    int ret = 0;
     if (i >= 0 && i < n_node_x_ - 1)
-      return mesh(i, 0);
+      ret = mesh(i, 0);
     else if (i >= n_node_x_ - 1 && i < n_node_x_ + n_node_y_ - 2)
-      return mesh(n_node_x_ - 1, i - n_node_x_ + 1);
+      ret = mesh(n_node_x_ - 1, i - n_node_x_ + 1);
     else if (i >= n_node_x_ + n_node_y_ - 2 &&
              i < 2 * n_node_x_ + n_node_y_ - 3)
-      return mesh(2 * n_node_x_ + n_node_y_ - 3 - i, n_node_y_ - 1);
+      ret = mesh(2 * n_node_x_ + n_node_y_ - 3 - i, n_node_y_ - 1);
     else if (i >= 2 * n_node_x_ + n_node_y_ - 3 &&
              i < 2 * n_node_x_ + 2 * n_node_y_ - 4)
-      return mesh(0, 2 * n_node_x_ + 2 * n_node_y_ - 4 - i);
+      ret = mesh(0, 2 * n_node_x_ + 2 * n_node_y_ - 4 - i);
+    
+    return ret;
   }
 
   inline int mesh(int i, int j) { return i * n_node_y_ + j; }

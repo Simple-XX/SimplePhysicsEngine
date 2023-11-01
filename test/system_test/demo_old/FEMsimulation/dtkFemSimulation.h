@@ -11,11 +11,12 @@
 #include "../../src/dtk.h"
 #include "../../src/dtkGraphicsKernel.h"
 #include "dtkScene.h"
+
 #include <iostream>
 #include <vector>
 
 #include <Eigen/Dense>
-using namespace std;
+
 using namespace Eigen;
 using namespace dtk;
 
@@ -23,15 +24,15 @@ class dtkFemSimulation : public dtkScene {
 
 private:
   /* data */
-  vector<Eigen::Vector2f> points; //(n_node);  /**< 点的位置 */
+  std::vector<Eigen::Vector2f> points; //(n_node);  /**< 点的位置 */
 
-  vector<Vector2f> pre_points; //(n_node);  /**< 点之前的位置 */
+  std::vector<Vector2f> pre_points; //(n_node);  /**< 点之前的位置 */
 
-  vector<Eigen::Vector2f> points_force;
+  std::vector<Eigen::Vector2f> points_force;
 
-  vector<Vector2f> points_v; //(n_node); /**< 点的速度 */
+  std::vector<Vector2f> points_v; //(n_node); /**< 点的速度 */
 
-  vector<Eigen::Matrix2f> B; //(n_fem_element); /**< 微元本身长度的逆 */
+  std::vector<Eigen::Matrix2f> B; //(n_fem_element); /**< 微元本身长度的逆 */
 
   float total_energy;     /** 总势能 */
   float pre_total_energy; /** 之前的总势能 */

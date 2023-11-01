@@ -341,7 +341,7 @@ void reshape(int width, int height) {
 
 void mouse(int button, int state, int x, int y) {}
 
-void move(const dtk::dtkDouble2 &v) { world.move(v); }
+void move_pos(const dtk::dtkDouble2 &v) { world.move(v); }
 
 void keyboard(unsigned char key, int x, int y) {
   switch (key) {
@@ -374,16 +374,16 @@ void keyboard(unsigned char key, int x, int y) {
     test_sph();
     break;
   case 'w':
-    move(dtk::dtkDouble2(0, 1));
+    move_pos(dtk::dtkDouble2(0, 1));
     break;
   case 'a':
-    move(dtk::dtkDouble2(-1, 0));
+    move_pos(dtk::dtkDouble2(-1, 0));
     break;
   case 's':
-    move(dtk::dtkDouble2(0, -1));
+    move_pos(dtk::dtkDouble2(0, -1));
     break;
   case 'd':
-    move(dtk::dtkDouble2(1, 0));
+    move_pos(dtk::dtkDouble2(1, 0));
     break;
   case ' ':
     world.set_pause(!world.is_pause());
