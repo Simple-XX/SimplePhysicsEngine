@@ -39,7 +39,11 @@ link_libraries(
         ${DEFAULT_LINK_LIB}
         gtest_main
         ${glog_LIBRARIES}
-        SimplePhysicsEngine-static
+        Eigen
+        GLUT::GLUT
+        OpenGL::GL
+        OpenGL::GLU
+        SimplePhysicsEngine-shared
 )
 
 add_subdirectory(unit_test)

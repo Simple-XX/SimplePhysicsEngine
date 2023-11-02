@@ -15,11 +15,3 @@ add_executable(demo3d
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
 )
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-        Eigen
-        GLUT::GLUT
-        glm
-        OpenGL::GL
-        OpenGL::GLU
-)
