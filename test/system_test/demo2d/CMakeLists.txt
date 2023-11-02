@@ -28,4 +28,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
         GLUT::GLUT
         glm
         OpenGL::GL
+        OpenGL::GLU
 )

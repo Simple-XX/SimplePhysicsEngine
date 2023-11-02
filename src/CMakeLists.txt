@@ -50,29 +50,6 @@ set(lib_src
         physics/dtkRigidBody.cpp
 )
 
-add_library(${PROJECT_NAME}-shared SHARED
-        ${lib_src}
-)
-
-target_include_directories(${PROJECT_NAME}-shared PRIVATE
-        $<BUILD_INTERFACE:
-        ${PROJECT_SOURCE_DIR}/src/dtk/include
-        ${PROJECT_SOURCE_DIR}/src/math/include
-        ${PROJECT_SOURCE_DIR}/src/physics/include
-        >
-
-        $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
-)
-
-target_link_libraries(${PROJECT_NAME}-shared PRIVATE
-        ${DEFAULT_LINK_LIB}
-        Boost::boost
-        Boost::thread
-        CGAL
-        glfw
-        glm::glm
-)
-
 add_library(${PROJECT_NAME}-static STATIC
         ${lib_src}
 )
@@ -101,7 +78,7 @@ target_link_libraries(${PROJECT_NAME}-static PRIVATE
 # @todo 导出静态库与动态库
 packageProject(
         # 要导出的 target
-        NAME ${PROJECT_NAME}-shared
+        NAME ${PROJECT_NAME}-static
         # 版本
         VERSION ${PROJECT_VERSION}
         # 生成文件目录

@@ -39,7 +39,7 @@ link_libraries(
         ${DEFAULT_LINK_LIB}
         gtest_main
         ${glog_LIBRARIES}
-        SimplePhysicsEngine-shared
+        SimplePhysicsEngine-static
 )
 
 add_subdirectory(unit_test)
