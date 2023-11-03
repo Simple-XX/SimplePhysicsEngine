@@ -25,6 +25,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "dtkConfig.h"
+
 namespace dtk {
 /**
  * @class <dtkMatrix>

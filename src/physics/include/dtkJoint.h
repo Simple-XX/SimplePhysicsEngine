@@ -28,7 +28,6 @@
 
 #include "dtkMatrix.h"
 #include "dtkTx.h"
-
 #include "dtkRigidBody.h"
 
 namespace dtk {

@@ -18,7 +18,6 @@
 #define SIMPLEPHYSICSENGINE_DTKTX_H
 
 #include "dtkConfig.h"
-
 #include "dtkAssert.h"
 
 namespace dtk {
