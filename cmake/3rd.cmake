@@ -205,7 +205,7 @@ if (NOT CGAL_FOUND)
             "Following https://doc.cgal.org/latest/Manual/devman_create_and_use_a_cmakelist.html to install.")
 endif ()
 
-find_package(Boost COMPONENTS thread REQUIRED)
+find_package(Boost REQUIRED COMPONENTS thread)
 if (NOT Boost_FOUND)
     message(FATAL_ERROR "Boost not found.\n"
             "Following https://www.boost.org to install.")

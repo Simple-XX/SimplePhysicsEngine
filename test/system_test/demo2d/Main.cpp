@@ -48,7 +48,7 @@ static void draw_text(int x, int y, const char *format, ...) {
   char buffer[256];
   va_list args;
   va_start(args, format);
-  int len = vsprintf(buffer, format, args);
+  int len = vsnprintf(buffer, 256, format, args);
   va_end(args);
   for (int i = 0; i < len; ++i) {
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, buffer[i]);

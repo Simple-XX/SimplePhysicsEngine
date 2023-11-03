@@ -15,3 +15,9 @@ add_executable(demo3d
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
 )
+
+if (APPLE)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE
+                GL_SILENCE_DEPRECATION
+        )
+endif ()
