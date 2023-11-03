@@ -17,12 +17,12 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKSTATICTRIANGLEMESHWRITER_H
 #define SIMPLEPHYSICSENGINE_DTKSTATICTRIANGLEMESHWRITER_H
 
-#include "dtkStaticTriangleMesh.h"
-
 #include <cstring>
+#include <memory>
 
 #include <boost/utility.hpp>
-#include <memory>
+
+#include "dtkStaticTriangleMesh.h"
 
 namespace dtk {
 class dtkStaticTriangleMeshWriter : boost::noncopyable {

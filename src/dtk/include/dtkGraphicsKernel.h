@@ -17,14 +17,13 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKGRAPHICSKERNEL_H
 #define SIMPLEPHYSICSENGINE_DTKGRAPHICSKERNEL_H
 
-#include "dtkConfig.h"
-
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Filtered_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/basic.h>
 
+#include "dtkConfig.h"
 #include "dtkSign.h"
 #include "dtkTx.h"
 

@@ -17,9 +17,11 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGTHREAD_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGTHREAD_H
 
-#include "dtkPhysTetraMassSpring.h"
-#include <boost/utility.hpp>
 #include <memory>
+
+#include <boost/utility.hpp>
+
+#include "dtkPhysTetraMassSpring.h"
 
 namespace dtk {
 class dtkPhysMassSpringThread : public dtkPhysTetraMassSpring {

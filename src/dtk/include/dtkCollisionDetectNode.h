@@ -17,10 +17,10 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTNODE_H
 #define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTNODE_H
 
-#include <boost/utility.hpp>
 #include <memory>
-
 #include <vector>
+
+#include <boost/utility.hpp>
 
 #include "dtkCollisionDetectPrimitive.h"
 #include "dtkConfig.h"

@@ -17,10 +17,11 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKSTATICTRIANGLEMESHREADER_H
 #define SIMPLEPHYSICSENGINE_DTKSTATICTRIANGLEMESHREADER_H
 
-#include "dtkStaticTriangleMesh.h"
+#include <memory>
 
 #include <boost/utility.hpp>
-#include <memory>
+
+#include "dtkStaticTriangleMesh.h"
 
 namespace dtk {
 class dtkStaticTriangleMeshReader : public boost::noncopyable {

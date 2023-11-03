@@ -17,10 +17,10 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKIDTYPES_H
 #define SIMPLEPHYSICSENGINE_DTKIDTYPES_H
 
+#include <iostream>
+
 #include "dtkAssert.h"
 #include "dtkConfig.h"
-
-#include <iostream>
 
 namespace dtk {
 /**

@@ -17,13 +17,13 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTSTAGE_H
 #define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTSTAGE_H
 
+#include <memory>
+#include <vector>
+
+#include <CGAL/box_intersection_d.h>
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/utility.hpp>
-#include <memory>
-
-#include <CGAL/box_intersection_d.h>
-#include <vector>
 
 #include "dtkConfig.h"
 #include "dtkIDTypes.h"

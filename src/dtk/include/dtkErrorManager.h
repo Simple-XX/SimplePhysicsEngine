@@ -18,12 +18,11 @@
 #define SIMPLEPHYSICSENGINE_DTKERRORMANAGER_H
 
 // STL headers
+#include <iostream>
 #include <map>
 #include <stack>
 #include <string>
 #include <vector>
-
-#include <iostream>
 
 #include <boost/utility.hpp>
 

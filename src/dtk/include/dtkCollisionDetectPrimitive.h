@@ -17,14 +17,13 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTPRIMITIVE_H
 #define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTPRIMITIVE_H
 
-#include <boost/utility.hpp>
 #include <memory>
-
 #include <vector>
+
+#include <boost/utility.hpp>
 
 #include "dtkConfig.h"
 #include "dtkIDTypes.h"
-
 #include "dtkPoints.h"
 
 namespace dtk {

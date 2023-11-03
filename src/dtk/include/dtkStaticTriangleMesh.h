@@ -17,6 +17,7 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKSTATICTRIANGLEMESH_H
 #define SIMPLEPHYSICSENGINE_DTKSTATICTRIANGLEMESH_H
 
+#include <cstddef>
 #include <memory>
 #include <vector>
 
@@ -25,8 +26,6 @@
 #include "dtkConfig.h"
 #include "dtkIDTypes.h"
 #include "dtkPoints.h"
-#include <cstddef>
-#include <vector>
 
 namespace dtk {
 // This class is implemented following "Compact Array-Based Mesh Data

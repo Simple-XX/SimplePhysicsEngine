@@ -17,13 +17,14 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGCOLLISIONRESPONSE_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRINGCOLLISIONRESPONSE_H
 
-#include <boost/utility.hpp>
+#include <map>
 #include <memory>
+#include <vector>
+
+#include <boost/utility.hpp>
 
 #include "dtkIntersectTest.h"
 #include "dtkPhysMassSpring.h"
-#include <map>
-#include <vector>
 
 namespace dtk {
 class dtkPhysMassSpringCollisionResponse : public boost::noncopyable {

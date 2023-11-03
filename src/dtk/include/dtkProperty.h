@@ -18,10 +18,10 @@
 #define SIMPLEPHYSICSENGINE_DTKPROPERTY_H
 
 #include <map>
+#include <memory>
 
 #include <boost/any.hpp>
 #include <boost/utility.hpp>
-#include <memory>
 
 #include "dtkAssert.h"
 

@@ -19,7 +19,6 @@
 
 #include "dtkCollisionDetectNode.h"
 #include "dtkConfig.h"
-
 #include "dtkGraphicsKernel.h"
 
 namespace dtk {

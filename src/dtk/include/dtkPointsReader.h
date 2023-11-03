@@ -17,10 +17,11 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPOINTSREADER_H
 #define SIMPLEPHYSICSENGINE_DTKPOINTSREADER_H
 
-#include "dtkPoints.h"
+#include <memory>
 
 #include <boost/utility.hpp>
-#include <memory>
+
+#include "dtkPoints.h"
 
 namespace dtk {
 class dtkPointsReader : public boost::noncopyable {

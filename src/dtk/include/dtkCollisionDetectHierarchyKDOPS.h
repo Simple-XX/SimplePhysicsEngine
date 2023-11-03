@@ -17,8 +17,9 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTHIERARCHYKDOPS_H
 #define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTHIERARCHYKDOPS_H
 
-#include <boost/utility.hpp>
 #include <memory>
+
+#include <boost/utility.hpp>
 
 #include "dtkCollisionDetectHierarchy.h"
 #include "dtkCollisionDetectNodeKDOPS.h"

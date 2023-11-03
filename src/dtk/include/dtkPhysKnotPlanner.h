@@ -17,20 +17,19 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSKNOTPLANNER_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSKNOTPLANNER_H
 
-#include <boost/utility.hpp>
+#include <map>
 #include <memory>
+#include <vector>
 
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/utility.hpp>
 
 #include "dtkPhysMassSpringThread.h"
 #include "dtkPhysTetraMassSpring.h"
 
 #include "dtkCollisionDetectPrimitive.h"
 #include "dtkIntersectTest.h"
-
-#include <map>
-#include <vector>
 
 namespace dtk {
 class dtkPhysKnotPlanner : public boost::noncopyable {

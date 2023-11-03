@@ -17,15 +17,15 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESH_H
 #define SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESH_H
 
-#include <boost/utility.hpp>
 #include <memory>
 #include <set>
+
+#include <boost/utility.hpp>
 
 #include "dtkConfig.h"
 #include "dtkGraphicsKernel.h"
 #include "dtkIDTypes.h"
 #include "dtkPoints.h"
-
 #include "dtkStaticTriangleMesh.h"
 
 namespace dtk {

@@ -17,8 +17,9 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPOINTS_H
 #define SIMPLEPHYSICSENGINE_DTKPOINTS_H
 
-#include <boost/utility.hpp>
 #include <memory>
+
+#include <boost/utility.hpp>
 
 #include "dtkConfig.h"
 #include "dtkGraphicsKernel.h"

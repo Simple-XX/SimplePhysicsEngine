@@ -17,10 +17,10 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPOINTSVECTOR_H
 #define SIMPLEPHYSICSENGINE_DTKPOINTSVECTOR_H
 
-#include "dtkConfig.h"
-
-#include "dtkPoints.h"
 #include <memory>
+
+#include "dtkConfig.h"
+#include "dtkPoints.h"
 
 namespace dtk {
 class dtkPointsVector : public dtkPoints {

@@ -17,9 +17,10 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSPARTICLESYSTEM_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSPARTICLESYSTEM_H
 
-#include <boost/utility.hpp>
 #include <memory>
 #include <vector>
+
+#include <boost/utility.hpp>
 
 #include "dtkPhysParticle.h"
 

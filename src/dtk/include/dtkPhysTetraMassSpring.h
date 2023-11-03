@@ -17,9 +17,10 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSTETRAMASSSPRING_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSTETRAMASSSPRING_H
 
+#include <iostream>
+
 #include "dtkPhysMassSpring.h"
 #include "dtkStaticTetraMesh.h"
-#include <iostream>
 
 namespace dtk {
 class dtkPhysTetraMassSpring : public dtkPhysMassSpring {

@@ -17,20 +17,18 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKIMPORTS_H
 #define SIMPLEPHYSICSENGINE_DTKIMPORTS_H
 
-#include "dtkPointsImporter.h"
-#include "dtkStaticTetraMeshImporter.h"
-#include "dtkStaticTriangleMeshImporter.h"
-
-#include "dtkGraphicsKernel.h"
-
 #ifdef DTK_DEBUG
 #define DTK_IMPORTS_DEBUG
 #endif
 
 #ifdef DTK_IMPORTS_DEBUG
 #include <iostream>
-using namespace std;
 #endif
+
+#include "dtkGraphicsKernel.h"
+#include "dtkPointsImporter.h"
+#include "dtkStaticTetraMeshImporter.h"
+#include "dtkStaticTriangleMeshImporter.h"
 
 namespace dtk {
 template <class IMPORTER_PTR>
@@ -49,7 +47,7 @@ void Import(dtkPoints::Ptr &dst, IMPORTER_PTR &src) {
 template <class IMPORTER_PTR>
 void Import(dtkStaticTetraMesh::Ptr &dst, IMPORTER_PTR &src) {
 #ifdef DTK_IMPORTS_DEBUG
-  cout << "[Import]" << endl;
+  std::cout << "[Import]" << std::endl;
 #endif
   size_t nTetras;
   dtkID4 tetra;
@@ -57,7 +55,7 @@ void Import(dtkStaticTetraMesh::Ptr &dst, IMPORTER_PTR &src) {
   size_t count = 0;
   src->Begin(nTetras);
 #ifdef DTK_IMPORTS_DEBUG
-  cout << "nTetras: " << nTetras << endl;
+  std::cout << "nTetras: " << nTetras << std::endl;
 #endif
   while (src->Next(tetra)) {
     dst->InsertTetra(tetra);
@@ -65,9 +63,9 @@ void Import(dtkStaticTetraMesh::Ptr &dst, IMPORTER_PTR &src) {
   }
   src->End();
 #ifdef DTK_IMPORTS_DEBUG
-  cout << "Number of tetra inserted: " << count << endl;
-  cout << "[/Import]" << endl;
-  cout << endl;
+  std::cout << "Number of tetra inserted: " << count << std::endl;
+  std::cout << "[/Import]" << std::endl;
+  std::cout << std::endl;
 #endif
 }
 

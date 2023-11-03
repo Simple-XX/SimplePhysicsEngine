@@ -17,9 +17,10 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKARRAY_H
 #define SIMPLEPHYSICSENGINE_DTKARRAY_H
 
-#include <boost/utility.hpp>
 #include <memory>
 #include <vector>
+
+#include <boost/utility.hpp>
 
 namespace dtk {
 template <class T> class dtkArray : boost::noncopyable {

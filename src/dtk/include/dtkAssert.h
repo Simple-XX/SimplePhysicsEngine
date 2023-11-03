@@ -33,13 +33,16 @@ inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR) {
   return cond;
 }
 #else
+
 // #define dtkAssert( cond, err ) ( (void) 0 )
 inline bool dtkAssert(bool cond, dtkError err = UNKNOW_ERROR) {
   if (!cond)
     dtkErrMgr.PushError(err);
   return cond;
 }
+
 #endif // DTK_DEBUG
+
 } // namespace dtk
 
 #endif /* SIMPLEPHYSICSENGINE_DTKASSERT_H */

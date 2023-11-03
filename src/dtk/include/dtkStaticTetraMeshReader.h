@@ -17,11 +17,12 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESHREADER_H
 #define SIMPLEPHYSICSENGINE_DTKSTATICTETRAMESHREADER_H
 
-#include "dtkStaticTetraMesh.h"
-
-#include <boost/utility.hpp>
 #include <cstring>
 #include <memory>
+
+#include <boost/utility.hpp>
+
+#include "dtkStaticTetraMesh.h"
 
 namespace dtk {
 class dtkStaticTetraMeshReader : public boost::noncopyable {

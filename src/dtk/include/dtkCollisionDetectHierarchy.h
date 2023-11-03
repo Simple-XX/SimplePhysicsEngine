@@ -16,16 +16,15 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTHIERARCHY_H
 #define SIMPLEPHYSICSENGINE_DTKCOLLISIONDETECTHIERARCHY_H
 
-#include <boost/utility.hpp>
 #include <memory>
 
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
-
-#include "dtkConfig.h"
-#include "dtkIDTypes.h"
+#include <boost/utility.hpp>
 
 #include "dtkCollisionDetectBasic.h"
+#include "dtkConfig.h"
+#include "dtkIDTypes.h"
 #include "dtkStaticTetraMesh.h"
 #include "dtkStaticTriangleMesh.h"
 

@@ -16,12 +16,14 @@
 
 #ifndef SIMPLEPHYSICSENGINE_DTKSTATICMESHELIMINATOR_H
 #define SIMPLEPHYSICSENGINE_DTKSTATICMESHELIMINATOR_H
+
+#include <vector>
+
 #include "dtkCollisionDetectHierarchy.h"
 #include "dtkIDTypes.h"
 #include "dtkPhysTetraMassSpring.h"
 #include "dtkStaticTetraMesh.h"
 #include "dtkStaticTriangleMesh.h"
-#include <vector>
 
 namespace dtk {
 class dtkStaticMeshEliminator {

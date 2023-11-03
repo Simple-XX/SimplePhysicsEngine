@@ -17,11 +17,14 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSCORE_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSCORE_H
 
-#include <boost/utility.hpp>
+#include <map>
 #include <memory>
+#include <set>
+#include <vector>
 
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/utility.hpp>
 
 #include "dtkPhysMassSpringThread.h"
 #include "dtkPhysTetraMassSpring.h"
@@ -36,10 +39,6 @@
 #include "dtkStaticMeshEliminator.h"
 
 #include "dtkPhysKnotPlanner.h"
-
-#include <map>
-#include <set>
-#include <vector>
 
 namespace dtk {
 class dtkPhysCore : public boost::noncopyable {

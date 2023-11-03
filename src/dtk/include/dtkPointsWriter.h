@@ -32,10 +32,11 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPOINTSWRITER_H
 #define SIMPLEPHYSICSENGINE_DTKPOINTSWRITER_H
 
-#include <boost/utility.hpp>
 #include <cstring>
 #include <memory>
 #include <vector>
+
+#include <boost/utility.hpp>
 
 #include "dtkPoints.h"
 

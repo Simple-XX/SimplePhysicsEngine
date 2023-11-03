@@ -22,7 +22,7 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKMATRIXALGORITHM_H
 #define SIMPLEPHYSICSENGINE_DTKMATRIXALGORITHM_H
 
-#include <dtkConfig.h>
+#include "dtkConfig.h"
 
 namespace dtk {
 namespace MatrixAlgo {

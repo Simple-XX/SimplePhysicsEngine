@@ -17,17 +17,19 @@
 #ifndef SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRING_H
 #define SIMPLEPHYSICSENGINE_DTKPHYSMASSSPRING_H
 
+#include <map>
+#include <memory>
+#include <vector>
+
 #ifdef DTK_CL
 #include <CL/cl.h>
 #endif
+
 #include "dtkPhysMassPoint.h"
 #include "dtkPhysSpring.h"
 #include "dtkPoints.h"
 #include "dtkPointsVector.h"
 #include "dtkStaticTriangleMesh.h"
-#include <map>
-#include <memory>
-#include <vector>
 
 using namespace std;
 
