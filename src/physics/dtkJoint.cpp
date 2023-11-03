@@ -2,23 +2,17 @@
 /**
  * @file dtkJoint.cpp
  * @brief dtkJoint 实现
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author tom (https://github.com/TOMsworkspace)
  * @version 1.0
- * @date 2023-10-31
+ * @date 2021-08-05
  * @copyright MIT LICENSE
  * https://github.com/Simple-XX/SimplePhysicsEngine
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-08-05<td>tom<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
- */
-
-/**
- * @Author: tom: https://github.com/TOMsworkspace
- * @Date: 2021-08-05 21:21:18
- * @Last Modified by: tom: https://github.com/TOMsworkspace
- * @Last Modified time: 2021-08-06 17:34:49
  */
 
 #include "dtkJoint.h"
