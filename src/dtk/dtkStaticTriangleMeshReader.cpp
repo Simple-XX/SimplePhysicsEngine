@@ -14,9 +14,9 @@
  * </table>
  */
 
-#include "dtkStaticTriangleMeshReader.h"
-
 #include <fstream>
+
+#include "dtkStaticTriangleMeshReader.h"
 
 namespace dtk {
 dtkStaticTriangleMeshReader::dtkStaticTriangleMeshReader() {

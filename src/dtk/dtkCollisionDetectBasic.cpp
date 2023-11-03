@@ -14,23 +14,19 @@
  * </table>
  */
 
-#include "dtkCollisionDetectBasic.h"
-#include "dtkCollisionDetectNodeKDOPS.h"
-
-#include "dtkAssert.h"
-
 #include <algorithm>
-
-using namespace std;
-
 #ifdef DTK_DEBUG
 #define DTK_COLLISIONDETECTBASIC_DEBUG
 #endif // DTK_DEBUG
-
 #ifdef DTK_COLLISIONDETECTBASIC_DEBUG
 #include <iostream>
-using namespace std;
 #endif
+
+#include "dtkAssert.h"
+#include "dtkCollisionDetectBasic.h"
+#include "dtkCollisionDetectNodeKDOPS.h"
+
+using namespace std;
 
 namespace dtk {
 // 两个图元进行相交测试

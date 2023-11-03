@@ -14,9 +14,9 @@
  * </table>
  */
 
-#include "dtkStaticTetraMeshReader.h"
-
 #include <fstream>
+
+#include "dtkStaticTetraMeshReader.h"
 
 namespace dtk {
 dtkStaticTetraMeshReader::dtkStaticTetraMeshReader() {

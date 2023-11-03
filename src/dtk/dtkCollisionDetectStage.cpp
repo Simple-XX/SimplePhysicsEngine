@@ -14,20 +14,18 @@
  * </table>
  */
 
-#include "dtkCollisionDetectStage.h"
-
-#include <map>
-using namespace boost;
-using namespace std;
-
 #ifdef DTK_DEBUG
 #define DTKCOLLISIONDETECTSTAGE_DEBUG
 #endif // DTK_DEBUG
-
 #ifdef DTKCOLLISIONDETECTSTAGE_DEBUG
 #include <iostream>
-using namespace std;
 #endif
+#include <map>
+
+#include "dtkCollisionDetectStage.h"
+
+using namespace boost;
+using namespace std;
 
 namespace dtk {
 std::vector<std::pair<size_t, size_t>>

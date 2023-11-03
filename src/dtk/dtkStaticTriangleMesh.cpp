@@ -14,8 +14,6 @@
  * </table>
  */
 
-#include "dtkStaticTriangleMesh.h"
-
 #include <map>
 #include <queue>
 #include <set>
@@ -23,6 +21,8 @@
 // Debug
 #include <iostream>
 using namespace std;
+
+#include "dtkStaticTriangleMesh.h"
 
 namespace dtk {
 dtkStaticTriangleMesh::dtkStaticTriangleMesh() : mModified(false) {

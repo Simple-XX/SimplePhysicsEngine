@@ -14,22 +14,22 @@
  * </table>
  */
 
-#include "dtkCollisionDetectHierarchy.h"
+#ifdef DTK_DEBUG
+#define DTKCOLLISIONDETECTHIERARCHY_DEBUG
+#endif
+#ifdef DTKCOLLISIONDETECTHIERARCHY_DEBUG
+#include <iostream>
+#endif
+#include <set>
+
 #ifdef DTK_TBB
 #include <tbb/tbb.h>
 using namespace tbb;
 #endif
-#include <set>
 
-#ifdef DTK_DEBUG
-#define DTKCOLLISIONDETECTHIERARCHY_DEBUG
-#endif
+#include "dtkCollisionDetectHierarchy.h"
 
-#ifdef DTKCOLLISIONDETECTHIERARCHY_DEBUG
-#include <iostream>
 using namespace std;
-#endif
-
 using namespace boost;
 
 namespace dtk {
@@ -127,7 +127,7 @@ void dtkCollisionDetectHierarchy::SetNumberOfThreads(size_t n) {
   mEnterBarrier = new barrier(mNumberOfThreads + 1);
   mExitBarrier = new barrier(mNumberOfThreads + 1);
   for (dtkID i = 0; i < mNumberOfThreads; i++) {
-    mThreadGroup->add_thread(new thread(update, i, mNumberOfThreads,
+    mThreadGroup->add_thread(new boost::thread(update, i, mNumberOfThreads,
                                         mEnterBarrier, mExitBarrier, &mLive,
                                         &mPrimitives));
   }

@@ -14,21 +14,20 @@
  * </table>
  */
 
-#include "dtkIntersectTest.h"
-#include "dtkAssert.h"
-#include "dtkIDTypes.h"
-#include <algorithm>
-#include <vector>
-using namespace std;
-
 #ifdef DTK_DEBUG
 #define DTK_INTERSECTTEST_DEBUG
 #endif // DTK_DEBUG
-
 #ifdef DTK_INTERSECTTEST_DEBUG
 #include <iostream>
-using namespace std;
 #endif
+#include <algorithm>
+#include <vector>
+
+#include "dtkAssert.h"
+#include "dtkIDTypes.h"
+#include "dtkIntersectTest.h"
+
+using namespace std;
 
 namespace dtk {
 bool dtkIntersectTest::Test(GK::Point3 &pt, const GK::Ray3 &ray,

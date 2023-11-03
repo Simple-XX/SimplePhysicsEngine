@@ -14,14 +14,14 @@
  * </table>
  */
 
-#include "dtkGraphicsKernel.h"
-
-#include "dtkAssert.h"
-#include "dtkIDTypes.h"
-#include "dtkSign.h"
+#include <algorithm>
 
 #include <CGAL/number_utils.h>
-#include <algorithm>
+
+#include "dtkAssert.h"
+#include "dtkGraphicsKernel.h"
+#include "dtkIDTypes.h"
+#include "dtkSign.h"
 
 namespace dtk {
 /**

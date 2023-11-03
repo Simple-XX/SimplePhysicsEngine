@@ -14,19 +14,19 @@
  * </table>
  */
 
-#include "dtkCollisionDetectHierarchyKDOPS.h"
-
-#include <boost/thread/thread.hpp>
-
 #ifdef DTK_DEBUG
 #define DTKCOLLISIONDETECTHIERARCHYKDOPS_DEBUG
 #endif // DTK_DEBUG
 
 #ifdef DTKCOLLISIONDETECTHIERARCHYKDOPS_DEBUG
 #include <iostream>
-using namespace std;
 #endif
 
+#include <boost/thread/thread.hpp>
+
+#include "dtkCollisionDetectHierarchyKDOPS.h"
+
+using namespace std;
 using namespace boost;
 
 namespace dtk {

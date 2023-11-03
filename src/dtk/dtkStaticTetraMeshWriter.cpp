@@ -14,9 +14,9 @@
  * </table>
  */
 
-#include "dtkStaticTetraMeshWriter.h"
-
 #include <fstream>
+
+#include "dtkStaticTetraMeshWriter.h"
 
 namespace dtk {
 dtkStaticTetraMeshWriter::dtkStaticTetraMeshWriter() {

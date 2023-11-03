@@ -14,10 +14,11 @@
  * </table>
  */
 
-#include "dtkPhysKnotPlanner.h"
-
 #include <algorithm>
 #include <set>
+
+#include "dtkPhysKnotPlanner.h"
+
 using namespace std;
 using namespace boost;
 
@@ -298,8 +299,8 @@ void dtkPhysKnotPlanner::UpdateKnot(double timeslice) {
     // for( dtkID i = 0; i < mKnotSegments.size(); i++ )
     //{
     //	dtkPhysMassPoint* p = mSutureThread->GetMassPoint( mKnotSegments[i] * 2
-    //); 	p->SetPosition(p->GetPosition() + vec); 	p->SetVel(p->GetVel() + vec /
-    //timeslice);
+    //); 	p->SetPosition(p->GetPosition() + vec);
+    //p->SetVel(p->GetVel() + vec / timeslice);
     // }
 
     dtkDouble3 pointOnSegment_1_newPos;
@@ -307,13 +308,15 @@ void dtkPhysKnotPlanner::UpdateKnot(double timeslice) {
     // if( mSegmentInKnotOrientations[i] )
     //{
     //	pointOnSegment_1_newPos = mKnotCenterPoints[i] + mKnotOrientations[i] *
-    //interval_1;//halfInterval; 	pointOnSegment_2_newPos = mKnotCenterPoints[i]
+    // interval_1;//halfInterval; 	pointOnSegment_2_newPos =
+    // mKnotCenterPoints[i]
     //- mKnotOrientations[i] * interval_2;//halfInterval;
     // }
     // else
     //{
     //	pointOnSegment_2_newPos = mKnotCenterPoints[i] + mKnotOrientations[i] *
-    //interval_2;//halfInterval; 	pointOnSegment_1_newPos = mKnotCenterPoints[i]
+    // interval_2;//halfInterval; 	pointOnSegment_1_newPos =
+    // mKnotCenterPoints[i]
     //- mKnotOrientations[i] * interval_1;//halfInterval;
     // }
     dtkDouble3 vec =

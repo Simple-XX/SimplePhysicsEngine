@@ -15,7 +15,6 @@
  */
 
 #include "dtkErrorManager.h"
-
 #include "dtkAssert.h"
 
 namespace dtk {

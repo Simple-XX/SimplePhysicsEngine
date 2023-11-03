@@ -14,17 +14,16 @@
  * </table>
  */
 
-#include "dtkCollisionDetectNode.h"
-#include "dtkCollisionDetectHierarchy.h"
-
 #ifdef DTK_DEBUG
 #define DTKCOLLISIONDETECTNODE_DEBUG
 #endif // DTK_DEBUG
-
 #ifdef DTKCOLLISIONDETECTNODE_DEBUG
 #include <iostream>
 using namespace std;
 #endif
+
+#include "dtkCollisionDetectHierarchy.h"
+#include "dtkCollisionDetectNode.h"
 
 namespace dtk {
 dtkCollisionDetectNode::dtkCollisionDetectNode(

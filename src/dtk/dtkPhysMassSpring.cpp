@@ -14,21 +14,20 @@
  * </table>
  */
 
-#include "dtkPhysMassSpring.h"
-
 #ifdef DTK_DEBUG
 #define DTK_PHYSMASSSPRINGIMPL_DEBUG
 #endif // DTK_DEBUG
 
 #ifdef DTK_PHYSMASSSPRINGIMPL_DEBUG
 #include <iostream>
-using namespace std;
 #endif
-
 #include <fstream>
 #include <iostream>
 #include <set>
 #include <string>
+
+#include "dtkPhysMassSpring.h"
+
 using namespace std;
 
 namespace dtk {

@@ -14,17 +14,16 @@
  * </table>
  */
 
-#include "dtkCollisionDetectNodeKDOPS.h"
-#include "dtkCollisionDetectHierarchyKDOPS.h"
-
 #ifdef DTK_DEBUG
 #define DTKCOLLISIONDETECTNODEKDOPS_DEBUG
 #endif // DTK_DEBUG
-
 #ifdef DTKCOLLISIONDETECTNODEKDOPS_DEBUG
 #include <iostream>
 using namespace std;
 #endif
+
+#include "dtkCollisionDetectHierarchyKDOPS.h"
+#include "dtkCollisionDetectNodeKDOPS.h"
 
 namespace dtk {
 void thread_update_node(dtkCollisionDetectNode *node) { node->Update(); }

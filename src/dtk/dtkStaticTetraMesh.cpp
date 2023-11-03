@@ -14,17 +14,15 @@
  * </table>
  */
 
-#include "dtkStaticTetraMesh.h"
-
-#include <set>
-
-#include "dtkGraphicsTools.h"
-#include "dtkTx.h"
-
 #ifdef DTK_DEBUG
 #include <iostream>
 using namespace std;
 #endif // DTK_DEBUG
+#include <set>
+
+#include "dtkGraphicsTools.h"
+#include "dtkStaticTetraMesh.h"
+#include "dtkTx.h"
 
 namespace dtk {
 const dtkID dtkStaticTetraMesh::EA2V[4][3] = {

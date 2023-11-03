@@ -14,11 +14,10 @@
  * </table>
  */
 
-#include "dtkPointsWriter.h"
+#include <fstream>
 
 #include "dtkAssert.h"
-
-#include <fstream>
+#include "dtkPointsWriter.h"
 
 namespace dtk {
 dtkPointsWriter::dtkPointsWriter() {

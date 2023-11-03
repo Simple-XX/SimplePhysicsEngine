@@ -14,9 +14,9 @@
  * </table>
  */
 
-#include "dtkCollisionDetectPrimitive.h"
-
 #include <cstdarg>
+
+#include "dtkCollisionDetectPrimitive.h"
 
 using namespace std;
 

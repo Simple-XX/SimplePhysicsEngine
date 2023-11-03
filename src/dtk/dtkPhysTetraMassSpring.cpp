@@ -14,17 +14,15 @@
  * </table>
  */
 
-#include "dtkPhysTetraMassSpring.h"
 #ifdef DTK_DEBUG
 #define DTK_PHYSTETRAMASSSPRINGIMPL_DEBUG
 #endif // DTK_DEBUG
-
 #ifdef DTK_PHYSTETRAMASSSPRINGIMPL_DEBUG
 #include <iostream>
 using namespace std;
 #endif
 
-using namespace std;
+#include "dtkPhysTetraMassSpring.h"
 
 namespace dtk {
 

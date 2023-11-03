@@ -14,10 +14,11 @@
  * </table>
  */
 
-#include "dtkPhysMassSpringThreadCollisionResponse.h"
-#include "dtkCollisionDetectPrimitive.h"
-
 #include <iostream>
+
+#include "dtkCollisionDetectPrimitive.h"
+#include "dtkPhysMassSpringThreadCollisionResponse.h"
+
 using namespace std;
 
 namespace dtk {

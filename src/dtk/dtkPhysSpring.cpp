@@ -14,7 +14,6 @@
  * </table>
  */
 
-#include "dtkPhysSpring.h"
 #ifdef DTK_DEBUG
 #define DTK_PHYSSPRINGIMPL_DEBUG
 #endif
@@ -23,6 +22,8 @@
 #include <iostream>
 using namespace std;
 #endif // DTK_PHYSSPRINGIMPL_DEBUG
+
+#include "dtkPhysSpring.h"
 
 namespace dtk {
 

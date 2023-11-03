@@ -14,11 +14,10 @@
  * </table>
  */
 
-#include "dtkPointsReader.h"
+#include <fstream>
 
 #include "dtkAssert.h"
-
-#include <fstream>
+#include "dtkPointsReader.h"
 
 namespace dtk {
 void dtkPointsReader::SetOutput(dtkPoints::Ptr pts) {

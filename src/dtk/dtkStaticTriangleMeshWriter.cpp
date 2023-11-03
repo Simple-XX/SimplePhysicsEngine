@@ -14,9 +14,9 @@
  * </table>
  */
 
-#include "dtkStaticTriangleMeshWriter.h"
-
 #include <fstream>
+
+#include "dtkStaticTriangleMeshWriter.h"
 
 namespace dtk {
 dtkStaticTriangleMeshWriter::dtkStaticTriangleMeshWriter() {

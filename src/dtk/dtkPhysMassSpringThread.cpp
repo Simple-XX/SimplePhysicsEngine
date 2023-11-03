@@ -17,8 +17,6 @@
 #ifndef DTK_PHYSMASSSPRINGTHREADIMPL_H
 #define DTK_PHYSMASSSPRINGTHREADIMPL_H
 
-#include "dtkPhysMassSpringThread.h"
-
 // #ifdef DTK_DEBUG
 #define DTK_PHYSMASSSPRINGTHREADIMPL_DEBUG
 // #endif //DTK_DEBUG
@@ -27,6 +25,8 @@
 #include <iostream>
 using namespace std;
 #endif
+
+#include "dtkPhysMassSpringThread.h"
 
 namespace dtk {
 

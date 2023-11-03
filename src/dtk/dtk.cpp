@@ -14,13 +14,12 @@
  * </table>
  */
 
-#include "dtkGraphicsKernel.h"
-
-#include "dtk.h"
-
 #ifdef DTK_CUDA
 #include "cuda.h"
 #endif // DTK_CUDA
+
+#include "dtk.h"
+#include "dtkGraphicsKernel.h"
 
 namespace dtk {
 bool dtkInited = false;

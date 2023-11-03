@@ -14,18 +14,17 @@
  * </table>
  */
 
-#include "dtkPhysParticleSystem.h"
-
 #ifdef DTK_DEBUG
 #define DTK_PHYSPARTICLESYSTEM_DEBUG
 #endif // DTK_DEBUG
 
 #ifdef DTK_PHYSPARTICLESYSTEM_DEBUG
 #include <iostream>
-using namespace std;
 #endif
-
 #include <string>
+
+#include "dtkPhysParticleSystem.h"
+
 using namespace std;
 namespace dtk {
 dtkPhysParticleSystem::dtkPhysParticleSystem(double particleRadius,
