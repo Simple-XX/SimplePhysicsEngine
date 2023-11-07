@@ -81,15 +81,6 @@ CPMAddPackage(
         "GLFW_BULID_DOCS OFF"
 )
 
-# https://github.com/g-truc/glm
-set(gRPC_INSTALL ON CACHE BOOL "")
-set(gRPC_BUILD_TESTS OFF CACHE BOOL "")
-CPMAddPackage(
-        NAME glm
-        GITHUB_REPOSITORY g-truc/glm
-        GIT_TAG 0.9.9.8
-)
-
 # https://github.com/TheLartians/PackageProject.cmake
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.11.0")
 
@@ -228,3 +219,10 @@ if (NOT VTK_FOUND)
     message(FATAL_ERROR "VTK not found.\n"
             "Following https://vtk.org/ to install.")
 endif ()
+
+find_package(glm REQUIRED)
+if (NOT glm_FOUND)
+    message(FATAL_ERROR "glm not found.\n"
+            "Following https://vtk.org/ to install.")
+endif ()
+# target_link_libraries(<your executable> glm::glm)
