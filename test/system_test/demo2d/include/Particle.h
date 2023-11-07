@@ -14,7 +14,8 @@
  * </table>
  */
 
-#pragma once
+#ifndef SIMPLEPHYSICSENGINE_PARTICLE_H
+#define SIMPLEPHYSICSENGINE_PARTICLE_H
 
 #include <Eigen/Dense>
 
@@ -40,3 +41,5 @@ public:
   float getForceLength2() const;
   float getNormalLength2() const;
 };
+
+#endif /* SIMPLEPHYSICSENGINE_PARTICLE_H */

@@ -14,7 +14,8 @@
  * </table>
  */
 
-#pragma once
+#ifndef SIMPLEPHYSICSENGINE_CONSTANTS_H
+#define SIMPLEPHYSICSENGINE_CONSTANTS_H
 
 namespace Constants {
 extern const float WIDTH;
@@ -43,4 +44,7 @@ extern const float PARTICLE_SPACING;
 extern const float PARTICLE_VOLUME;
 extern const float PARTICLE_MASS;
 extern const float KERNEL_RANGE;
+
 } // namespace Constants
+
+#endif /* SIMPLEPHYSICSENGINE_CONSTANTS_H */

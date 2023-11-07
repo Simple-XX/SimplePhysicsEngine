@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef DTKMESH_H
-#define DTKMESH_H
+#ifndef SIMPLEPHYSICSENGINE_DTKMESH_H
+#define SIMPLEPHYSICSENGINE_DTKMESH_H
 
 #include <vector>
 
@@ -90,4 +90,4 @@ public:
   void compute_total_energy();
 };
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKMESH_H */

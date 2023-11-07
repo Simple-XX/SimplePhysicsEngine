@@ -14,7 +14,8 @@
  * </table>
  */
 
-#pragma once
+#ifndef SIMPLEPHYSICSENGINE_GRID_H
+#define SIMPLEPHYSICSENGINE_GRID_H
 
 #include "Particle.h"
 #include <vector>
@@ -35,3 +36,5 @@ private:
 
   std::vector<std::vector<Cell>> cells;
 };
+
+#endif /* SIMPLEPHYSICSENGINE_GRID_H */

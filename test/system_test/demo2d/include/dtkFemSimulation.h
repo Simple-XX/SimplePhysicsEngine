@@ -21,6 +21,9 @@
  * @Last Modified time: 2021-09-03 17:22:45
  */
 
+#ifndef SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
+#define SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
+
 #include <iostream>
 #include <memory>
 #include <unordered_map>
@@ -113,3 +116,5 @@ public:
             const dtk::dtkDouble2 &position = dtk::dtkDouble2());
   static SPHSolver::ptr make_sph();
 };
+
+#endif /* SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H */

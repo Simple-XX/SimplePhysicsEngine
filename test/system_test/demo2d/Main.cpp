@@ -18,7 +18,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "GL/freeglut.h"
+#include <GL/freeglut.h>
 
 #include "dtkFemSimulation.h"
 #include "dtkScene.h"

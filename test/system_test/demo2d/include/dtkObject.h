@@ -14,8 +14,9 @@
  * </table>
  */
 
-#ifndef DTKOBJECT_H
-#define DTKOBJECT_H
+#ifndef SIMPLEPHYSICSENGINE_DTKOBJECT_H
+#define SIMPLEPHYSICSENGINE_DTKOBJECT_H
+
 #include <Eigen/Dense>
 
 class dtkObject {
@@ -26,4 +27,4 @@ public:
   virtual void Init() = 0;
 };
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKOBJECT_H */

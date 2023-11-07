@@ -14,7 +14,8 @@
  * </table>
  */
 
-#pragma once
+#ifndef SIMPLEPHYSICSENGINE_SPHCOLVER_H
+#define SIMPLEPHYSICSENGINE_SPHCOLVER_H
 
 #include <memory>
 #include <vector>
@@ -56,3 +57,5 @@ private:
 
   void collisionHandling();
 };
+
+#endif /* SIMPLEPHYSICSENGINE_SPHCOLVER_H */

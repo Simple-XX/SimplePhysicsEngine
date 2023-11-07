@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef CGFLUID_CPAIR_H
-#define CGFLUID_CPAIR_H
+#ifndef SIMPLEPHYSICSENGINE_DTKCOLLISIONPAIR_H
+#define SIMPLEPHYSICSENGINE_DTKCOLLISIONPAIR_H
 
 #define MAKE_ID(a, b) (((a) < (b)) ? (((a) << 16) | (b)) : (((b) << 16) | (a)))
 
@@ -77,4 +77,4 @@ private:
 };
 } // namespace dtk
 
-#endif // CGFLUID_CPAIR_H
+#endif /* SIMPLEPHYSICSENGINE_DTKCOLLISIONPAIR_H */
