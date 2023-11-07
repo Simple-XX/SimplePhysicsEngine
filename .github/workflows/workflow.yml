@@ -69,10 +69,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw vtk
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
-          brew install gcc g++ sdl2 sdl2_ttf libomp
 
       - name: Build
         run: |

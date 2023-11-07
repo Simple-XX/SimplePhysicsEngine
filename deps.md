@@ -6,6 +6,6 @@ sudo apt install -y doxygen graphviz clang-format clang-tidy cppcheck lcov gcc g
 
 osx
 ```shell
-brew install doxygen graphviz llvm cppcheck lcov spdlog freeglut boost 
+brew install doxygen graphviz llvm cppcheck lcov spdlog freeglut boost glfw vtk
 
 ```
