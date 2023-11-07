@@ -21,8 +21,8 @@
  * @Last Modified time: 2021-09-03 17:22:45
  */
 
-#ifndef DTKFEMSIMULATION_H
-#define DTKFEMSIMULATION_H
+#ifndef SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
+#define SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
 
 #include "dtkScene.h"
 #include <iostream>
@@ -97,4 +97,4 @@ public:
   void DoCollisions();
 };
 
-#endif
+#endif /* SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H */
