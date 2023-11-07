@@ -14,9 +14,20 @@
  * </table>
  */
 
-#include "gtest/gtest.h"
+#include <chrono>
+#include <cmath>
+#include <iostream>
+
+#include <GL/freeglut.h>
+#include <dtkMatrix.h>
+#include <gtest/gtest.h>
 
 TEST(example, 示例) {
-  EXPECT_EQ(1, 1);
   EXPECT_TRUE(true == true);
+
+  dtk::dtkMatrix22 matrix1;
+  dtk::dtkMatrix22 matrix2;
+  EXPECT_EQ(matrix1.length(), matrix2.length());
+
 }
+
