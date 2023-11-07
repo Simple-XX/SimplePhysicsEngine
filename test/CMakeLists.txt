@@ -43,7 +43,7 @@ link_libraries(
         GLUT::GLUT
         OpenGL::GL
         OpenGL::GLU
-        SimplePhysicsEngine-shared
+        SimplePhysicsEngine-static
 )
 
 add_subdirectory(unit_test)
