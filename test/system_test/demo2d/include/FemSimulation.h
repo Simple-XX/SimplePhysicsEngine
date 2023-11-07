@@ -28,9 +28,9 @@
 #include <dtkScene.h>
 
 #include "CollisionPair.h"
+#include "SPHSolver.h"
 #include "constants.h"
 #include "mesh.h"
-#include "SPHSolver.h"
 
 struct Circle2 {
   double x, y, radius;
