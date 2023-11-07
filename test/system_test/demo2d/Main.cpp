@@ -404,10 +404,10 @@ void idle() { display(); }
 
 int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
-  glutInitWindowSize(800, 600);
+  glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
   glutInitWindowPosition(50, 50);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-  glutCreateWindow("Physics Engine -- dtk");
+  glutCreateWindow("SimplePhysicsEngine-ST-demo2d");
   // world.Init();
   glutDisplayFunc(&display);
   glutReshapeFunc(&reshape);
