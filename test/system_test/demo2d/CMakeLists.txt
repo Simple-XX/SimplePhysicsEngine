@@ -12,7 +12,6 @@ add_executable(${PROJECT_NAME}
         dtkFemSimulation.cpp
         dtkMesh.cpp
         dtkObject.cpp
-        dtkScene.cpp
         Grid.cpp
         Main.cpp
         Particle.cpp

@@ -17,6 +17,7 @@
 #include "dtkScene.h"
 
 namespace dtk {
+
 dtkScene::dtkScene(unsigned int width, unsigned int height)
     : State(SCENE_ACTIVE), Keys(), KeysProcessed(), Width(width),
       Height(height) {}
@@ -71,4 +72,4 @@ void dtkScene::Render() {}
 
 void dtkScene::DoCollisions() {}
 
-}; // namespace dtk
+} // namespace dtk

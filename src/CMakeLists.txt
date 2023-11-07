@@ -5,15 +5,15 @@
 # CMakeLists.txt for Simple-XX/SimplePhysicsEngine.
 
 set(lib_src
+        dtk/collision_detect/dtkCollisionDetectBasic.cpp
+        dtk/collision_detect/dtkCollisionDetectHierarchy.cpp
+        dtk/collision_detect/dtkCollisionDetectHierarchyKDOPS.cpp
+        dtk/collision_detect/dtkCollisionDetectNode.cpp
+        dtk/collision_detect/dtkCollisionDetectNodeKDOPS.cpp
+        dtk/collision_detect/dtkCollisionDetectPrimitive.cpp
+        dtk/collision_detect/dtkCollisionDetectStage.cpp
         dtk/dtk.cpp
         dtk/dtkAssert.cpp
-        dtk/dtkCollisionDetectBasic.cpp
-        dtk/dtkCollisionDetectHierarchy.cpp
-        dtk/dtkCollisionDetectHierarchyKDOPS.cpp
-        dtk/dtkCollisionDetectNode.cpp
-        dtk/dtkCollisionDetectNodeKDOPS.cpp
-        dtk/dtkCollisionDetectPrimitive.cpp
-        dtk/dtkCollisionDetectStage.cpp
         # dtk/dtkCollisionDetectStage.cpp.bak
         dtk/dtkErrorManager.cpp
         dtk/dtkGraphicsKernel.cpp
@@ -69,12 +69,12 @@ target_compile_definitions(${PROJECT_NAME}-shared PRIVATE
 target_include_directories(${PROJECT_NAME}-shared PRIVATE
         $<BUILD_INTERFACE:
         ${PROJECT_SOURCE_DIR}/src/dtk/include
+        ${PROJECT_SOURCE_DIR}/src/dtk/collision_detect/include
         ${PROJECT_SOURCE_DIR}/src/math/include
         ${PROJECT_SOURCE_DIR}/src/physics/include
         >
 
         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
-
 )
 
 # 打包动态库
@@ -107,6 +107,7 @@ add_library(${PROJECT_NAME}-static STATIC
 target_include_directories(${PROJECT_NAME}-static PRIVATE
         $<BUILD_INTERFACE:
         ${PROJECT_SOURCE_DIR}/src/dtk/include
+        ${PROJECT_SOURCE_DIR}/src/dtk/collision_detect/include
         ${PROJECT_SOURCE_DIR}/src/math/include
         ${PROJECT_SOURCE_DIR}/src/physics/include
         >
