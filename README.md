@@ -1,3 +1,8 @@
+[![codecov](https://codecov.io/gh/Simple-XX/SimplePhysicsEngine/graph/badge.svg?token=J7NKK3SBNJ)](https://codecov.io/gh/Simple-XX/SimplePhysicsEngine)
+![workflow](https://github.com/Simple-XX/SimplePhysicsEngine/actions/workflows/workflow.yml/badge.svg)
+![commit-activity](https://img.shields.io/github/commit-activity/t/Simple-XX/SimplePhysicsEngine)
+![last-commit-boot](https://img.shields.io/github/last-commit/Simple-XX/SimplePhysicsEngine/main)
+![MIT License](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 # (SimplePhysicsEngine) dtk
 
