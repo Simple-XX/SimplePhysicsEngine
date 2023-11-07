@@ -1,7 +1,7 @@
 
 /**
- * @file Grid.h
- * @briefGrid  头文件
+ * @file grid.h
+ * @brief grid  头文件
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
@@ -19,7 +19,7 @@
 
 #include <vector>
 
-#include "Particle.h"
+#include "particle.h"
 
 typedef std::vector<int> Cell;
 

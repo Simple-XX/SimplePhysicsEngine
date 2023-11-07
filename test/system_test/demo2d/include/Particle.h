@@ -1,7 +1,7 @@
 
 /**
- * @file Particle.h
- * @brief Particle 头文件
+ * @file particle.h
+ * @brief particle 头文件
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31

@@ -20,8 +20,8 @@
 #include <memory>
 #include <vector>
 
-#include "Grid.h"
-#include "Particle.h"
+#include "grid.h"
+#include "particle.h"
 
 enum class Visualization { Default, Velocity, Force, Density, Pressure, Water };
 

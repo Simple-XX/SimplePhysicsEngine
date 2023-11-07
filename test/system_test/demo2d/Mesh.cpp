@@ -14,7 +14,7 @@
  * </table>
  */
 
-#include "Mesh.h"
+#include "mesh.h"
 
 Mesh::Mesh() {}
 

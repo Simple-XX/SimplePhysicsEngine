@@ -17,8 +17,8 @@
 #include <cmath>
 #include <iostream>
 
-#include "Constants.h"
-#include "Grid.h"
+#include "constants.h"
+#include "grid.h"
 
 Grid::Grid() {
   numberCellsX = Constants::WIDTH / Constants::KERNEL_RANGE + 1;

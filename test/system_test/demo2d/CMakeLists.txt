@@ -9,10 +9,10 @@ project(demo2d)
 add_executable(${PROJECT_NAME}
         CollisionPair.cpp
         FemSimulation.cpp
-        Mesh.cpp
-        Grid.cpp
+        mesh.cpp
+        grid.cpp
         main.cpp
-        Particle.cpp
+        particle.cpp
         SPHSolver.cpp
 )
 

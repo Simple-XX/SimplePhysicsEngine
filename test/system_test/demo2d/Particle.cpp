@@ -14,8 +14,8 @@
  * </table>
  */
 
-#include "Particle.h"
-#include "Constants.h"
+#include "particle.h"
+#include "constants.h"
 
 Particle::Particle() { Particle(Vector2f()); }
 

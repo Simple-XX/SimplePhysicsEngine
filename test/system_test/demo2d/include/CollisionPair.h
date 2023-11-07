@@ -24,7 +24,7 @@
 
 #include <dtkRigidBody.h>
 
-#include "Mesh.h"
+#include "mesh.h"
 
 // 接触点
 struct ccontact {

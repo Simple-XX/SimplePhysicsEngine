@@ -1,7 +1,7 @@
 ﻿
 /**
- * @file Object.h
- * @brief Object 头文件
+ * @file object.h
+ * @brief object 头文件
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31

@@ -1,7 +1,7 @@
 ﻿
 /**
- * @file Mesh.h
- * @brief Mesh 头文件
+ * @file mesh.h
+ * @brief mesh 头文件
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
@@ -22,7 +22,7 @@
 #include <Eigen/Dense>
 #include <dtkRigidBody.h>
 
-#include "Object.h"
+#include "object.h"
 
 class Mesh : public Object {
 public:

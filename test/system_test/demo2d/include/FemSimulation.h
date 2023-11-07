@@ -28,8 +28,8 @@
 #include <dtkScene.h>
 
 #include "CollisionPair.h"
-#include "Constants.h"
-#include "Mesh.h"
+#include "constants.h"
+#include "mesh.h"
 #include "SPHSolver.h"
 
 struct Circle2 {

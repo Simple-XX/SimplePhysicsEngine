@@ -17,8 +17,8 @@
 #include <cmath>
 #include <iostream>
 
-#include "Constants.h"
 #include "SPHSolver.h"
+#include "constants.h"
 
 SPHSolver::SPHSolver() {
   int particlesX = Constants::NUMBER_PARTICLES / 2.0f;

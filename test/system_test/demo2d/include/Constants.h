@@ -1,7 +1,7 @@
 
 /**
- * @file Constants.h
- * @brief Constants 头文件
+ * @file constants.h
+ * @brief constants 头文件
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
