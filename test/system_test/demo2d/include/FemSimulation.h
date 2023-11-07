@@ -2,23 +2,17 @@
 /**
  * @file FemSimulation.h
  * @brief FemSimulation 头文件
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author tom (https://github.com/TOMsworkspace)
  * @version 1.0
- * @date 2023-10-31
+ * @date 2021-09-03
  * @copyright MIT LICENSE
  * https://github.com/Simple-XX/SimplePhysicsEngine
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-09-03<td>tom<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
- */
-
-/*
- * @Author: tom: https://github.com/TOMsworkspace
- * @Date: 2021-09-03 16:12:05
- * @Last Modified by: tom: https://github.com/TOMsworkspace
- * @Last Modified time: 2021-09-03 17:22:45
  */
 
 #ifndef SIMPLEPHYSICSENGINE_FEMSIMULATION_H
@@ -51,7 +45,7 @@ public:
   using body_list = std::vector<dtk::dtkRigidBody::ptr>;
   using mesh_list = std::vector<Mesh::ptr>;
   using joint_list = std::vector<dtk::dtkJoint::ptr>;
-  using pair_list = std::unordered_map<uint32_t, dtk::CollisionPair::ptr>;
+  using pair_list = std::unordered_map<uint32_t, CollisionPair::ptr>;
   using sph_list = std::vector<SPHSolver::ptr>;
 
   void add(dtk::dtkRigidBody::ptr body);
@@ -104,11 +98,11 @@ public:
                const dtk::dtkPolygonRigidBody::vertex_list &vertices,
                const dtk::dtkDouble2 &position = dtk::dtkDouble2());
   static dtk::dtkPolygonRigidBody::ptr make_fence(FemSimulation &world);
-  static dtk::CollisionPair::ptr
+  static CollisionPair::ptr
   make_arbiter(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
                const dtk::dtkDouble2 &normal,
-               const dtk::CollisionPair::contact_list &contacts =
-                   dtk::CollisionPair::contact_list());
+               const CollisionPair::contact_list &contacts =
+                   CollisionPair::contact_list());
   static dtk::dtkRevoluteJoint::ptr
   make_revolute_joint(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
                       const dtk::dtkDouble2 &anchor);

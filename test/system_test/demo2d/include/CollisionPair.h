@@ -26,8 +26,6 @@
 
 #include "Mesh.h"
 
-namespace dtk {
-
 // 接触点
 struct ccontact {
   // 位置
@@ -78,7 +76,5 @@ private:
   // 接触点列表
   contact_list _contacts;
 };
-
-} // namespace dtk
 
 #endif /* SIMPLEPHYSICSENGINE_COLLISIONPAIR_H */

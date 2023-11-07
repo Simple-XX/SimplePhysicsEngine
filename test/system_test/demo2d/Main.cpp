@@ -149,7 +149,7 @@ static void draw_joint(const dtk::dtkRevoluteJoint &joint) {
   glEnd();
 }
 
-static void draw_arbiter(const dtk::CollisionPair::ptr &pair) {
+static void draw_arbiter(const CollisionPair::ptr &pair) {
   auto &contacts = pair->get_contacts();
   for (auto &contact : contacts) {
     auto pos = contact.position;

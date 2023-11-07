@@ -20,8 +20,6 @@
 #include "CollisionPair.h"
 #include "FemSimulation.h"
 
-namespace dtk {
-
 ccontact::ccontact(const dtk::dtkPolygonRigidBody &b, size_t idx) {
   indices = {{idx, idx}};
   std::fill(from_a.begin(), from_a.end(), false);
@@ -304,12 +302,13 @@ void CollisionPair::do_collision_mr(Mesh::ptr &pa,
   // 处理mesh的顶点在刚体内的情况
   int pa_cnt = pa->shell->count();
   for (int i = 0; i < pa_cnt; i++) {
-    dtkDouble2 va = pa->shell->local_to_world((*pa->shell)[i]);
+    dtk::dtkDouble2 va = pa->shell->local_to_world((*pa->shell)[i]);
 
     size_t idx = nearest_edge(va, *pb);
-    dtkDouble2 Nb = normal(pb->edge(idx));
-    dtkDouble2 vb = pb->local_to_world((*pb)[idx]);
-    dtkDouble2 vb_next = pb->local_to_world((*pb)[(idx + 1) % pb->count()]);
+    dtk::dtkDouble2 Nb = normal(pb->edge(idx));
+    dtk::dtkDouble2 vb = pb->local_to_world((*pb)[idx]);
+    dtk::dtkDouble2 vb_next =
+        pb->local_to_world((*pb)[(idx + 1) % pb->count()]);
     double sep = dot((va - vb), Nb);
 
     bool within_edge =
@@ -334,12 +333,12 @@ void CollisionPair::do_collision_mr(Mesh::ptr &pa,
   // 处理刚体的顶点在mesh内的情况
   int pb_cnt = pb->count();
   for (int i = 0; i < pb_cnt; i++) {
-    dtkDouble2 vb = pb->local_to_world((*pb)[i]);
+    dtk::dtkDouble2 vb = pb->local_to_world((*pb)[i]);
 
     size_t idx = nearest_edge(vb, *(pa->shell));
-    dtkDouble2 Na = normal(pa->shell->edge(idx));
-    dtkDouble2 va = pa->shell->local_to_world((*pa->shell)[idx]);
-    dtkDouble2 va_next =
+    dtk::dtkDouble2 Na = normal(pa->shell->edge(idx));
+    dtk::dtkDouble2 va = pa->shell->local_to_world((*pa->shell)[idx]);
+    dtk::dtkDouble2 va_next =
         pa->shell->local_to_world((*pa->shell)[(idx + 1) % pa->shell->count()]);
     double sep = dot((vb - va), Na);
 
@@ -368,4 +367,3 @@ void CollisionPair::do_collision_mr(Mesh::ptr &pa,
     }
   }
 }
-} // namespace dtk

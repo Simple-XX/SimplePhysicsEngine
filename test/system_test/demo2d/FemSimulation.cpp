@@ -2,7 +2,7 @@
 /**
  * @file FemSimulation.cpp
  * @brief FemSimulation 实现
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author tom (https://github.com/TOMsworkspace)
  * @version 1.0
  * @date 2023-10-31
  * @copyright MIT LICENSE
@@ -10,15 +10,9 @@
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-09-03<td>tom<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
- */
-
-/*
- * @Author: tom: https://github.com/TOMsworkspace
- * @Date: 2021-09-03 15:32:52
- * @Last Modified by: tom: https://github.com/TOMsworkspace
- * @Last Modified time: 2021-09-03 19:17:13
  */
 
 #include <GL/freeglut.h>
@@ -88,7 +82,7 @@ void FemSimulation::step(double dt) {
         continue;
       }
       uint32_t id;
-      auto arbiter = dtk::CollisionPair::is_collide_rr(a, b, id);
+      auto arbiter = CollisionPair::is_collide_rr(a, b, id);
       auto iter = _arbiters.find(id);
       if (arbiter == nullptr) {
         if (iter != _arbiters.end()) {
@@ -131,7 +125,7 @@ void FemSimulation::step(double dt) {
       for (auto &body : _bodies) {
         auto poly_body =
             std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(body);
-        dtk::CollisionPair::do_collision_mr(mesh, poly_body);
+        CollisionPair::do_collision_mr(mesh, poly_body);
       }
       mesh->compute_force();
 
@@ -201,11 +195,11 @@ dtk::dtkPolygonRigidBody::ptr dtkFactory::make_fence(FemSimulation &world) {
   return ground;
 }
 
-dtk::CollisionPair::ptr
+CollisionPair::ptr
 dtkFactory::make_arbiter(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
                          const dtk::dtkDouble2 &normal,
-                         const dtk::CollisionPair::contact_list &contacts) {
-  return std::make_shared<dtk::CollisionPair>(a, b, normal, contacts);
+                         const CollisionPair::contact_list &contacts) {
+  return std::make_shared<CollisionPair>(a, b, normal, contacts);
 }
 
 dtk::dtkRevoluteJoint::ptr
