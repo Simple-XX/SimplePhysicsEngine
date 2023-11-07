@@ -16,7 +16,7 @@ include(GoogleTest)
 enable_language(CXX)
 
 include_directories(
-        ${SimplePhysicsEngine_SOURCE_DIR}/src/dtk/include
+        ${SimplePhysicsEngine_SOURCE_DIR}/src/include
         ${SimplePhysicsEngine_SOURCE_DIR}/src/math/include
         ${SimplePhysicsEngine_SOURCE_DIR}/src/physics/include
 )
