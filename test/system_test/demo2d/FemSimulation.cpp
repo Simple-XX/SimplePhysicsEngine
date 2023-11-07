@@ -1,7 +1,7 @@
 
 /**
- * @file dtkFemSimulation.cpp
- * @brief dtkFemSimulation 实现
+ * @file FemSimulation.cpp
+ * @brief FemSimulation 实现
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
@@ -20,75 +20,62 @@
  * @Last Modified by: tom: https://github.com/TOMsworkspace
  * @Last Modified time: 2021-09-03 19:17:13
  */
-/*
-#include <Eigen/Dense>
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-using namespace std;
-using namespace Eigen;*/
 
-#include "dtkFemSimulation.h"
+#include <GL/freeglut.h>
 
-#include "GL/freeglut.h"
+#include "FemSimulation.h"
 
 float deltat = 0.001;
 
 int iterate_time = 3;
 
-dtkFemSimulation::dtkFemSimulation(const dtk::dtkDouble2 &gravity)
+FemSimulation::FemSimulation(const dtk::dtkDouble2 &gravity)
     : spherecenter(0.4, 0.5), _gravity(gravity) {
   sphere.x = spherecenter[0];
   sphere.y = spherecenter[1];
 }
 
-void dtkFemSimulation::add(dtk::dtkRigidBody::ptr body) {
+void FemSimulation::add(dtk::dtkRigidBody::ptr body) {
   _bodies.push_back(body);
 }
 
-void dtkFemSimulation::add(dtk::dtkJoint::ptr joint) {
-  _joints.push_back(joint);
-}
+void FemSimulation::add(dtk::dtkJoint::ptr joint) { _joints.push_back(joint); }
 
-void dtkFemSimulation::add(dtkMesh::ptr mesh) {
+void FemSimulation::add(Mesh::ptr mesh) {
   mesh->Init();
   _meshes.push_back(mesh);
 }
 
-void dtkFemSimulation::add(SPHSolver::ptr sph) { _sphs.push_back(sph); }
+void FemSimulation::add(SPHSolver::ptr sph) { _sphs.push_back(sph); }
 
-const dtk::dtkDouble2 &dtkFemSimulation::get_gravity() const {
-  return _gravity;
-}
+const dtk::dtkDouble2 &FemSimulation::get_gravity() const { return _gravity; }
 
-const dtkFemSimulation::body_list &dtkFemSimulation::get_bodies() const {
+const FemSimulation::body_list &FemSimulation::get_bodies() const {
   return _bodies;
 }
 
-const dtkFemSimulation::joint_list &dtkFemSimulation::get_joints() const {
+const FemSimulation::joint_list &FemSimulation::get_joints() const {
   return _joints;
 }
 
-const dtkFemSimulation::pair_list &dtkFemSimulation::get_arbiters() const {
+const FemSimulation::pair_list &FemSimulation::get_arbiters() const {
   return _arbiters;
 }
 
-const dtkFemSimulation::mesh_list &dtkFemSimulation::get_meshes() const {
+const FemSimulation::mesh_list &FemSimulation::get_meshes() const {
   return _meshes;
 }
 
-const dtkFemSimulation::sph_list &dtkFemSimulation::get_sphs() const {
-  return _sphs;
-}
+const FemSimulation::sph_list &FemSimulation::get_sphs() const { return _sphs; }
 
-void dtkFemSimulation::move(const dtk::dtkDouble2 &v) {
+void FemSimulation::move(const dtk::dtkDouble2 &v) {
   for (auto &body : _bodies) {
     if (body->get_inv_mass() > 0)
       body->update_impulse(v * body->get_inv_mass(), dtk::dtkDouble2());
   }
 }
 
-void dtkFemSimulation::step(double dt) {
+void FemSimulation::step(double dt) {
   if (_pause)
     return;
   // 碰撞检测
@@ -101,7 +88,7 @@ void dtkFemSimulation::step(double dt) {
         continue;
       }
       uint32_t id;
-      auto arbiter = dtk::dtkCollisionPair::is_collide_rr(a, b, id);
+      auto arbiter = dtk::CollisionPair::is_collide_rr(a, b, id);
       auto iter = _arbiters.find(id);
       if (arbiter == nullptr) {
         if (iter != _arbiters.end()) {
@@ -144,7 +131,7 @@ void dtkFemSimulation::step(double dt) {
       for (auto &body : _bodies) {
         auto poly_body =
             std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(body);
-        dtk::dtkCollisionPair::do_collision_mr(mesh, poly_body);
+        dtk::CollisionPair::do_collision_mr(mesh, poly_body);
       }
       mesh->compute_force();
 
@@ -165,7 +152,7 @@ void dtkFemSimulation::step(double dt) {
   }
 }
 
-void dtkFemSimulation::clear() {
+void FemSimulation::clear() {
   _arbiters.clear();
   _joints.clear();
   _bodies.clear();
@@ -173,9 +160,9 @@ void dtkFemSimulation::clear() {
   _sphs.clear();
 }
 
-bool dtkFemSimulation::is_pause() const { return _pause; }
+bool FemSimulation::is_pause() const { return _pause; }
 
-void dtkFemSimulation::set_pause(bool pause) { _pause = pause; }
+void FemSimulation::set_pause(bool pause) { _pause = pause; }
 
 // 工厂
 static uint16_t global_id = 1;
@@ -205,7 +192,7 @@ dtkFactory::make_polygon(double mass,
   return body;
 }
 
-dtk::dtkPolygonRigidBody::ptr dtkFactory::make_fence(dtkFemSimulation &world) {
+dtk::dtkPolygonRigidBody::ptr dtkFactory::make_fence(FemSimulation &world) {
   auto ground = make_box(dtk::inf, 20, 1, {0, -0.5});
   world.add(ground);
   world.add(make_box(dtk::inf, 20, 1, {0, 16.5}));
@@ -214,11 +201,11 @@ dtk::dtkPolygonRigidBody::ptr dtkFactory::make_fence(dtkFemSimulation &world) {
   return ground;
 }
 
-dtk::dtkCollisionPair::ptr
+dtk::CollisionPair::ptr
 dtkFactory::make_arbiter(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
                          const dtk::dtkDouble2 &normal,
-                         const dtk::dtkCollisionPair::contact_list &contacts) {
-  return std::make_shared<dtk::dtkCollisionPair>(a, b, normal, contacts);
+                         const dtk::CollisionPair::contact_list &contacts) {
+  return std::make_shared<dtk::CollisionPair>(a, b, normal, contacts);
 }
 
 dtk::dtkRevoluteJoint::ptr
@@ -228,10 +215,10 @@ dtkFactory::make_revolute_joint(dtk::dtkRigidBody::ptr a,
   return std::make_shared<dtk::dtkRevoluteJoint>(a, b, anchor);
 }
 
-dtkMesh::ptr dtkFactory::make_mesh(int n_x_node, int n_y_node,
-                                   const dtk::dtkDouble2 &position) {
-  return std::make_shared<dtkMesh>(global_id++, n_x_node, n_y_node,
-                                   Vector2f(position.x, position.y));
+Mesh::ptr dtkFactory::make_mesh(int n_x_node, int n_y_node,
+                                const dtk::dtkDouble2 &position) {
+  return std::make_shared<Mesh>(global_id++, n_x_node, n_y_node,
+                                Eigen::Vector2f(position.x, position.y));
 }
 
 SPHSolver::ptr dtkFactory::make_sph() { return std::make_shared<SPHSolver>(); }

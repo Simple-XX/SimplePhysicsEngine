@@ -7,13 +7,11 @@
 project(demo2d)
 
 add_executable(${PROJECT_NAME}
-        Constants.cpp
-        dtkCollisionPair.cpp
-        dtkFemSimulation.cpp
-        dtkMesh.cpp
-        dtkObject.cpp
+        CollisionPair.cpp
+        FemSimulation.cpp
+        Mesh.cpp
         Grid.cpp
-        Main.cpp
+        main.cpp
         Particle.cpp
         SPHSolver.cpp
 )

@@ -14,37 +14,30 @@
  * </table>
  */
 
-#include "SPHSolver.h"
 #include <cmath>
 #include <iostream>
 
 #include "Constants.h"
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846f
-#endif
-
-using namespace std;
-using namespace Constants;
+#include "SPHSolver.h"
 
 SPHSolver::SPHSolver() {
-  int particlesX = NUMBER_PARTICLES / 2.0f;
-  int particlesY = NUMBER_PARTICLES;
+  int particlesX = Constants::NUMBER_PARTICLES / 2.0f;
+  int particlesY = Constants::NUMBER_PARTICLES;
 
   numberParticles = particlesX * particlesY;
-  particles = vector<Particle>();
+  particles = std::vector<Particle>();
 
-  float width = WIDTH / 4.2f;
-  float height = 2.0f * HEIGHT / 4.0f;
+  float width = Constants::WIDTH / 4.2f;
+  float height = 2.0f * Constants::HEIGHT / 4.0f;
 
   float dx = width / particlesX;
   float dy = height / particlesY;
 
-  for (int i = 0; i < NUMBER_PARTICLES / 2.0f; i++) {
-    for (int j = 0; j < NUMBER_PARTICLES; j++) {
-      Eigen::Vector2f pos =
-          Eigen::Vector2f((WIDTH - width) / 2, (HEIGHT - height) / 2) +
-          Eigen::Vector2f(i * dx, j * dy);
+  for (int i = 0; i < Constants::NUMBER_PARTICLES / 2.0f; i++) {
+    for (int j = 0; j < Constants::NUMBER_PARTICLES; j++) {
+      Eigen::Vector2f pos = Eigen::Vector2f((Constants::WIDTH - width) / 2,
+                                            (Constants::HEIGHT - height) / 2) +
+                            Eigen::Vector2f(i * dx, j * dy);
 
       Particle p = Particle(pos);
       particles.push_back(p);
@@ -53,8 +46,8 @@ SPHSolver::SPHSolver() {
 
   grid.updateStructure(particles);
 
-  cout << "SPH Solver initialized with " << numberParticles << " particles."
-       << endl;
+  std::cout << "SPH Solver initialized with " << numberParticles
+            << " particles." << std::endl;
 }
 
 void SPHSolver::repulsionForce(Eigen::Vector2f position) {
@@ -63,7 +56,7 @@ void SPHSolver::repulsionForce(Eigen::Vector2f position) {
     // Vector2f x = Vector2f(x1[0], x1[1]);
     float dist2 = x[0] * x[0] + x[1] * x[1];
 
-    if (dist2 < KERNEL_RANGE * 3) {
+    if (dist2 < Constants::KERNEL_RANGE * 3) {
       particles[i].force += x * 800000.0f * particles[i].density;
     }
   }
@@ -76,7 +69,7 @@ void SPHSolver::attractionForce(Eigen::Vector2f position) {
     // Vector2f x = Vector2f(x1[0], x1[1]);
     float dist2 = x[0] * x[0] + x[1] * x[1];
 
-    if (dist2 < KERNEL_RANGE * 3) {
+    if (dist2 < Constants::KERNEL_RANGE * 3) {
       particles[i].force += x * 800000.0f * particles[i].density;
     }
   }
@@ -127,12 +120,12 @@ float SPHSolver::laplaceKernel(Eigen::Vector2f x, float h) {
 }
 
 void SPHSolver::findNeighborhoods() {
-  neighborhoods = vector<vector<int>>();
-  float maxDist2 = KERNEL_RANGE * KERNEL_RANGE;
+  neighborhoods = std::vector<std::vector<int>>();
+  float maxDist2 = Constants::KERNEL_RANGE * Constants::KERNEL_RANGE;
 
   for (const Particle &p : particles) {
-    vector<int> neighbors = vector<int>();
-    vector<Cell> neighboringCells = grid.getNeighboringCells(p.position);
+    std::vector<int> neighbors = std::vector<int>();
+    std::vector<Cell> neighboringCells = grid.getNeighboringCells(p.position);
 
     for (const Cell &cell : neighboringCells) {
       for (int index : cell) {
@@ -150,14 +143,14 @@ void SPHSolver::findNeighborhoods() {
 
 void SPHSolver::calculateDensity() {
   for (int i = 0; i < numberParticles; i++) {
-    vector<int> neighbors = neighborhoods[i];
+    std::vector<int> neighbors = neighborhoods[i];
     float densitySum = 0.0f;
 
     for (int n = 0; n < neighbors.size(); n++) {
       int j = neighbors[n];
       Eigen::Vector2f x = particles[i].position - particles[j].position;
-      ;
-      densitySum += particles[j].mass * kernel(x, KERNEL_RANGE);
+
+      densitySum += particles[j].mass * kernel(x, Constants::KERNEL_RANGE);
     }
 
     particles[i].density = densitySum;
@@ -166,8 +159,9 @@ void SPHSolver::calculateDensity() {
 
 void SPHSolver::calculatePressure() {
   for (int i = 0; i < numberParticles; i++) {
-    particles[i].pressure =
-        max(STIFFNESS * (particles[i].density - REST_DENSITY), 0.0f);
+    particles[i].pressure = std::max(
+        Constants::STIFFNESS * (particles[i].density - Constants::REST_DENSITY),
+        0.0f);
   }
 }
 
@@ -177,7 +171,7 @@ void SPHSolver::calculateForceDensity() {
     Eigen::Vector2f fViscosity = Eigen::Vector2f(0.0f, 0.0f);
     Eigen::Vector2f fGravity = Eigen::Vector2f(0.0f, 0.0f);
 
-    vector<int> neighbors = neighborhoods[i];
+    std::vector<int> neighbors = neighborhoods[i];
 
     // particles[i].color = 0;
 
@@ -186,21 +180,21 @@ void SPHSolver::calculateForceDensity() {
       Eigen::Vector2f x = particles[i].position - particles[j].position;
 
       // Pressure force density
-      Eigen::Vector2f res = gradKernel(x, KERNEL_RANGE);
+      Eigen::Vector2f res = gradKernel(x, Constants::KERNEL_RANGE);
       fPressure += particles[j].mass *
                    (particles[i].pressure + particles[j].pressure) /
                    (2.0f * particles[j].density) * res;
 
       // Viscosity force density
-      fViscosity += particles[j].mass *
-                    (particles[j].velocity - particles[i].velocity) /
-                    particles[j].density * laplaceKernel(x, KERNEL_RANGE);
+      fViscosity +=
+          particles[j].mass * (particles[j].velocity - particles[i].velocity) /
+          particles[j].density * laplaceKernel(x, Constants::KERNEL_RANGE);
     }
 
     // Gravitational force density
-    fGravity = particles[i].density * Eigen::Vector2f(0, GRAVITY);
+    fGravity = particles[i].density * Eigen::Vector2f(0, Constants::GRAVITY);
     fPressure *= -1.0f;
-    fViscosity *= VISCOCITY;
+    fViscosity *= Constants::VISCOCITY;
 
     particles[i].force += fPressure + fViscosity + fGravity;
   }
@@ -218,16 +212,16 @@ void SPHSolver::collisionHandling() {
     if (particles[i].position[0] < 0.0f) {
       particles[i].position[0] = 0.0f;
       particles[i].velocity[0] *= -0.5f;
-    } else if (particles[i].position[0] > WIDTH) {
-      particles[i].position[0] = WIDTH;
+    } else if (particles[i].position[0] > Constants::WIDTH) {
+      particles[i].position[0] = Constants::WIDTH;
       particles[i].velocity[0] *= -0.5f;
     }
 
     if (particles[i].position[1] < 0.0f) {
       particles[i].position[1] = 0.0f;
       particles[i].velocity[1] *= -0.5f;
-    } else if (particles[i].position[1] > HEIGHT) {
-      particles[i].position[1] = HEIGHT;
+    } else if (particles[i].position[1] > Constants::HEIGHT) {
+      particles[i].position[1] = Constants::HEIGHT;
       particles[i].velocity[1] *= -0.5f;
     }
   }

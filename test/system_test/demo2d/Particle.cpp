@@ -15,7 +15,6 @@
  */
 
 #include "Particle.h"
-
 #include "Constants.h"
 
 Particle::Particle() { Particle(Vector2f()); }

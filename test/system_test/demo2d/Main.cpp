@@ -1,7 +1,7 @@
 ﻿
 /**
- * @file Main.cpp
- * @brief Main 实现
+ * @file main.cpp
+ * @brief main 实现
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
@@ -19,9 +19,9 @@
 #include <iostream>
 
 #include <GL/freeglut.h>
+#include <dtkScene.h>
 
-#include "dtkFemSimulation.h"
-#include "dtkScene.h"
+#include "FemSimulation.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
 
@@ -29,7 +29,7 @@ static auto last_clock = std::chrono::high_resolution_clock::now();
 const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 600;
-static dtkFemSimulation world({0, -9.8});
+static FemSimulation world({0, -9.8});
 
 static void draw_text(int x, int y, const char *format, ...) {
   glMatrixMode(GL_PROJECTION);
@@ -99,7 +99,7 @@ static void draw_body(const dtk::dtkPolygonRigidBody &body) {
   }
 }
 
-static void draw_mesh(const dtkMesh &mesh) {
+static void draw_mesh(const Mesh &mesh) {
   glColor3f(0.8f, 0.8f, 0.0f);
   glBegin(GL_LINES);
   for (int i = 0; i < mesh.n_fem_element_; ++i) {
@@ -116,7 +116,7 @@ static void draw_mesh(const dtkMesh &mesh) {
   glEnd();
 }
 
-static void draw_mesh_shell(const dtkMesh &mesh) {
+static void draw_mesh_shell(const Mesh &mesh) {
   glColor3f(0.8f, 0.0f, 0.0f);
 
   glBegin(GL_LINE_LOOP);
@@ -149,7 +149,7 @@ static void draw_joint(const dtk::dtkRevoluteJoint &joint) {
   glEnd();
 }
 
-static void draw_arbiter(const dtk::dtkCollisionPair::ptr &pair) {
+static void draw_arbiter(const dtk::CollisionPair::ptr &pair) {
   auto &contacts = pair->get_contacts();
   for (auto &contact : contacts) {
     auto pos = contact.position;
@@ -321,8 +321,8 @@ void display() {
   }
 
   for (auto &mesh : world.get_meshes()) {
-    draw_mesh(*std::dynamic_pointer_cast<dtkMesh>(mesh).get());
-    draw_mesh_shell(*std::dynamic_pointer_cast<dtkMesh>(mesh).get());
+    draw_mesh(*std::dynamic_pointer_cast<Mesh>(mesh).get());
+    draw_mesh_shell(*std::dynamic_pointer_cast<Mesh>(mesh).get());
   }
 
   for (auto &sph : world.get_sphs()) {
@@ -389,8 +389,7 @@ void keyboard(unsigned char key, int x, int y) {
     world.set_pause(!world.is_pause());
     break;
   case 27:
-    /// @todo not found
-    // glutLeaveMainLoop();
+    exit(0);
     break;
   default:
     break;

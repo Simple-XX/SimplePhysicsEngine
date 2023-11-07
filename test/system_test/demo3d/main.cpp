@@ -212,7 +212,7 @@ void keyboard(unsigned char key, int x, int y) {
       break;
     }
   case 27:
-    // glutLeaveMainLoop();
+    exit(0);
     break;
   default:
     break;

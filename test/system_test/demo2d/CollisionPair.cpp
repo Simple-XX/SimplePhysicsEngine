@@ -1,7 +1,7 @@
 
 /**
- * @file dtkCollisionPair.cpp
- * @brief dtkCollisionPair 实现
+ * @file CollisionPair.cpp
+ * @brief CollisionPair 实现
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
@@ -14,11 +14,11 @@
  * </table>
  */
 
-#include "dtkCollisionPair.h"
-#include "dtkFemSimulation.h"
-
 #include <algorithm>
 #include <cassert>
+
+#include "CollisionPair.h"
+#include "FemSimulation.h"
 
 namespace dtk {
 
@@ -44,21 +44,21 @@ bool ccontact::operator!=(const ccontact &other) const {
 // ---------------------------------------------------
 // pair
 
-dtkCollisionPair::dtkCollisionPair(
-    dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
-    const dtk::dtkDouble2 &normal,
-    const dtkCollisionPair::contact_list &contacts)
+CollisionPair::CollisionPair(dtk::dtkRigidBody::ptr a, dtk::dtkRigidBody::ptr b,
+                             const dtk::dtkDouble2 &normal,
+                             const CollisionPair::contact_list &contacts)
     : _a(a), _b(b), _normal(normal), _contacts(contacts) {}
 
-const dtkCollisionPair::contact_list &dtkCollisionPair::get_contacts() const {
+const CollisionPair::contact_list &CollisionPair::get_contacts() const {
   return _contacts;
 }
 
-const dtk::dtkDouble2 &dtkCollisionPair::get_normal() const { return _normal; }
+const dtk::dtkDouble2 &CollisionPair::get_normal() const { return _normal; }
 
-void dtkCollisionPair::pre_step(double dt) {
+void CollisionPair::pre_step(double dt) {
   static const double kAllowedPenetration = 0.01;
-  static const double kBiasFactor = 0.2; // 弹性碰撞系数，1.0为完全弹性碰撞
+  // 弹性碰撞系数，1.0为完全弹性碰撞
+  static const double kBiasFactor = 0.2;
   auto tangent = normal(_normal);
   auto a = _a.lock();
   auto b = _b.lock();
@@ -83,7 +83,7 @@ void dtkCollisionPair::pre_step(double dt) {
   }
 }
 
-void dtkCollisionPair::update_impulse() {
+void CollisionPair::update_impulse() {
   auto tangent = normal(_normal);
   auto a = _a.lock();
   auto b = _b.lock();
@@ -111,7 +111,7 @@ void dtkCollisionPair::update_impulse() {
   }
 }
 
-void dtkCollisionPair::update(const dtkCollisionPair &old_arbiter) {
+void CollisionPair::update(const CollisionPair &old_arbiter) {
   const auto &old_contacts = old_arbiter._contacts;
   auto tangent = normal(_normal);
   auto a = _a.lock();
@@ -130,7 +130,7 @@ void dtkCollisionPair::update(const dtkCollisionPair &old_arbiter) {
   }
 }
 
-void dtkCollisionPair::add_contact(const ccontact &contact) {
+void CollisionPair::add_contact(const ccontact &contact) {
   _contacts.push_back(contact);
 }
 
@@ -150,17 +150,18 @@ static size_t incident_edge(const dtk::dtkDouble2 &N,
     auto _dot = dot(edge_normal, N);
     // 找出最小投影，即最小间隙
     if (_dot < min_dot) {
-      min_dot = _dot; // 最小间隙
-      idx = i;        // 返回索引
+      // 最小间隙
+      min_dot = _dot;
+      // 返回索引
+      idx = i;
     }
   }
   return idx;
 }
 
-static size_t clip(dtkCollisionPair::contact_list &contacts_out,
-                   const dtkCollisionPair::contact_list &contacts_in,
-                   size_t idx, const dtk::dtkDouble2 &v0,
-                   const dtk::dtkDouble2 &v1) {
+static size_t clip(CollisionPair::contact_list &contacts_out,
+                   const CollisionPair::contact_list &contacts_in, size_t idx,
+                   const dtk::dtkDouble2 &v0, const dtk::dtkDouble2 &v1) {
   size_t num_out = 0;
   // 得到A物体的边v0_v1的单位向量
   auto N = normalize((v1 - v0));
@@ -176,7 +177,8 @@ static size_t clip(dtkCollisionPair::contact_list &contacts_out,
     // v0_B1 与 N 共线或顺时针
     contacts_out[num_out++] = contacts_in[1];
   }
-  if (dist0 * dist1 < 0) { // 一正一负
+  // 一正一负
+  if (dist0 * dist1 < 0) {
     auto total_dist = dist0 - dist1;
     auto v =
         (contacts_in[0].position * -dist1 + contacts_in[1].position * dist0) /
@@ -192,10 +194,9 @@ static size_t clip(dtkCollisionPair::contact_list &contacts_out,
   return num_out;
 }
 
-dtkCollisionPair::ptr
-dtkCollisionPair::is_collide_rr(dtk::dtkPolygonRigidBody::ptr &pa,
-                                dtk::dtkPolygonRigidBody::ptr &pb,
-                                uint32_t &id) {
+CollisionPair::ptr
+CollisionPair::is_collide_rr(dtk::dtkPolygonRigidBody::ptr &pa,
+                             dtk::dtkPolygonRigidBody::ptr &pb, uint32_t &id) {
   auto _pa = &pa;
   auto _pb = &pb;
   size_t ia, ib;
@@ -231,7 +232,7 @@ dtkCollisionPair::is_collide_rr(dtk::dtkPolygonRigidBody::ptr &pa,
   // 关节列表，暂时认为边 idx-next_idx 是包括在重叠部分中的
   // 下面需要判断B物体其余边是否与A物体重叠
 
-  dtkCollisionPair::contact_list contacts = {
+  CollisionPair::contact_list contacts = {
       {b, prev_idx}, {b, idx}, {b, next_idx}};
   auto clipped_contacts = contacts;
   // 遍历A物体
@@ -279,15 +280,17 @@ static size_t nearest_edge(const dtk::dtkDouble2 &pos,
     auto _dot = abs(dot(edge_normal, P));
     // 找出最小投影，即最小间隙
     if (_dot < min_dot) {
-      min_dot = _dot; // 最小间隙
-      idx = i;        // 返回索引
+      // 最小间隙
+      min_dot = _dot;
+      // 返回索引
+      idx = i;
     }
   }
   return idx;
 }
 
-void dtkCollisionPair::do_collision_mr(dtkMesh::ptr &pa,
-                                       dtk::dtkPolygonRigidBody::ptr &pb) {
+void CollisionPair::do_collision_mr(Mesh::ptr &pa,
+                                    dtk::dtkPolygonRigidBody::ptr &pb) {
   // 当且仅当SAT全为负，则表示相交
   size_t ia, ib;
   double sa, sb;
@@ -316,9 +319,10 @@ void dtkCollisionPair::do_collision_mr(dtkMesh::ptr &pa,
       int mesh_index = pa->vertex(i);
       auto velocity_a = pa->points_v_[mesh_index];
       auto pos_a = pa->points_[mesh_index];
-      Vector2f vn(Nb.x, Nb.y);
-      Vector2f vl(vn[1], -vn[0]);
-      Vector2f va_n = velocity_a.dot(vn) * vn, va_l = velocity_a.dot(vl) * vl;
+      Eigen::Vector2f vn(Nb.x, Nb.y);
+      Eigen::Vector2f vl(vn[1], -vn[0]);
+      Eigen::Vector2f va_n = velocity_a.dot(vn) * vn,
+                      va_l = velocity_a.dot(vl) * vl;
       va_n *= -0.1;
       velocity_a = va_n + va_l;
 
@@ -348,17 +352,17 @@ void dtkCollisionPair::do_collision_mr(dtkMesh::ptr &pa,
       int mesh_index1 = pa->vertex(idx), mesh_index2 = pa->vertex(ia2);
       double l1 = length((*pa->shell)[idx] - vb),
              l2 = length((*pa->shell)[ia2] - vb);
-      Vector2f vn(Na.x, Na.y);
-      Vector2f v_sum =
+      Eigen::Vector2f vn(Na.x, Na.y);
+      Eigen::Vector2f v_sum =
           ((pa->points_v_[mesh_index1] + pa->points_v_[mesh_index2]).dot(vn)) *
           vn;
       pa->points_v_[mesh_index1] = -(l2 / (l1 + l2)) * v_sum;
       pa->points_v_[mesh_index2] = -(l1 / (l1 + l2)) * v_sum;
 
       auto B1 = pa->points_[mesh_index1], B2 = pa->points_[mesh_index2];
-      auto P = Vector2f(vb.x, vb.y);
+      auto P = Eigen::Vector2f(vb.x, vb.y);
       auto B1B2 = B2 - B1;
-      Vector2f P1 = (P - B1).dot(B1B2) * B1B2 / pow(B1B2.norm(), 2) + B1;
+      Eigen::Vector2f P1 = (P - B1).dot(B1B2) * B1B2 / pow(B1B2.norm(), 2) + B1;
       pa->points_[mesh_index1] = B1 + (P - P1);
       pa->points_[mesh_index2] = B2 + (P - P1);
     }

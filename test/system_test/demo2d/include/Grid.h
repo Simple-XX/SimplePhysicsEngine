@@ -17,8 +17,9 @@
 #ifndef SIMPLEPHYSICSENGINE_GRID_H
 #define SIMPLEPHYSICSENGINE_GRID_H
 
-#include "Particle.h"
 #include <vector>
+
+#include "Particle.h"
 
 typedef std::vector<int> Cell;
 

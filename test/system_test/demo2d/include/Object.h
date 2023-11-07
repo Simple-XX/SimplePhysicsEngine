@@ -1,7 +1,7 @@
 ﻿
 /**
- * @file dtkObject.cpp
- * @brief dtkObject 实现
+ * @file Object.h
+ * @brief Object 头文件
  * @author Zone.N (Zone.Niuzh@hotmail.com)
  * @version 1.0
  * @date 2023-10-31
@@ -14,4 +14,17 @@
  * </table>
  */
 
-#include "dtkObject.h"
+#ifndef SIMPLEPHYSICSENGINE_OBJECT_H
+#define SIMPLEPHYSICSENGINE_OBJECT_H
+
+#include <Eigen/Dense>
+
+class Object {
+protected:
+  Eigen::Vector2f center;
+
+public:
+  virtual void Init() = 0;
+};
+
+#endif /* SIMPLEPHYSICSENGINE_OBJECT_H */
