@@ -51,9 +51,9 @@ add_subdirectory(unit_test)
 add_subdirectory(system_test)
 
 # @bug 在 osx 下无法正常执行 lcov
-add_coverage_target(
-        DEPENDS unit_test
-        SOURCE_DIR ${SimplePhysicsEngine_SOURCE_DIR}
-        BINARY_DIR ${SimplePhysicsEngine_BINARY_DIR}
-        EXCLUDE_DIR ${SimplePhysicsEngine_SOURCE_DIR}/3rd/*
-)
+# add_coverage_target(
+#         DEPENDS unit_test
+#         SOURCE_DIR ${SimplePhysicsEngine_SOURCE_DIR}
+#         BINARY_DIR ${SimplePhysicsEngine_BINARY_DIR}
+#         EXCLUDE_DIR ${SimplePhysicsEngine_SOURCE_DIR}/3rd/*
+# )
