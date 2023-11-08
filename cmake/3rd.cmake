@@ -70,17 +70,6 @@ if (Eigen_ADDED)
     target_include_directories(Eigen INTERFACE ${Eigen_SOURCE_DIR})
 endif ()
 
-# https://www.glfw.org
-CPMAddPackage(
-        NAME GLFW
-        GITHUB_REPOSITORY glfw/glfw
-        GIT_TAG 3.3.8
-        OPTIONS
-        "GLFW_BUILD_TESTS OFF"
-        "GLFW_BUILD_EXAMPLES OFF"
-        "GLFW_BULID_DOCS OFF"
-)
-
 # https://github.com/TheLartians/PackageProject.cmake
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.11.0")
 
@@ -223,6 +212,11 @@ endif ()
 find_package(glm REQUIRED)
 if (NOT glm_FOUND)
     message(FATAL_ERROR "glm not found.\n"
-            "Following https://vtk.org/ to install.")
+            "Following https://github.com/g-truc/glm to install.")
 endif ()
-# target_link_libraries(<your executable> glm::glm)
+
+find_package(glfw3 REQUIRED)
+if (NOT glfw3_FOUND)
+    message(FATAL_ERROR "glfw3 not found.\n"
+            "Following https://www.glfw.org to install.")
+endif ()
