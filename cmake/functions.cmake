@@ -40,12 +40,11 @@ function(add_coverage_target)
             -o ${COVERAGE_OUTPUT_DIR}/coverage.info
             -d ${ARG_BINARY_DIR}
             -b ${ARG_SOURCE_DIR}
-            --no-external
             ${EXCLUDES}
-            --rc lcov_branch_coverage=1
             COMMAND ${GENHTML_EXE}
             ${COVERAGE_OUTPUT_DIR}/coverage.info
             -o ${COVERAGE_OUTPUT_DIR}
             --branch-coverage
+            --function-coverage
     )
 endfunction()
