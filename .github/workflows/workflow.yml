@@ -77,4 +77,5 @@ jobs:
         run: |
           cmake --preset=build
           cmake --build build --target all
-          cmake --build build --target coverage
+# @bug 在 osx 下无法正常执行 lcov
+# cmake --build build --target coverage
