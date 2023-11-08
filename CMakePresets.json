@@ -45,9 +45,9 @@
           "type": "STRING",
           "value": "${sourceDir}/build/coverage"
         },
-        "VTK_OPT": {
+        "CGAL_DO_NOT_WARN_ABOUT_CMAKE_BUILD_TYPE": {
           "type": "BOOL",
-          "value": "FALSE"
+          "value": "TRUE"
         }
       }
     },

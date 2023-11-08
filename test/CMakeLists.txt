@@ -50,6 +50,7 @@ add_subdirectory(unit_test)
 #add_subdirectory(integration_test)
 add_subdirectory(system_test)
 
+# @bug 在 osx 下无法正常执行 lcov
 add_coverage_target(
         DEPENDS unit_test
         SOURCE_DIR ${SimplePhysicsEngine_SOURCE_DIR}
