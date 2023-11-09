@@ -25,12 +25,14 @@
  *
  */
 
-#include "GL/freeglut.h"
-#include "dtkFemSimulation.h"
 #include <chrono>
 #include <cmath>
 #include <iostream>
 #include <thread>
+
+#include "GL/freeglut.h"
+
+#include "FemSimulation.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
 
@@ -39,7 +41,7 @@ const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 600;
 
-dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+FemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 #ifdef USE_VTK
 
@@ -224,11 +226,11 @@ void gl_vis(int argc, char *argv[]) {
   glutInitWindowSize(800, 600);
   glutInitWindowPosition(50, 50);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-  glutCreateWindow("Physics Engine -- dtk");
-  glutKeyboardFunc(&keyboard);
-  Breakout.Init();
+  glutCreateWindow("SimplePhysicsEngine-ST-demo3d");
   glutDisplayFunc(&display);
   glutReshapeFunc(&reshape);
+  glutKeyboardFunc(&keyboard);
+  Breakout.Init();
   glutIdleFunc(&idle);
   // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
   glutMainLoop();

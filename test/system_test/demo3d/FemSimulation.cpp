@@ -37,7 +37,7 @@ using namespace Eigen;
 // #include <irrklang/irrKlang.h>
 // using namespace irrklang;
 
-#include "dtkFemSimulation.h"
+#include "FemSimulation.h"
 
 #include "GL/freeglut.h"
 
@@ -71,13 +71,13 @@ inline int mesh(int i, int j, int k) {
   return k * (n_node_y * n_node_x) + j * n_node_x + i;
 }
 
-dtkFemSimulation::dtkFemSimulation(unsigned int width, unsigned int height)
-    : dtkScene(width, height), points(n_node), pre_points(n_node),
+FemSimulation::FemSimulation(unsigned int width, unsigned int height)
+    : Scene(width, height), points(n_node), pre_points(n_node),
       points_v(n_node), points_force(n_node), B(n_fem_element),
       PyramidTable(n_fem_element, std::vector<int>(4, 0)),
       sphere(0.5, 0.5, 0.0, radius), total_energy(0), pre_total_energy(0) {}
 
-Matrix3f dtkFemSimulation::compute_D(int i) {
+Matrix3f FemSimulation::compute_D(int i) {
   int a = PyramidTable[i][0];
   int b = PyramidTable[i][1];
   int c = PyramidTable[i][2];
@@ -98,14 +98,14 @@ Matrix3f dtkFemSimulation::compute_D(int i) {
   return ans;
 }
 
-void dtkFemSimulation::compute_B() {
+void FemSimulation::compute_B() {
   for (int i = 0; i < n_fem_element; ++i) {
     this->B[i] = compute_D(i).inverse();
     // cout << setw(6) << B[i] << endl;
   }
 }
 
-Matrix3f dtkFemSimulation::compute_P(int i) {
+Matrix3f FemSimulation::compute_P(int i) {
   Matrix3f D = compute_D(i);
   Matrix3f F = D * B[i];
 
@@ -117,7 +117,7 @@ Matrix3f dtkFemSimulation::compute_P(int i) {
   // Matrix2f ans = D * this->B[i];
 }
 
-void dtkFemSimulation::compute_total_energy() {
+void FemSimulation::compute_total_energy() {
 
   this->total_energy = 0.0f;
   for (int i = 0; i < n_fem_element; ++i) {
@@ -137,9 +137,9 @@ void dtkFemSimulation::compute_total_energy() {
   }
 }
 
-dtkFemSimulation::~dtkFemSimulation() {}
+FemSimulation::~FemSimulation() {}
 
-void dtkFemSimulation::InitShell() {
+void FemSimulation::InitShell() {
   int scale = 1;
   // 面x=x_min，x=x_max
   for (int i = 0; i < n_node_y - scale; i += scale) {
@@ -181,8 +181,8 @@ void dtkFemSimulation::InitShell() {
   }
 }
 
-void dtkFemSimulation::Init() {
-  dtkScene::Init();
+void FemSimulation::Init() {
+  Scene::Init();
   // TODO: load shaders
 
   // TODO: configure shaders
@@ -259,7 +259,7 @@ void dtkFemSimulation::Init() {
   // TODO: audio
 }
 
-void dtkFemSimulation::compute_force() {
+void FemSimulation::compute_force() {
   for (int i = 0; i < n_node; ++i) {
     this->points_force[i] = Vector3f(0.0f, -10.0f * node_mass, 0.0f);
   }
@@ -285,7 +285,7 @@ void dtkFemSimulation::compute_force() {
   }
 }
 
-void dtkFemSimulation::Update(float dt) {
+void FemSimulation::Update(float dt) {
   // TODO: update objects
   // TODO: check for object collisions
   if (this->State == SCENE_ACTIVE) {
@@ -332,8 +332,8 @@ void dtkFemSimulation::Update(float dt) {
   }
 }
 
-void dtkFemSimulation::ProcessInput(float dt) {
-  dtkScene::ProcessInput(dt);
+void FemSimulation::ProcessInput(float dt) {
+  Scene::ProcessInput(dt);
   // TODO: process input(keys)
 }
 
@@ -343,7 +343,7 @@ inline void GLSpherePoint(Vector3f center, int n, int i, int j) {
              center[2] + radius * cos(2 * M_PI / n * j));
 }
 
-void dtkFemSimulation::Render() {
+void FemSimulation::Render() {
   Vector3f center = Vector3f(sphere.x, sphere.y, sphere.z);
 
   glEnable(GL_DEPTH_TEST);
@@ -427,7 +427,7 @@ void dtkFemSimulation::Render() {
 
 // collision detection
 
-void dtkFemSimulation::DoCollisions() {
+void FemSimulation::DoCollisions() {
   if (this->State == SCENE_ACTIVE) {
     Vector3f center = Vector3f(sphere.x, sphere.y, sphere.z);
     // Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
@@ -479,9 +479,9 @@ void dtkFemSimulation::DoCollisions() {
   }
 }
 
-void dtkFemSimulation::moveBall(int x, int y) {
+void FemSimulation::moveBall(int x, int y) {
 
   // this->spherecenter = Vector2f((x) * 1.0 / 800 , (600 - y) * 1.0 / 600 );
 }
 
-float dtkFemSimulation::getEnergy() { return this->total_energy; }
+float FemSimulation::getEnergy() { return this->total_energy; }

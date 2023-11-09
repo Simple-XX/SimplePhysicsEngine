@@ -21,8 +21,8 @@
  * @Last Modified time: 2021-09-03 16:35:44
  */
 
-#ifndef SIMPLEPHYSICSENGINE_DTKSCENE_H
-#define SIMPLEPHYSICSENGINE_DTKSCENE_H
+#ifndef SIMPLEPHYSICSENGINE_SCENE_H
+#define SIMPLEPHYSICSENGINE_SCENE_H
 
 // #include <glad/glad.h>
 // #include <GLFW/glfw3.h>
@@ -33,7 +33,7 @@ enum dtkSceneState { SCENE_ACTIVE, SCENE_PAUSE };
 // Scene holds all Scene-related state and functionality.
 // Combines all Scene-related data into a single class for
 // easy access to each of the components and manageability.
-class dtkScene {
+class Scene {
 public:
   // Scene state
   dtkSceneState State;
@@ -42,9 +42,9 @@ public:
   unsigned int Width, Height;
 
   // constructor/destructor
-  dtkScene(unsigned int width, unsigned int height);
+  Scene(unsigned int width, unsigned int height);
 
-  ~dtkScene();
+  ~Scene();
   // initialize Scene state (load all shaders/textures)
   void Init();
   // Scene loop
@@ -54,4 +54,4 @@ public:
   virtual void DoCollisions() = 0;
 };
 
-#endif /* SIMPLEPHYSICSENGINE_DTKSCENE_H */
+#endif /* SIMPLEPHYSICSENGINE_SCENE_H */

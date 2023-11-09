@@ -14,15 +14,15 @@
  * </table>
  */
 
-#include "dtkScene.h"
+#include "Scene.h"
 
-dtkScene::dtkScene(unsigned int width, unsigned int height)
+Scene::Scene(unsigned int width, unsigned int height)
     : State(SCENE_ACTIVE), Keys(), KeysProcessed(), Width(width),
       Height(height) {}
 
-dtkScene::~dtkScene() {}
+Scene::~Scene() {}
 
-void dtkScene::Init() {
+void Scene::Init() {
   // TODO: load shaders
 
   // TODO: configure shaders
@@ -36,12 +36,12 @@ void dtkScene::Init() {
   // TODO: audio
 }
 
-void dtkScene::Update(float dt) {
+void Scene::Update(float dt) {
   // TODO: update objects
   // TODO: check for object collisions
 }
 
-void dtkScene::ProcessInput(float dt) {
+void Scene::ProcessInput(float dt) {
   // TODO: process input(keys)
   /*
 
@@ -64,8 +64,8 @@ void dtkScene::ProcessInput(float dt) {
   */
 }
 
-void dtkScene::Render() {}
+void Scene::Render() {}
 
 // collision detection
 
-void dtkScene::DoCollisions() {}
+void Scene::DoCollisions() {}

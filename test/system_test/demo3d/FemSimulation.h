@@ -21,10 +21,10 @@
  * @Last Modified time: 2021-09-03 17:22:45
  */
 
-#ifndef SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
-#define SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
+#ifndef SIMPLEPHYSICSENGINE_FEMSIMULATION_H
+#define SIMPLEPHYSICSENGINE_FEMSIMULATION_H
 
-#include "dtkScene.h"
+#include "Scene.h"
 #include <iostream>
 #include <vector>
 
@@ -48,7 +48,7 @@ public:
       : x(px), y(py), z(pz), radius(praius) {}
 };
 
-class dtkFemSimulation : public dtkScene {
+class FemSimulation : public Scene {
 
 private:
   /* data */
@@ -82,8 +82,8 @@ public:
   vector<vector<long long>> mesh_index_list;
   Sphere3d sphere; //(dtk::dtkGraphicsKernel::Point2(0.5,0.2), 0.1);
 
-  dtkFemSimulation(unsigned int width, unsigned int height);
-  ~dtkFemSimulation();
+  FemSimulation(unsigned int width, unsigned int height);
+  ~FemSimulation();
   void Init();
   void InitShell();
 
@@ -97,4 +97,4 @@ public:
   void DoCollisions();
 };
 
-#endif /* SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H */
+#endif /* SIMPLEPHYSICSENGINE_FEMSIMULATION_H */
