@@ -2,35 +2,27 @@
 /**
  * @file dtkFemSimulation.h
  * @brief dtkFemSimulation 头文件
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author tom (https://github.com/TOMsworkspace)
  * @version 1.0
- * @date 2023-10-31
+ * @date 2021-09-03
  * @copyright MIT LICENSE
  * https://github.com/Simple-XX/SimplePhysicsEngine
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-09-03<td>tom<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
  */
 
-/*
- * @Author: tom: https://github.com/TOMsworkspace
- * @Date: 2021-09-03 16:12:05
- * @Last Modified by: tom: https://github.com/TOMsworkspace
- * @Last Modified time: 2021-09-03 17:22:45
- */
+#ifndef SIMPLEPHYSICSENGINE_FEMSIMULATION_H
+#define SIMPLEPHYSICSENGINE_FEMSIMULATION_H
 
-#ifndef SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
-#define SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H
-
-#include "dtkScene.h"
 #include <iostream>
 #include <vector>
 
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
+#include <dtkScene.h>
 
 class Circle2d {
 public:
@@ -48,28 +40,28 @@ public:
       : x(px), y(py), z(pz), radius(praius) {}
 };
 
-class dtkFemSimulation : public dtkScene {
+class FemSimulation : public dtk::dtkScene {
 
 private:
   /* data */
-  vector<Vector3f> pre_points; //(n_node);  /**< 点之前的位置 */
+  std::vector<Eigen::Vector3f> pre_points; //(n_node);  /**< 点之前的位置 */
 
-  vector<Eigen::Vector3f> points_force;
+  std::vector<Eigen::Vector3f> points_force;
 
-  vector<Vector3f> points_v; //(n_node); /**< 点的速度 */
+  std::vector<Eigen::Vector3f> points_v; //(n_node); /**< 点的速度 */
 
-  vector<Eigen::Matrix3f> B; //(n_fem_element); /**< 微元本身长度的逆 */
+  std::vector<Eigen::Matrix3f> B; //(n_fem_element); /**< 微元本身长度的逆 */
 
   float total_energy;     /** 总势能 */
   float pre_total_energy; /** 之前的总势能 */
 
   std::vector<std::vector<int>>
       PyramidTable; //(n_fem_element, std::vector<int>(3,0)); /**<
-                    //四面体微元下标 */
+                    // 四面体微元下标 */
 
-  Matrix3f compute_D(int i);
+  Eigen::Matrix3f compute_D(int i);
 
-  Matrix3f compute_P(int i);
+  Eigen::Matrix3f compute_P(int i);
 
   void compute_B();
 
@@ -78,12 +70,12 @@ private:
   void compute_total_energy();
 
 public:
-  vector<Eigen::Vector3f> points; //(n_node);  /**< 点的位置 */
-  vector<vector<long long>> mesh_index_list;
+  std::vector<Eigen::Vector3f> points; //(n_node);  /**< 点的位置 */
+  std::vector<std::vector<long long>> mesh_index_list;
   Sphere3d sphere; //(dtk::dtkGraphicsKernel::Point2(0.5,0.2), 0.1);
 
-  dtkFemSimulation(unsigned int width, unsigned int height);
-  ~dtkFemSimulation();
+  FemSimulation(unsigned int width, unsigned int height);
+  ~FemSimulation();
   void Init();
   void InitShell();
 
@@ -97,4 +89,4 @@ public:
   void DoCollisions();
 };
 
-#endif /* SIMPLEPHYSICSENGINE_DTKFEMSIMULATION_H */
+#endif /* SIMPLEPHYSICSENGINE_FEMSIMULATION_H */

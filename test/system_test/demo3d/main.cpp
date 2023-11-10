@@ -2,35 +2,27 @@
 /**
  * @file main.cpp
  * @brief main 实现
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author TOMsworkspace (2683322180@qq.com)
  * @version 1.0
- * @date 2023-10-31
+ * @date 2021-09-13
  * @copyright MIT LICENSE
  * https://github.com/Simple-XX/SimplePhysicsEngine
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-09-13<td>TOMsworkspace<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
  */
 
-/**
- * @file main.cpp
- * @author TOMsworkspace (2683322180@qq.com)
- * @brief
- * @version 1.0
- * @date 2021-09-13
- *
- * @copyright Copyright (c) 2021
- *
- */
-
-#include "GL/freeglut.h"
-#include "dtkFemSimulation.h"
 #include <chrono>
 #include <cmath>
 #include <iostream>
 #include <thread>
+
+#include <GL/freeglut.h>
+
+#include "FemSimulation.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
 
@@ -39,7 +31,7 @@ const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 600;
 
-dtkFemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
+FemSimulation Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 #ifdef USE_VTK
 
@@ -184,7 +176,7 @@ void display() {
   // draw_text(5, 40, "Push [1-5] to switch scene");
   // draw_text(w - 150, h - 20, "refer: apollonia");
 
-  if (Breakout.State == SCENE_PAUSE)
+  if (Breakout.State == dtk::SCENE_PAUSE)
     draw_text(5, h - 20, "dt: %.2f ms (%.2F FPS) PAUSED", dt * 1000, 1.0 / dt);
   else
     draw_text(5, h - 20, "dt: %.2f ms (%.2F FPS)", dt * 1000, 1.0 / dt);
@@ -203,12 +195,12 @@ void idle() { display(); }
 void keyboard(unsigned char key, int x, int y) {
   switch (key) {
   case ' ':
-    if (Breakout.State == SCENE_PAUSE) {
-      Breakout.State = SCENE_ACTIVE;
+    if (Breakout.State == dtk::SCENE_PAUSE) {
+      Breakout.State = dtk::SCENE_ACTIVE;
       break;
     }
-    if (Breakout.State == SCENE_ACTIVE) {
-      Breakout.State = SCENE_PAUSE;
+    if (Breakout.State == dtk::SCENE_ACTIVE) {
+      Breakout.State = dtk::SCENE_PAUSE;
       break;
     }
   case 27:
@@ -224,11 +216,11 @@ void gl_vis(int argc, char *argv[]) {
   glutInitWindowSize(800, 600);
   glutInitWindowPosition(50, 50);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-  glutCreateWindow("Physics Engine -- dtk");
-  glutKeyboardFunc(&keyboard);
-  Breakout.Init();
+  glutCreateWindow("SimplePhysicsEngine-ST-demo3d");
   glutDisplayFunc(&display);
   glutReshapeFunc(&reshape);
+  glutKeyboardFunc(&keyboard);
+  Breakout.Init();
   glutIdleFunc(&idle);
   // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
   glutMainLoop();
