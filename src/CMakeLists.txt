@@ -13,7 +13,6 @@ set(lib_src
         collision_detect/dtkCollisionDetectPrimitive.cpp
         collision_detect/dtkCollisionDetectStage.cpp
         dtk.cpp
-        dtkAssert.cpp
         dtkErrorManager.cpp
         dtkGraphicsKernel.cpp
         dtkIntersectTest.cpp
