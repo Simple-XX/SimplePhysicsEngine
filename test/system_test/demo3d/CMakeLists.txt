@@ -9,7 +9,6 @@ project(demo3d)
 add_executable(demo3d
         main.cpp
         FemSimulation.cpp
-        Scene.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

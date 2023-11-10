@@ -2,47 +2,28 @@
 /**
  * @file dtkFemSimulation.cpp
  * @brief dtkFemSimulation 实现
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author tom (https://github.com/TOMsworkspace)
  * @version 1.0
- * @date 2023-10-31
+ * @date 2021-09-03
  * @copyright MIT LICENSE
  * https://github.com/Simple-XX/SimplePhysicsEngine
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-09-03<td>tom<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
  */
 
-/*
- * @Author: tom: https://github.com/TOMsworkspace
- * @Date: 2021-09-03 15:32:52
- * @Last Modified by: tom: https://github.com/TOMsworkspace
- * @Last Modified time: 2021-09-03 19:17:13
- */
-
 #include <algorithm>
+#include <cmath>
 #include <iostream>
-#include <math.h>
 #include <sstream>
 
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
-
-// #include <gl/GL.h>
-// #include <glad/glad.h>
-// #include <GLFW/glfw3.h>
-
-// #include <irrklang/irrKlang.h>
-// using namespace irrklang;
+#include <GL/freeglut.h>
 
 #include "FemSimulation.h"
-
-#include "GL/freeglut.h"
-
-// #include "resource_manager.h"
-// #include "sprite_renderer.h"
 
 int dim = 3;
 int n_node_x = 30;
@@ -72,18 +53,18 @@ inline int mesh(int i, int j, int k) {
 }
 
 FemSimulation::FemSimulation(unsigned int width, unsigned int height)
-    : Scene(width, height), points(n_node), pre_points(n_node),
+    : dtkScene(width, height), points(n_node), pre_points(n_node),
       points_v(n_node), points_force(n_node), B(n_fem_element),
       PyramidTable(n_fem_element, std::vector<int>(4, 0)),
       sphere(0.5, 0.5, 0.0, radius), total_energy(0), pre_total_energy(0) {}
 
-Matrix3f FemSimulation::compute_D(int i) {
+Eigen::Matrix3f FemSimulation::compute_D(int i) {
   int a = PyramidTable[i][0];
   int b = PyramidTable[i][1];
   int c = PyramidTable[i][2];
   int d = PyramidTable[i][3];
 
-  Matrix3f ans;
+  Eigen::Matrix3f ans;
   ans(0, 0) = points[a][0] - points[d][0];
   ans(0, 1) = points[b][0] - points[d][0];
   ans(0, 2) = points[c][0] - points[d][0];
@@ -105,13 +86,13 @@ void FemSimulation::compute_B() {
   }
 }
 
-Matrix3f FemSimulation::compute_P(int i) {
-  Matrix3f D = compute_D(i);
-  Matrix3f F = D * B[i];
+Eigen::Matrix3f FemSimulation::compute_P(int i) {
+  Eigen::Matrix3f D = compute_D(i);
+  Eigen::Matrix3f F = D * B[i];
 
-  Matrix3f F_T = F.transpose().inverse();
+  Eigen::Matrix3f F_T = F.transpose().inverse();
 
-  float J = max(0.5f, F.determinant()); /**< 形变率 */
+  float J = std::fmax(0.5f, F.determinant()); /**< 形变率 */
 
   return Lame_parameter_1 * (F - F_T) + Lame_parameter_2 * log(J) * F_T;
   // Matrix2f ans = D * this->B[i];
@@ -121,12 +102,12 @@ void FemSimulation::compute_total_energy() {
 
   this->total_energy = 0.0f;
   for (int i = 0; i < n_fem_element; ++i) {
-    Matrix3f D = compute_D(i);
-    Matrix3f F = D * B[i];
+    Eigen::Matrix3f D = compute_D(i);
+    Eigen::Matrix3f F = D * B[i];
 
     // NeoHooken
     float I1 = (F * F.transpose()).trace();
-    float J = max(0.2f, (float)F.determinant()); /**< 形变率 */
+    float J = std::fmax(0.2f, (float)F.determinant()); /**< 形变率 */
 
     // cout << J << endl;
 
@@ -182,7 +163,7 @@ void FemSimulation::InitShell() {
 }
 
 void FemSimulation::Init() {
-  Scene::Init();
+  dtkScene::Init();
   // TODO: load shaders
 
   // TODO: configure shaders
@@ -255,23 +236,23 @@ void FemSimulation::Init() {
 
   compute_B();
   InitShell();
-  this->State = SCENE_ACTIVE;
+  this->State = dtk::SCENE_ACTIVE;
   // TODO: audio
 }
 
 void FemSimulation::compute_force() {
   for (int i = 0; i < n_node; ++i) {
-    this->points_force[i] = Vector3f(0.0f, -10.0f * node_mass, 0.0f);
+    this->points_force[i] = Eigen::Vector3f(0.0f, -10.0f * node_mass, 0.0f);
   }
 
   for (int i = 0; i < n_fem_element; ++i) {
 
-    Matrix3f P = compute_P(i);
-    Matrix3f H = -element_v * (P * (this->B[i].transpose()));
+    Eigen::Matrix3f P = compute_P(i);
+    Eigen::Matrix3f H = -element_v * (P * (this->B[i].transpose()));
 
-    Vector3f h1 = Vector3f(H(0, 0), H(1, 0), H(2, 0));
-    Vector3f h2 = Vector3f(H(0, 1), H(1, 1), H(2, 1));
-    Vector3f h3 = Vector3f(H(0, 2), H(1, 2), H(2, 2));
+    Eigen::Vector3f h1 = Eigen::Vector3f(H(0, 0), H(1, 0), H(2, 0));
+    Eigen::Vector3f h2 = Eigen::Vector3f(H(0, 1), H(1, 1), H(2, 1));
+    Eigen::Vector3f h3 = Eigen::Vector3f(H(0, 2), H(1, 2), H(2, 2));
 
     int a = this->PyramidTable[i][0];
     int b = this->PyramidTable[i][1];
@@ -288,7 +269,7 @@ void FemSimulation::compute_force() {
 void FemSimulation::Update(float dt) {
   // TODO: update objects
   // TODO: check for object collisions
-  if (this->State == SCENE_ACTIVE) {
+  if (this->State == dtk::SCENE_ACTIVE) {
     this->total_energy = 0;
     // 迭代多轮, 防止穿透
     for (int i = 0; i < iterate_time; ++i) {
@@ -333,18 +314,18 @@ void FemSimulation::Update(float dt) {
 }
 
 void FemSimulation::ProcessInput(float dt) {
-  Scene::ProcessInput(dt);
+  dtkScene::ProcessInput(dt);
   // TODO: process input(keys)
 }
 
-inline void GLSpherePoint(Vector3f center, int n, int i, int j) {
+inline void GLSpherePoint(Eigen::Vector3f center, int n, int i, int j) {
   glVertex3f(center[0] + radius * cos(2 * M_PI / n * i) * sin(2 * M_PI / n * j),
              center[1] + radius * sin(2 * M_PI / n * i) * sin(2 * M_PI / n * j),
              center[2] + radius * cos(2 * M_PI / n * j));
 }
 
 void FemSimulation::Render() {
-  Vector3f center = Vector3f(sphere.x, sphere.y, sphere.z);
+  Eigen::Vector3f center = Eigen::Vector3f(sphere.x, sphere.y, sphere.z);
 
   glEnable(GL_DEPTH_TEST);
   int n = 20;
@@ -428,17 +409,17 @@ void FemSimulation::Render() {
 // collision detection
 
 void FemSimulation::DoCollisions() {
-  if (this->State == SCENE_ACTIVE) {
-    Vector3f center = Vector3f(sphere.x, sphere.y, sphere.z);
+  if (this->State == dtk::SCENE_ACTIVE) {
+    Eigen::Vector3f center = Eigen::Vector3f(sphere.x, sphere.y, sphere.z);
     // Vector2f(this->sphere.center()[0], this->sphere.center()[1]);
     float radius = this->sphere.radius;
 
     for (int i = 0; i < n_node; ++i) {
       // # Collide with sphere
 
-      Vector3f dis = this->points[i] - center;
+      Eigen::Vector3f dis = this->points[i] - center;
       if ((float)(dis.dot(dis)) < radius * radius) {
-        Vector3f normal = dis.normalized();
+        Eigen::Vector3f normal = dis.normalized();
 
         this->points[i] = center + radius * normal;
         this->points_v[i] -= (this->points_v[i].dot(normal)) * normal;

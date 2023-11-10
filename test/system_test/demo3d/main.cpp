@@ -2,27 +2,17 @@
 /**
  * @file main.cpp
  * @brief main 实现
- * @author Zone.N (Zone.Niuzh@hotmail.com)
+ * @author TOMsworkspace (2683322180@qq.com)
  * @version 1.0
- * @date 2023-10-31
+ * @date 2021-09-13
  * @copyright MIT LICENSE
  * https://github.com/Simple-XX/SimplePhysicsEngine
  * @par change log:
  * <table>
  * <tr><th>Date<th>Author<th>Description
+ * <tr><td>2021-09-13<td>TOMsworkspace<td>创建文件
  * <tr><td>2023-10-31<td>Zone.N<td>迁移到 doxygen
  * </table>
- */
-
-/**
- * @file main.cpp
- * @author TOMsworkspace (2683322180@qq.com)
- * @brief
- * @version 1.0
- * @date 2021-09-13
- *
- * @copyright Copyright (c) 2021
- *
  */
 
 #include <chrono>
@@ -30,7 +20,7 @@
 #include <iostream>
 #include <thread>
 
-#include "GL/freeglut.h"
+#include <GL/freeglut.h>
 
 #include "FemSimulation.h"
 
@@ -186,7 +176,7 @@ void display() {
   // draw_text(5, 40, "Push [1-5] to switch scene");
   // draw_text(w - 150, h - 20, "refer: apollonia");
 
-  if (Breakout.State == SCENE_PAUSE)
+  if (Breakout.State == dtk::SCENE_PAUSE)
     draw_text(5, h - 20, "dt: %.2f ms (%.2F FPS) PAUSED", dt * 1000, 1.0 / dt);
   else
     draw_text(5, h - 20, "dt: %.2f ms (%.2F FPS)", dt * 1000, 1.0 / dt);
@@ -205,12 +195,12 @@ void idle() { display(); }
 void keyboard(unsigned char key, int x, int y) {
   switch (key) {
   case ' ':
-    if (Breakout.State == SCENE_PAUSE) {
-      Breakout.State = SCENE_ACTIVE;
+    if (Breakout.State == dtk::SCENE_PAUSE) {
+      Breakout.State = dtk::SCENE_ACTIVE;
       break;
     }
-    if (Breakout.State == SCENE_ACTIVE) {
-      Breakout.State = SCENE_PAUSE;
+    if (Breakout.State == dtk::SCENE_ACTIVE) {
+      Breakout.State = dtk::SCENE_PAUSE;
       break;
     }
   case 27:
