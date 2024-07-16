@@ -12,4 +12,5 @@ project(
 
 add_subdirectory(demo2d)
 add_subdirectory(demo3d)
+add_subdirectory(MassSpring3D)
 # add_subdirectory(demo_old)
