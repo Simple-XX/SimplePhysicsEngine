@@ -220,3 +220,5 @@ if (NOT glfw3_FOUND)
     message(FATAL_ERROR "glfw3 not found.\n"
             "Following https://www.glfw.org to install.")
 endif ()
+
+find_package(GLEW REQUIRED)

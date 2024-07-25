@@ -54,6 +54,7 @@ public:
 
   const GK::Point3 &GetPoint(dtkID id) const;
   size_t GetNumberOfPoints() { return mPts->GetNumberOfPoints(); }
+  size_t GetNumberOfTriangles() { return mEC.size(); }
   void SetPoint(dtkID id, const GK::Point3 &coord);
 
   void Clear();

@@ -40,6 +40,7 @@ link_libraries(
         gtest_main
         ${glog_LIBRARIES}
         Eigen
+        GLEW::GLEW
         GLUT::GLUT
         OpenGL::GL
         OpenGL::GLU
