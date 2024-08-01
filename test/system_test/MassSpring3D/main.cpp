@@ -74,9 +74,7 @@ void display() {
     glTranslatef(0.0f, -8.0f, -25.0f);
 
     auto now = std::chrono::high_resolution_clock::now();
-    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
-        now - last_clock)
-        .count();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(now - last_clock).count();
     last_clock = now;
 
     int h = glutGet(GLUT_WINDOW_HEIGHT);
@@ -92,7 +90,7 @@ void display() {
     else
         draw_text(5, h - 20, "dt: %.2f ms", dt * 1000);
 
-    scene.Update(std::min(dt, 0.01));
+    scene.Update(std::min(dt, 0.08));
     scene.Render();
 
     GLenum err;

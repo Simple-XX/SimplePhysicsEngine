@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
         ClothSimulation.cpp
         Shader.cpp
         Renderer.cpp
+        dtkPhysMassSpringSolver.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

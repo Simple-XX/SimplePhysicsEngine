@@ -32,10 +32,11 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "Renderer.h"
+#include "dtkPhysMassSpringSolver.h"
 
 namespace SystemParam {
     static const int n = 33; // must be odd, n * n = n_vertices | 61
-    static const float w = 5.0f; // width | 2.0f
+    static const float w = 2.0f; // width | 2.0f
     static const float h = 0.008f; // time step, smaller for better results | 0.008f = 0.016f/2
     static const float r = w / (n - 1) * 1.05f; // spring rest legnth
     static const float k = 1.0f; // spring stiffness | 1.0f;
@@ -53,6 +54,7 @@ public:
 
     using ClothMesh = dtk::dtkStaticTriangleMesh::Ptr;
     using ClothMassSpring = dtk::dtkPhysMassSpring::Ptr;
+    using ClothMassSpringSolver = dtk::dtkPhysMassSpringSolver::Ptr;
 
     const ClothMesh GetClothMesh() const;
 
@@ -94,12 +96,16 @@ private:
 
     ClothMesh _cloth_mesh;
     ClothMassSpring _system;
+    ClothMassSpringSolver _solver;
+
+    const int _iter_num = 5;
 };
 
 class dtkFactory {
 public:
     static dtk::dtkStaticTriangleMesh::Ptr CreateClothMesh(float w, int n);
-    static dtk::dtkPhysMassSpring::Ptr CreateClothMassSpring(const dtk::dtkStaticTriangleMesh::Ptr& mesh, const dtk::dtkDouble3& gravity);
+    static dtk::dtkPhysMassSpring::Ptr CreateClothMassSpringSystem(const dtk::dtkStaticTriangleMesh::Ptr& mesh);
+    static dtk::dtkPhysMassSpringSolver::Ptr CreateClothMassSpringSolver(const dtk::dtkPhysMassSpring::Ptr& system);
 };
 
 #endif /* SIMPLEPHYSICSENGINE_CLOTHSIMULATION_H */
