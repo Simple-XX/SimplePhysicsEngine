@@ -15,7 +15,6 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
-        ${GLEW_LIBRARIES}
 )
 
 if (APPLE)

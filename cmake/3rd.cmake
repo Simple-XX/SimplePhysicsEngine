@@ -222,3 +222,7 @@ if (NOT glfw3_FOUND)
 endif ()
 
 find_package(GLEW REQUIRED)
+if (NOT GLEW_FOUND)
+    message(FATAL_ERROR "GLEW not found.\n"
+            "Following http://glew.sourceforge.net to install.")
+endif ()
