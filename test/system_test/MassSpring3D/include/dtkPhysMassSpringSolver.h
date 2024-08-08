@@ -5,7 +5,7 @@
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-
+#include <random>
 
 namespace dtk {
     class dtkPhysMassSpringSolver {
@@ -30,6 +30,14 @@ namespace dtk {
 
         void solve(unsigned int iter_num);
         float* getVertexBuffer() { return _current_state.data(); };
+
+        static void printSparseMatrix(const SparseMatrix& matrix) {
+            for (int k = 0; k < matrix.outerSize(); ++k) {
+                for (SparseMatrix::InnerIterator it(matrix, k); it; ++it) {
+                    std::cout << "Element at (" << it.row() << ", " << it.col() << ") = " << it.value() << std::endl;
+                }
+            }
+        }
     private:
         dtkPhysMassSpringSolver();
         dtkPhysMassSpringSolver(const dtkPhysMassSpring::Ptr& massSpring);

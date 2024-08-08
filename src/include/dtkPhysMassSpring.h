@@ -98,6 +98,7 @@ namespace dtk {
     double GetTimeStep();
     double GetDefaultStiffness() const { return mDefaultStiff; }
     double GetDefaultDamp() const { return mDefaultDamp; }
+    double GetDefaultPointDamp() const { return mDefaultPointDamp; }
     dtk::dtkDouble3 GetDefaultGravityAccel() const { return mDefaultGravityAccel; }
 
     /**

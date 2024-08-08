@@ -43,6 +43,9 @@ void ClothSimulation::Update(float dt) {
     _solver->solve(_iter_num);
     _solver->solve(_iter_num);
 
+    // mCollisionDetectResponse->Update(dt, );
+    _cloth_mesh->ComputeNormals();
+
     UpdateRenderTarget();
 };
 
@@ -83,6 +86,7 @@ void ClothSimulation::InitCloth() {
     _cloth_mesh = dtkFactory::CreateClothMesh(SystemParam::w, SystemParam::n);
 
     ClothDrop();
+    // ClothHang();
 
     g_render_target = new ProgramInput;
     UpdateRenderTarget();   // set position data
@@ -107,8 +111,21 @@ void ClothSimulation::SetParameters() {
 
 void ClothSimulation::ClothDrop() {
     _system = dtkFactory::CreateClothMassSpringSystem(_cloth_mesh);
+    // _sphere_mesh = dtkFactory::CreateSphereMesh(dtk::dtkDouble3(0, 0, -1), 0.64, 20);
 
     _solver = dtkFactory::CreateClothMassSpringSolver(_system);
+
+    mCollisionDetectResponse = dtk::dtkPhysMassSpringCollisionResponse::New();
+    mCollisionDetectResponse->SetMassSpring(0, _system);
+};
+
+void ClothSimulation::ClothHang() {
+    _system = dtkFactory::CreateClothMassSpringSystem(_cloth_mesh);
+
+    _solver = dtkFactory::CreateClothMassSpringSolver(_system);
+
+    mCollisionDetectResponse = dtk::dtkPhysMassSpringCollisionResponse::New();
+    mCollisionDetectResponse->SetMassSpring(0, _system);
 };
 
 void ClothSimulation::UpdateRenderTarget() {
@@ -116,6 +133,12 @@ void ClothSimulation::UpdateRenderTarget() {
 
     float* vertexBuffer = _solver->getVertexBuffer();
     unsigned int vertexBufferSize = mPts->GetNumberOfPoints() * 3;
+
+    // std::cout << "vertexBuffer:" << std::endl;
+    // for (int i = 0;i < vertexBufferSize;i++) {
+    //     std::cout << vertexBuffer[i] << " ";
+    // }
+    // std::cout << std::endl;
 
     g_render_target->setPositionData(vertexBuffer, vertexBufferSize);
 };
@@ -161,6 +184,47 @@ dtk::dtkStaticTriangleMesh::Ptr dtkFactory::CreateClothMesh(float w, int n) {
             }
         }
     }
+
+    result->ComputeNormals();
+    return result;
+}
+
+dtk::dtkStaticTriangleMesh::Ptr dtkFactory::CreateSphereMesh(dtk::dtkDouble3 center, float radius, int n) {
+    dtk::dtkStaticTriangleMesh::Ptr result = dtk::dtkStaticTriangleMesh::New();
+    dtk::dtkPointsVector::Ptr vertices = dtk::dtkPointsVector::New();
+
+    // Generate vertices
+    for (int i = 0; i <= n; ++i) {
+        float theta = i * glm::pi<float>() / n;
+        for (int j = 0; j <= n; ++j) {
+            float phi = j * 2 * glm::pi<float>() / n;
+            float x = center.x + radius * sin(theta) * cos(phi);
+            float y = center.y + radius * sin(theta) * sin(phi);
+            float z = center.z + radius * cos(theta);
+            dtk::GK::Point3 p3(x, y, z);
+            dtk::dtkID pid = j + i * (n + 1);
+            vertices->InsertPoint(pid, p3);
+        }
+    }
+    result->SetPoints(vertices);
+
+    // Generate triangles
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            dtk::dtkID p1 = j + i * (n + 1);
+            dtk::dtkID p2 = j + (i + 1) * (n + 1);
+            dtk::dtkID p3 = (j + 1) + i * (n + 1);
+            dtk::dtkID p4 = (j + 1) + (i + 1) * (n + 1);
+
+            if (i != 0) {
+                result->InsertTriangleNotRepeat(p1, p2, p3);
+            }
+            if (i != (n - 1)) {
+                result->InsertTriangleNotRepeat(p3, p2, p4);
+            }
+        }
+    }
+
     return result;
 }
 
@@ -241,3 +305,4 @@ dtk::dtkPhysMassSpringSolver::Ptr dtkFactory::CreateClothMassSpringSolver(const 
     dtk::dtkPhysMassSpringSolver::Ptr solver = dtk::dtkPhysMassSpringSolver::New(system);
     return solver;
 }
+

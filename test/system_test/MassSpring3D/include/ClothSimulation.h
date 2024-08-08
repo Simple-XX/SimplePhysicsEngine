@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <memory>
+#include <map>
 #include <unordered_map>
 #include <vector>
 
@@ -32,7 +33,10 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "Renderer.h"
+#include "dtkCollisionDetectHierarchyKDOPS.h"
+#include "dtkPhysCore.h"
 #include "dtkPhysMassSpringSolver.h"
+#include "dtkPhysMassSpringCollisionResponse.h"
 
 namespace SystemParam {
     static const int n = 33; // must be odd, n * n = n_vertices | 61
@@ -53,6 +57,7 @@ public:
     ~ClothSimulation() = default;
 
     using ClothMesh = dtk::dtkStaticTriangleMesh::Ptr;
+    using SphereMesh = dtk::dtkStaticTriangleMesh::Ptr;
     using ClothMassSpring = dtk::dtkPhysMassSpring::Ptr;
     using ClothMassSpringSolver = dtk::dtkPhysMassSpringSolver::Ptr;
 
@@ -73,6 +78,7 @@ private:
     void InitScene();
     void SetParameters();
     void ClothDrop();
+    void ClothHang();
 
     // Shader
     PhongShader* g_phongShader; // linked phong shader
@@ -95,8 +101,11 @@ private:
     dtk::dtkDouble3 _gravity;
 
     ClothMesh _cloth_mesh;
+    SphereMesh _sphere_mesh;
     ClothMassSpring _system;
     ClothMassSpringSolver _solver;
+
+    dtk::dtkPhysMassSpringCollisionResponse::Ptr mCollisionDetectResponse;
 
     const int _iter_num = 5;
 };
@@ -106,6 +115,7 @@ public:
     static dtk::dtkStaticTriangleMesh::Ptr CreateClothMesh(float w, int n);
     static dtk::dtkPhysMassSpring::Ptr CreateClothMassSpringSystem(const dtk::dtkStaticTriangleMesh::Ptr& mesh);
     static dtk::dtkPhysMassSpringSolver::Ptr CreateClothMassSpringSolver(const dtk::dtkPhysMassSpring::Ptr& system);
+    static dtk::dtkStaticTriangleMesh::Ptr CreateSphereMesh(dtk::dtkDouble3 center, float radius, int n);
 };
 
 #endif /* SIMPLEPHYSICSENGINE_CLOTHSIMULATION_H */

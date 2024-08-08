@@ -81,7 +81,7 @@ packageProject(
         # 生成文件目录
         BINARY_DIR ${PROJECT_BINARY_DIR}
         # 头文件路径
-        INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include ${PROJECT_SOURCE_DIR}/src/math/include ${PROJECT_SOURCE_DIR}/src/physics/include
+        INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include ${PROJECT_SOURCE_DIR}/src/collision_detect/include ${PROJECT_SOURCE_DIR}/src/math/include ${PROJECT_SOURCE_DIR}/src/physics/include
         # 与 target 的 INSTALL_INTERFACE 一致
         INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
         # 头文件过滤
@@ -120,7 +120,7 @@ packageProject(
         # 生成文件目录
         BINARY_DIR ${PROJECT_BINARY_DIR}
         # 头文件路径
-        INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include ${PROJECT_SOURCE_DIR}/src/math/include ${PROJECT_SOURCE_DIR}/src/physics/include
+        INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include ${PROJECT_SOURCE_DIR}/src/collision_detect/include ${PROJECT_SOURCE_DIR}/src/math/include ${PROJECT_SOURCE_DIR}/src/physics/include
         # 与 target 的 INSTALL_INTERFACE 一致
         INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
         # 头文件过滤

@@ -310,6 +310,9 @@ namespace dtk {
   typedef glm::mat4x3 dtkMatrix43;
   typedef glm::mat4x4 dtkMatrix44;
 
+  typedef glm::vec2 dtkVector2;
+  typedef glm::vec3 dtkVector3;
+
 } // namespace dtk
 
 #include "dtkMatrixOP.h"

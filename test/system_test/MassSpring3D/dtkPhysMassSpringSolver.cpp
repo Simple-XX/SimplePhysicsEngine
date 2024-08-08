@@ -66,20 +66,39 @@ dtk::dtkPhysMassSpringSolver::dtkPhysMassSpringSolver(const dtk::dtkPhysMassSpri
     double h2 = _system->GetTimeStep() * _system->GetTimeStep();
     SparseMatrix A = _M + h2 * _L;
     _system_matrix.compute(A);
+
+
+    // std::cout << "M: " << std::endl;
+    // printSparseMatrix(_M);
+    // std::cout << "L: " << std::endl;
+    // printSparseMatrix(_L);
+    // std::cout << "J: " << std::endl;
+    // printSparseMatrix(_J);
+    // std::cout << "A: " << std::endl;
+    // printSparseMatrix(A);
 }
 
 void dtk::dtkPhysMassSpringSolver::solve(unsigned int iter_num) {
-    float damping_factor = _system->GetDefaultDamp();
+    float damping_factor = _system->GetDefaultPointDamp();
 
     // update inertial term
     _inertial_term = _M * ((damping_factor + 1) * (_current_state)-damping_factor * _prev_state);
     _prev_state = _current_state;
+
+    // std::cout << "damping_factor: " << damping_factor << std::endl;
+    // std::cout << "M: " << std::endl;
+    // printSparseMatrix(_M);
+    // std::cout << "_current_state: " << std::endl << _current_state << std::endl;
+    // std::cout << "_prev_state: " << std::endl << _prev_state << std::endl;
+    // std::cout << "_internal_term: " << std::endl << _inertial_term << std::endl;
 
     // perform steps
     for (unsigned int i = 0; i < iter_num; i++) {
         localStep();
         globalStep();
     }
+
+    // std::cout << "_current_state: " << std::endl << _current_state << std::endl;
 }
 
 void dtk::dtkPhysMassSpringSolver::localStep() {
@@ -99,6 +118,7 @@ void dtk::dtkPhysMassSpringSolver::localStep() {
         _spring_directions[3 * id + 1] = rest_length * p12[1];
         _spring_directions[3 * id + 2] = rest_length * p12[2];
     }
+    // std::cout << "_spring_directions: " << std::endl << _spring_directions << std::endl;
 }
 
 void dtk::dtkPhysMassSpringSolver::globalStep() {
@@ -108,10 +128,23 @@ void dtk::dtkPhysMassSpringSolver::globalStep() {
     // dtk::dtkDouble3 fext(0, 0, 0);
     dtk::dtkDouble3 fext = _system->GetDefaultGravityAccel();   // TODO: change to  _system->GetImpulseForce()
     VectorXf fext_force = VectorXf(Vector3f(fext.x, fext.y, fext.z).replicate(_system->GetNumberOfMassPoints(), 1));
-    VectorXf b = _inertial_term + h2 * _J * _spring_directions + h2 * fext_force;
 
-    // std::cout << _spring_directions << std::endl;
+
+    // 生成随机外力
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(-1.0, 1.0);
+    dtk::dtkDouble3 random_force(dis(gen), dis(gen), dis(gen));
+
+    // 随机选择一个质点
+    std::uniform_int_distribution<> point_dis(0, _system->GetNumberOfMassPoints() - 1);
+    int random_point = point_dis(gen);
+    fext_force.segment<3>(random_point * 3) += Vector3f(random_force.x, random_force.y, random_force.z);
+
+    VectorXf b = _inertial_term + h2 * _J * _spring_directions + h2 * fext_force;
+    // std::cout << "b: " << std::endl << b << std::endl;
 
     // solve system and update state
     _current_state = _system_matrix.solve(b);
+    // std::cout << "_current_state: " << std::endl << _current_state << std::endl;
 }
