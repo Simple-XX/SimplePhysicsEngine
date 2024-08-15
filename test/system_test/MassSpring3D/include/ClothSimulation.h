@@ -44,7 +44,7 @@ namespace SystemParam {
     static const float h = 0.008f; // time step, smaller for better results | 0.008f = 0.016f/2
     static const float r = w / (n - 1) * 1.05f; // spring rest legnth
     static const float k = 1.0f; // spring stiffness | 1.0f;
-    static const float m = 0.25f / (n * n); // point mass | 0.25f
+    static const float m = 0.05f / (n * n); // point mass | 0.25f
     static const float a = 0.993f; // point damping, close to 1.0 | 0.993f
     static const float b = 5880.0f; // damping | 5880.0f
     static const float c = 2.5f; // point resistence | 2.5f
@@ -52,6 +52,7 @@ namespace SystemParam {
 }
 
 class ClothSimulation : public Scene {
+    typedef Eigen::VectorXf VectorXf;
 public:
     ClothSimulation(const unsigned int& windowWidth, const unsigned int& windowHeight, const dtk::dtkDouble3& gravity);
     ~ClothSimulation() = default;
@@ -78,7 +79,8 @@ private:
     void InitScene();
     void SetParameters();
     void ClothDrop();
-    void ClothHang();
+
+    void UpdateClothMesh();
 
     // Shader
     PhongShader* g_phongShader; // linked phong shader
@@ -93,7 +95,7 @@ private:
     ProgramInput* g_render_target; // vertex, index
 
     // @todo: change to dtk vector
-    const glm::vec3 g_albedo = glm::vec3(0.0f, 0.3f, 0.7f);
+    const glm::vec3 g_albedo = glm::vec3(0.0f, 0.2f, 0.9f);
     const glm::vec3 g_ambient = glm::vec3(0.01f, 0.01f, 0.01f);
     const glm::vec3 g_light = glm::vec3(1.0f, 1.0f, -1.0f);
 

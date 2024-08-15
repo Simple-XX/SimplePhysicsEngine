@@ -16,6 +16,7 @@ dtk::dtkPhysMassSpringSolver::dtkPhysMassSpringSolver(const dtk::dtkPhysMassSpri
         _current_state[3 * i + 2] = massPoint->GetPosition()[2];
     }
     _prev_state = _current_state;
+    _initial_state = _current_state;
     _spring_directions.resize(3 * _system->GetNumberOfSprings());
 
     // M 
@@ -129,17 +130,15 @@ void dtk::dtkPhysMassSpringSolver::globalStep() {
     dtk::dtkDouble3 fext = _system->GetDefaultGravityAccel();   // TODO: change to  _system->GetImpulseForce()
     VectorXf fext_force = VectorXf(Vector3f(fext.x, fext.y, fext.z).replicate(_system->GetNumberOfMassPoints(), 1));
 
-
-    // 生成随机外力
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(-1.0, 1.0);
-    dtk::dtkDouble3 random_force(dis(gen), dis(gen), dis(gen));
-
-    // 随机选择一个质点
-    std::uniform_int_distribution<> point_dis(0, _system->GetNumberOfMassPoints() - 1);
-    int random_point = point_dis(gen);
-    fext_force.segment<3>(random_point * 3) += Vector3f(random_force.x, random_force.y, random_force.z);
+    // // 生成随机外力
+    // std::random_device rd;
+    // std::mt19937 gen(rd());
+    // std::uniform_real_distribution<> dis(-1.0, 1.0);
+    // dtk::dtkDouble3 random_force(dis(gen), dis(gen), dis(gen));
+    // // 随机选择一个质点
+    // std::uniform_int_distribution<> point_dis(0, _system->GetNumberOfMassPoints() - 1);
+    // int random_point = point_dis(gen);
+    // fext_force.segment<3>(random_point * 3) += Vector3f(random_force.x, random_force.y, random_force.z);
 
     VectorXf b = _inertial_term + h2 * _J * _spring_directions + h2 * fext_force;
     // std::cout << "b: " << std::endl << b << std::endl;
@@ -147,4 +146,34 @@ void dtk::dtkPhysMassSpringSolver::globalStep() {
     // solve system and update state
     _current_state = _system_matrix.solve(b);
     // std::cout << "_current_state: " << std::endl << _current_state << std::endl;
+}
+
+void dtk::dtkPhysMassSpringSolver::satisfy(ClothDropType type) {
+    if (type == Sphere) {
+        const float radius = 0.64f;
+        const Eigen::Vector3f center(0, 0, -1);
+
+        for (int i = 0; i < _system->GetNumberOfMassPoints(); i++) {
+            Vector3f p(
+                _current_state[3 * i + 0] - center[0],
+                _current_state[3 * i + 1] - center[1],
+                _current_state[3 * i + 2] - center[2]
+            );
+
+            if (p.norm() < radius) {
+                p.normalize();
+                p = radius * p;
+            }
+            else continue;
+
+            for (int j = 0; j < 3; j++) {
+                _current_state[3 * i + j] = p[j] + center[j];
+            }
+        }
+    }
+    else {
+        int fix_idx = 0;
+        for (int i = 0; i < 3; i++)
+            _current_state[fix_idx + i] = _initial_state[fix_idx + i];
+    }
 }

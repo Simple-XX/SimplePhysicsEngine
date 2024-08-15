@@ -43,8 +43,15 @@ void ClothSimulation::Update(float dt) {
     _solver->solve(_iter_num);
     _solver->solve(_iter_num);
 
+    _solver->satisfy();
+
     // mCollisionDetectResponse->Update(dt, );
-    _cloth_mesh->ComputeNormals();
+    // _cloth_mesh->SetPoints(_solver->getCurrentState());
+    float* pointData = _solver->getCurrentState().data();
+    for (dtk::dtkID id = 0; id < _cloth_mesh->GetNumberOfPoints(); id++) {
+        _cloth_mesh->SetPoint(id, dtk::GK::Point3(pointData[3 * id + 0], pointData[3 * id + 1], pointData[3 * id + 2]));
+    }
+    _cloth_mesh->update_normals();
 
     UpdateRenderTarget();
 };
@@ -86,7 +93,6 @@ void ClothSimulation::InitCloth() {
     _cloth_mesh = dtkFactory::CreateClothMesh(SystemParam::w, SystemParam::n);
 
     ClothDrop();
-    // ClothHang();
 
     g_render_target = new ProgramInput;
     UpdateRenderTarget();   // set position data
@@ -119,20 +125,30 @@ void ClothSimulation::ClothDrop() {
     mCollisionDetectResponse->SetMassSpring(0, _system);
 };
 
-void ClothSimulation::ClothHang() {
-    _system = dtkFactory::CreateClothMassSpringSystem(_cloth_mesh);
-
-    _solver = dtkFactory::CreateClothMassSpringSolver(_system);
-
-    mCollisionDetectResponse = dtk::dtkPhysMassSpringCollisionResponse::New();
-    mCollisionDetectResponse->SetMassSpring(0, _system);
-};
+void ClothSimulation::UpdateClothMesh() {
+    const VectorXf& current_state = _solver->getCurrentState();
+    for (dtk::dtkID id = 0; id < _cloth_mesh->GetNumberOfPoints(); id++) {
+        dtk::dtkDouble3 p(current_state[3 * id + 0], current_state[3 * id + 1], current_state[3 * id + 2]);
+        _cloth_mesh->SetPoint(id, dtk::GK::Point3(p.x, p.y, p.z));
+    }
+    _cloth_mesh->update_normals();
+}
 
 void ClothSimulation::UpdateRenderTarget() {
     dtk::dtkPoints::Ptr mPts = _cloth_mesh->GetPoints();
 
-    float* vertexBuffer = _solver->getVertexBuffer();
     unsigned int vertexBufferSize = mPts->GetNumberOfPoints() * 3;
+    float* vertexBuffer = new float[vertexBufferSize];
+    const std::vector<dtk::dtkDouble3>& normalData = _cloth_mesh->GetVertexNormals();
+    float* normalBuffer = new float[vertexBufferSize];
+    for (dtk::dtkID i = 0;i < mPts->GetNumberOfPoints();i++) {
+        // vertexBuffer[3 * i + 0] = (float)mPts->GetPoint(i)[0];
+        // vertexBuffer[3 * i + 1] = (float)mPts->GetPoint(i)[1];
+        // vertexBuffer[3 * i + 2] = (float)mPts->GetPoint(i)[2];
+        normalBuffer[3 * i + 0] = (float)normalData[i].x;
+        normalBuffer[3 * i + 1] = (float)normalData[i].y;
+        normalBuffer[3 * i + 2] = (float)normalData[i].z;
+    }
 
     // std::cout << "vertexBuffer:" << std::endl;
     // for (int i = 0;i < vertexBufferSize;i++) {
@@ -140,7 +156,8 @@ void ClothSimulation::UpdateRenderTarget() {
     // }
     // std::cout << std::endl;
 
-    g_render_target->setPositionData(vertexBuffer, vertexBufferSize);
+    g_render_target->setPositionData(_solver->getCurrentState().data(), vertexBufferSize);
+    g_render_target->setNormalData(normalBuffer, vertexBufferSize);
 };
 
 dtk::dtkStaticTriangleMesh::Ptr dtkFactory::CreateClothMesh(float w, int n) {
@@ -185,7 +202,7 @@ dtk::dtkStaticTriangleMesh::Ptr dtkFactory::CreateClothMesh(float w, int n) {
         }
     }
 
-    result->ComputeNormals();
+    result->update_normals();
     return result;
 }
 

@@ -45,10 +45,6 @@ namespace dtk {
     return mPts->GetPoint(id);
   }
 
-  void dtkStaticTriangleMesh::ComputeNormals() {
-
-  }
-
   void dtkStaticTriangleMesh::SetPoint(dtkID id, const GK::Point3& coord) {
     dtkAssert(mPts.get() != NULL, ILLEGAL_STATE);
     dtkAssert(mPts->SetPoint(id, coord), OUT_OF_RANGE);
@@ -214,6 +210,29 @@ namespace dtk {
     mEC[srcIndex] = dest;
 
     return srcIndex;
+  }
+
+  void dtkStaticTriangleMesh::update_normals() {
+    mVertexNormals.resize(mPts->GetNumberOfPoints(), dtkDouble3(0.0f, 0.0f, 0.0f));
+    for (size_t i = 0; i < mEC.size(); ++i) {
+      const dtkID3& tri = mEC[i];
+      const GK::Point3& p0 = GetPoint(tri[0]);
+      const GK::Point3& p1 = GetPoint(tri[1]);
+      const GK::Point3& p2 = GetPoint(tri[2]);
+
+      GK::Vector3 v0 = p1 - p0;
+      GK::Vector3 v1 = p2 - p0;
+      GK::Vector3 faceNormal = GK::Normalize(GK::CrossProduct(v0, v1));
+
+      dtkDouble3 fn = dtkDouble3(faceNormal.x(), faceNormal.y(), faceNormal.z());
+
+      mVertexNormals[tri[0]] += fn;
+      mVertexNormals[tri[1]] += fn;
+      mVertexNormals[tri[2]] += fn;
+    }
+    for (size_t i = 0; i < mVertexNormals.size(); ++i) {
+      mVertexNormals[i] = normalize(mVertexNormals[i]);
+    }
   }
 
   void dtkStaticTriangleMesh::Modified() { mModified = true; }
