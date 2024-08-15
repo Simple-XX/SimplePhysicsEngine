@@ -27,6 +27,7 @@
 #include "dtkIDTypes.h"
 #include "dtkPoints.h"
 #include "dtkMatrix.h"
+#include "dtkTx.h"
 
 namespace dtk {
   // This class is implemented following "Compact Array-Based Mesh Data
@@ -42,7 +43,6 @@ namespace dtk {
   class dtkStaticTriangleMesh : public boost::noncopyable {
   public:
     typedef std::shared_ptr<dtkStaticTriangleMesh> Ptr;
-    typedef std::shared_ptr<std::vector<GK::Vector3>> NormalPtr;
 
     static dtkStaticTriangleMesh::Ptr New() {
       return dtkStaticTriangleMesh::Ptr(new dtkStaticTriangleMesh());
@@ -53,7 +53,6 @@ namespace dtk {
 
     void SetPoints(dtkPoints::Ptr points);
     dtkPoints::Ptr GetPoints();
-    void ComputeNormals();
 
     const GK::Point3& GetPoint(dtkID id) const;
     size_t GetNumberOfPoints() { return mPts->GetNumberOfPoints(); }
@@ -80,6 +79,8 @@ namespace dtk {
     dtkID modifyElement(dtkID srcIndex, int srcOrder, dtkID dest);
     dtkID modifyElement(dtkID srcIndex, dtkID3 dest);
 
+    void update_normals();
+
     void Modified();
     bool IsModified() const;
     void Rebuild();
@@ -90,12 +91,11 @@ namespace dtk {
       return (mV2E[vertexID] != dtkErrorID);
     }
 
-    const NormalPtr GetPointNormals() const { return mPointNormals; }
-    const NormalPtr GetFaceNormals() const { return mFaceNormals; }
     const std::vector<dtkID3>& GetECTable() const { return mEC; }
     const std::vector<dtkID>& GetV2ETable() const { return mV2E; }
     const std::vector<dtkID3>& GetE2ETable() const { return mE2E; }
     const std::vector<dtkID>& GetB2ETable() const { return mB2E; }
+    const std::vector<dtkDouble3>& GetVertexNormals() const { return mVertexNormals; }
 
   private:
     dtkStaticTriangleMesh();
@@ -169,9 +169,8 @@ namespace dtk {
   private:
     bool mModified;
     dtkPoints::Ptr mPts;
-    NormalPtr mPointNormals;
-    NormalPtr mFaceNormals;
 
+    std::vector<dtkDouble3> mVertexNormals;
     std::vector<dtkID3> mEC; // present a triangle
     std::vector<dtkID> mV2E;
     std::vector<dtkID3> mE2E;
