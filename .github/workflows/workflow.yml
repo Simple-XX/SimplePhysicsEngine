@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
-          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
 
       - name: Build
         run: |
@@ -48,13 +48,21 @@ jobs:
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
-          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
 
       - name: Build
         run: |
           cmake --preset=build
           cmake --build build --target all
           cmake --build build --target coverage
+
+      - name: Run demo2d
+        run: |
+          ./build/bin/demo2d
+
+      - name: Run MassSpring3d
+        run: |
+          ./build/bin/MassSpring3d
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
@@ -69,7 +77,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw vtk cgal glm
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw vtk cgal glm glew
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
 
@@ -77,5 +85,19 @@ jobs:
         run: |
           cmake --preset=build
           cmake --build build --target all
+
+      - name: Run demo2d
+        run: |
+          ./build/bin/demo2d
+
+      - name: Run MassSpring3d
+        run: |
+          ./build/bin/MassSpring3d
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: build/coverage/coverage.info
+          verbose: true
 # @bug 在 osx 下无法正常执行 lcov
 # cmake --build build --target coverage
