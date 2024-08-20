@@ -5,11 +5,9 @@
 
 // GLSHADER ///////////////////////////////////////////////////////////////////////////////////
 GLShader::GLShader(GLenum shaderType) {
-	if (glewIsSupported("GL_VERSION_2_0"))
-		printf("Ready for OpenGL 2.0\n");
-	else {
-		printf("OpenGL 2.0 not supported\n");
-	}
+	// if (!glewIsSupported("GL_VERSION_2_0")) {
+	// 	printf("OpenGL 2.0 not supported\n");
+	// }
 	handle = glCreateShader(shaderType);
 };
 
@@ -24,7 +22,7 @@ GLShader::~GLShader() {
 void GLShader::compile(const char* source) {
 	GLint compiled = 0;  // Compiled flag
 	const char* ptrs[] = { source };
-	const GLint lens[] = { std::strlen(source) };
+	const GLint lens[] = { static_cast<GLint>(std::strlen(source)) };
 	glShaderSource(handle, 1, ptrs, lens);
 	glCompileShader(handle);
 	glGetShaderiv(handle, GL_COMPILE_STATUS, &compiled);

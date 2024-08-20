@@ -29,6 +29,7 @@
 #include "Renderer.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
+static auto init_clock = std::chrono::high_resolution_clock::now();
 
 // The Width of the screen
 const unsigned int WINDOW_WIDTH = 800;
@@ -36,6 +37,8 @@ const unsigned int WINDOW_WIDTH = 800;
 const unsigned int WINDOW_HEIGHT = 600;
 static ClothSimulation scene(WINDOW_WIDTH, WINDOW_HEIGHT, { 0, -9.8 });
 // static ProgramInput* g_render_target; // vertex, index
+
+char INSTRUCTION = '0';
 
 static void checkGlErrors();
 
@@ -74,7 +77,9 @@ void display() {
     glTranslatef(0.0f, -8.0f, -25.0f);
 
     auto now = std::chrono::high_resolution_clock::now();
-    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(now - last_clock).count();
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
+        now - last_clock)
+        .count();
     last_clock = now;
 
     int h = glutGet(GLUT_WINDOW_HEIGHT);
@@ -152,8 +157,13 @@ void idle() {
 static void initGlutState(int argc, char** argv, const char* window_title = "", const unsigned int window_width = 800, const unsigned int window_height = 600) {
     glutInit(&argc, argv);
     glutInitWindowSize(window_width, window_height);
-    glutInitWindowPosition(50, 50);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);  /// TODO
+    glutInitWindowPosition(0, 0);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+    // TODO: Fix error of OpenGL version in macOS
+    // #ifdef __APPLE__
+    //     glutInitContextVersion(3, 3);
+    //     glutInitContextFlags(GLUT_CORE_PROFILE);
+    // #endif
     glutCreateWindow(window_title);
     glutDisplayFunc(&display);
     glutReshapeFunc(&reshape);
@@ -172,7 +182,7 @@ static void initGlewState() {
     }
     if (err != GLEW_OK) {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err) << std::endl;
-        exit(1);
+        exit(0);
     }
 }
 
@@ -201,6 +211,13 @@ static void initGLState() {
 }
 
 int main(int argc, char* argv[]) {
+    // Parse command line arguments
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
+            INSTRUCTION = argv[++i][0];
+        }
+    }
+
     try {
         const char* window_title = "SimplePhysicsEngine-ST-MassSpring3D";
         initGlutState(argc, argv, window_title, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -210,6 +227,9 @@ int main(int argc, char* argv[]) {
         scene.Init();
         checkGlErrors();
 
+        if (INSTRUCTION != '0') {
+            keyboard(INSTRUCTION, 0, 0);
+        }
         glutMainLoop();
 
         scene.CleanUp();

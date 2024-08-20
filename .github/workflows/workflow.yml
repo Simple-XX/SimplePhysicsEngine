@@ -7,7 +7,6 @@ name: build
 
 on:
   - push
-  - pull_request
   - release
 
 env:
@@ -26,7 +25,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
-          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
 
       - name: Build
         run: |
@@ -48,13 +47,58 @@ jobs:
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
-          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
+          sudo apt-get install --no-install-recommends -y xvfb ffmpeg
 
       - name: Build
         run: |
           cmake --preset=build
           cmake --build build --target all
           cmake --build build --target coverage
+
+      - name: Start Xvfb
+        run: |
+          nohup Xvfb :99 -screen 0 800x600x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Run demo2d
+        run: |
+          for i in {1..7}; do
+            # Start recording with ffmpeg
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            FFmpeg_PID=$!
+            # Run the demo2d program in the background
+            ./build/bin/demo2d --instruction $i &
+            Demo2d_PID=$!
+            # Wait for 5 seconds
+            sleep 5
+            # Stop the ffmpeg recording
+            kill $FFmpeg_PID
+            # Terminate the demo2d program
+            kill $Demo2d_PID
+          done
+        env:
+          DISPLAY: :99
+  
+      - name: Run MassSpring3D
+        run: |
+          for i in {1..1}; do
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            FFmpeg_PID=$!
+            ./build/bin/MassSpring3D --instruction $i &
+            MassSpring3D_PID=$!
+            sleep 5
+            kill $FFmpeg_PID
+            kill $MassSpring3D_PID
+          done
+        env:
+          DISPLAY: :99
+      
+      - name: Upload GIFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: gifs_ubuntu
+          path: build/bin/*.gif
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
@@ -69,13 +113,74 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw vtk cgal glm
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm ffmpeg
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
+          brew install --cask xquartz
+
+      - name: Start Xvfb
+        run: |
+          sudo /opt/X11/bin/Xvfb :99 -screen 0 800x600x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+          export DISPLAY=:99
+          sleep 3  # Give Xvfb some time to start
 
       - name: Build
         run: |
           cmake --preset=build
           cmake --build build --target all
+
+      - name: Run demo2d
+        run: |
+          for i in {1..7}; do
+            # Start recording with ffmpeg
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            FFmpeg_PID=$!
+            # Run the demo2d program in the background
+            ./build/bin/demo2d --instruction $i &
+            Demo2d_PID=$!
+            # Wait for 5 seconds
+            sleep 5
+            # Stop the ffmpeg recording
+            if ps -p $FFmpeg_PID > /dev/null; then
+              kill $FFmpeg_PID
+            fi
+            # Terminate the demo2d program
+            if ps -p $Demo2d_PID > /dev/null; then
+              kill $Demo2d_PID
+            fi
+          done
+        env:
+          DISPLAY: :99
+
+      - name: Run MassSpring3D
+        run: |
+          for i in {1..1}; do
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            FFmpeg_PID=$!
+            ./build/bin/MassSpring3D --instruction $i &
+            MassSpring3D_PID=$!
+            sleep 5
+            if ps -p $FFmpeg_PID > /dev/null; then
+              kill $FFmpeg_PID
+            fi
+            if ps -p $MassSpring3D_PID > /dev/null; then
+              kill $MassSpring3D_PID
+            fi
+          done
+        env:
+          DISPLAY: :99
+      
+      - name: Upload GIFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: gifs_macos
+          path: build/bin/*.gif
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: build/coverage/coverage.info
+          verbose: true
 # @bug 在 osx 下无法正常执行 lcov
 # cmake --build build --target coverage

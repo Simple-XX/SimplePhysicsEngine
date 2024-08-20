@@ -24,14 +24,17 @@
 #include "FemSimulation.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
+static auto init_clock = std::chrono::high_resolution_clock::now();
 
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 600;
-static FemSimulation world({0, -9.8});
+static FemSimulation world({ 0, -9.8 });
 
-static void draw_text(int x, int y, const char *format, ...) {
+char INSTRUCTION = '0';
+
+static void draw_text(int x, int y, const char* format, ...) {
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
@@ -59,7 +62,7 @@ static void draw_text(int x, int y, const char *format, ...) {
   glPopMatrix();
 }
 
-static void draw_divided_polys(dtk::dtkPolygonRigidBody &body) {
+static void draw_divided_polys(dtk::dtkPolygonRigidBody& body) {
   int len1 = body.mPolygonList.size();
   for (int i = 0; i < len1; i++) {
     glBegin(GL_LINE_LOOP);
@@ -72,10 +75,11 @@ static void draw_divided_polys(dtk::dtkPolygonRigidBody &body) {
   }
 }
 
-static void draw_body(const dtk::dtkPolygonRigidBody &body) {
+static void draw_body(const dtk::dtkPolygonRigidBody& body) {
   if (std::isinf(body.get_mass())) {
     glColor3f(1.0f, 1.0f, 1.0f);
-  } else {
+  }
+  else {
     glColor3f(0.8f, 0.8f, 0.0f);
   }
   glBegin(GL_LINE_LOOP);
@@ -85,7 +89,7 @@ static void draw_body(const dtk::dtkPolygonRigidBody &body) {
   }
   glEnd();
   if (!std::isinf(body.get_mass())) {
-    auto &pos = body.get_position();
+    auto& pos = body.get_position();
     auto v = body.local_to_world(body.get_velocity() * 0.2);
     glBegin(GL_LINES);
     glColor3f(0.0f, 1.0f, 0.0f);
@@ -99,7 +103,7 @@ static void draw_body(const dtk::dtkPolygonRigidBody &body) {
   }
 }
 
-static void draw_mesh(const Mesh &mesh) {
+static void draw_mesh(const Mesh& mesh) {
   glColor3f(0.8f, 0.8f, 0.0f);
   glBegin(GL_LINES);
   for (int i = 0; i < mesh.n_fem_element_; ++i) {
@@ -116,7 +120,7 @@ static void draw_mesh(const Mesh &mesh) {
   glEnd();
 }
 
-static void draw_mesh_shell(const Mesh &mesh) {
+static void draw_mesh_shell(const Mesh& mesh) {
   glColor3f(0.8f, 0.0f, 0.0f);
 
   glBegin(GL_LINE_LOOP);
@@ -128,12 +132,12 @@ static void draw_mesh_shell(const Mesh &mesh) {
   // draw_divided_polys(*(mesh.shell));
 }
 
-static void draw_joint(const dtk::dtkRevoluteJoint &joint) {
+static void draw_joint(const dtk::dtkRevoluteJoint& joint) {
   auto centroid_a =
-      joint.get_a()->local_to_world(joint.get_a()->get_centroid());
+    joint.get_a()->local_to_world(joint.get_a()->get_centroid());
   auto anchor_a = joint.world_anchor_a();
   auto centroid_b =
-      joint.get_b()->local_to_world(joint.get_b()->get_centroid());
+    joint.get_b()->local_to_world(joint.get_b()->get_centroid());
   auto anchor_b = joint.world_anchor_b();
 
   glColor3f(0.6f, 0.6f, 0.6f);
@@ -149,9 +153,9 @@ static void draw_joint(const dtk::dtkRevoluteJoint &joint) {
   glEnd();
 }
 
-static void draw_arbiter(const CollisionPair::ptr &pair) {
-  auto &contacts = pair->get_contacts();
-  for (auto &contact : contacts) {
+static void draw_arbiter(const CollisionPair::ptr& pair) {
+  auto& contacts = pair->get_contacts();
+  for (auto& contact : contacts) {
     auto pos = contact.position;
     auto ra = pos + dtk::normalize(contact.ra) * 0.2;
     auto rb = pos + dtk::normalize(contact.rb) * 0.2;
@@ -179,12 +183,12 @@ void drawParticle(float x, float y, float s) {
   glEnd();
 }
 
-void draw_sph(SPHSolver &sph) {
+void draw_sph(SPHSolver& sph) {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(-1.5f, -1.0f, -5.0f);
   // for each (auto & particle in sph.particles)
-  for (auto &particle : sph.particles) {
+  for (auto& particle : sph.particles) {
     glColor3f(0.5, 1.0, 1.0);
     drawParticle(particle.position[0], particle.position[1], 0.01);
   }
@@ -196,19 +200,19 @@ double random(double low, double high) {
 
 static void test_polygon() {
   dtkFactory::make_fence(world);
-  world.add(dtkFactory::make_polygon(200, {{-4, 0}, {4, 0}, {4, 1}, {-4, 1}},
-                                     {0, 0}));
-  world.add(dtkFactory::make_polygon(200, {{-1, -2}, {1, -2}, {1, 2}, {-1, 2}},
-                                     {0, 4}));
-  world.add(dtkFactory::make_polygon(200, {{2, -1}, {0, 1}, {-2, -1}, {0, 0}},
-                                     {0, 10}));
+  world.add(dtkFactory::make_polygon(200, { {-4, 0}, {4, 0}, {4, 1}, {-4, 1} },
+                                     { 0, 0 }));
+  world.add(dtkFactory::make_polygon(200, { {-1, -2}, {1, -2}, {1, 2}, {-1, 2} },
+                                     { 0, 4 }));
+  world.add(dtkFactory::make_polygon(200, { {2, -1}, {0, 1}, {-2, -1}, {0, 0} },
+                                     { 0, 10 }));
 }
 
 static void test_stack() {
   dtkFactory::make_fence(world);
   for (int i = 0; i < 10; ++i) {
     double x = random(-0.1 * i, 0.1 * i);
-    auto body = dtkFactory::make_box(1, 1, 1, {x, 0.51f + 1.05f * i});
+    auto body = dtkFactory::make_box(1, 1, 1, { x, 0.51f + 1.05f * i });
     body->set_friction(0.2);
     world.add(body);
   }
@@ -232,24 +236,24 @@ static void test_pyramid() {
 }
 
 static void test_joint() {
-  auto ground = dtkFactory::make_box(dtk::inf, 100, 20, {0, -10});
+  auto ground = dtkFactory::make_box(dtk::inf, 100, 20, { 0, -10 });
   world.add(ground);
 
-  auto box1 = dtkFactory::make_box(500, 1, 1, {13.5, 11});
+  auto box1 = dtkFactory::make_box(500, 1, 1, { 13.5, 11 });
   world.add(box1);
-  auto joint1 = dtkFactory::make_revolute_joint(ground, box1, {4.5, 11});
+  auto joint1 = dtkFactory::make_revolute_joint(ground, box1, { 4.5, 11 });
   world.add(joint1);
 
   for (size_t i = 0; i < 5; ++i) {
-    auto box2 = dtkFactory::make_box(100, 1, 1, {3.5f - i, 2});
+    auto box2 = dtkFactory::make_box(100, 1, 1, { 3.5f - i, 2 });
     world.add(box2);
-    auto joint2 = dtkFactory::make_revolute_joint(ground, box2, {3.5f - i, 11});
+    auto joint2 = dtkFactory::make_revolute_joint(ground, box2, { 3.5f - i, 11 });
     world.add(joint2);
   }
 }
 
 static void test_chain() {
-  auto ground = dtkFactory::make_box(dtk::inf, 100, 20, {0, -10});
+  auto ground = dtkFactory::make_box(dtk::inf, 100, 20, { 0, -10 });
   ground->set_friction(0.4);
   world.add(ground);
 
@@ -257,11 +261,11 @@ static void test_chain() {
   const double y = 12.0f;
   auto last = ground;
   for (int i = 0; i < 15; ++i) {
-    auto box = dtkFactory::make_box(mass, 0.75, 0.25, {0.5f + i, y});
+    auto box = dtkFactory::make_box(mass, 0.75, 0.25, { 0.5f + i, y });
     box->set_friction(0.4);
     world.add(box);
     auto joint =
-        dtkFactory::make_revolute_joint(last, box, dtk::dtkDouble2(i, y));
+      dtkFactory::make_revolute_joint(last, box, dtk::dtkDouble2(i, y));
     world.add(joint);
     last = box;
   }
@@ -271,8 +275,8 @@ static void test_mesh() {
   dtkFactory::make_fence(world);
   auto mesh = dtkFactory::make_mesh(15, 3, dtk::dtkDouble2(0.0, 6.0));
   world.add(mesh);
-  auto box = dtkFactory::make_polygon(200, {{-1, 0}, {1, 0}, {1, 2}, {-1, 2}},
-                                      {0.2, 0});
+  auto box = dtkFactory::make_polygon(200, { {-1, 0}, {1, 0}, {1, 2}, {-1, 2} },
+                                      { 0.2, 0 });
   world.add(box);
 }
 
@@ -289,8 +293,9 @@ void display() {
 
   auto now = std::chrono::high_resolution_clock::now();
   auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
-                now - last_clock)
-                .count();
+    now - last_clock)
+    .count();
+
   last_clock = now;
 
   int h = glutGet(GLUT_WINDOW_HEIGHT);
@@ -308,24 +313,24 @@ void display() {
 
   world.step(std::min(dt, 0.01));
 
-  for (auto &body : world.get_bodies()) {
+  for (auto& body : world.get_bodies()) {
     draw_body(*std::dynamic_pointer_cast<dtk::dtkPolygonRigidBody>(body).get());
   }
 
-  for (auto &joint : world.get_joints()) {
+  for (auto& joint : world.get_joints()) {
     draw_joint(*std::dynamic_pointer_cast<dtk::dtkRevoluteJoint>(joint).get());
   }
 
-  for (auto &arbiter : world.get_arbiters()) {
+  for (auto& arbiter : world.get_arbiters()) {
     draw_arbiter(arbiter.second);
   }
 
-  for (auto &mesh : world.get_meshes()) {
+  for (auto& mesh : world.get_meshes()) {
     draw_mesh(*std::dynamic_pointer_cast<Mesh>(mesh).get());
     draw_mesh_shell(*std::dynamic_pointer_cast<Mesh>(mesh).get());
   }
 
-  for (auto &sph : world.get_sphs()) {
+  for (auto& sph : world.get_sphs()) {
     draw_sph(*std::dynamic_pointer_cast<SPHSolver>(sph).get());
   }
 
@@ -341,7 +346,7 @@ void reshape(int width, int height) {
 
 void mouse(int button, int state, int x, int y) {}
 
-void move_pos(const dtk::dtkDouble2 &v) { world.move(v); }
+void move_pos(const dtk::dtkDouble2& v) { world.move(v); }
 
 void keyboard(unsigned char key, int x, int y) {
   switch (key) {
@@ -402,10 +407,17 @@ void special(int key, int x, int y) {}
 
 void idle() { display(); }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
+  // Parse command line arguments
+  for (int i = 1; i < argc; ++i) {
+    if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
+      INSTRUCTION = argv[++i][0];
+    }
+  }
+
   glutInit(&argc, argv);
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-  glutInitWindowPosition(50, 50);
+  glutInitWindowPosition(0, 0);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutCreateWindow("SimplePhysicsEngine-ST-demo2d");
   // world.Init();
@@ -418,6 +430,9 @@ int main(int argc, char *argv[]) {
   glutIdleFunc(&idle);
   /// @todo not found
   // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+  if (INSTRUCTION != '0') {
+    keyboard(INSTRUCTION, 0, 0);
+  }
   glutMainLoop();
   return 0;
 }
