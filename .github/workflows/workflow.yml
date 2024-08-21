@@ -49,12 +49,18 @@ jobs:
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
           sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
+          sudo apt-get install --no-install-recommends -y xvfb
 
       - name: Build
         run: |
           cmake --preset=build
           cmake --build build --target all
           cmake --build build --target coverage
+
+      - name: Start Xvfb
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
 
       - name: Run demo2d
         run: |
@@ -80,11 +86,20 @@ jobs:
           brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw vtk cgal glm glew
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
+          
+      - name: Install Xvfb
+        run: |
+          brew install Xvfb
 
       - name: Build
         run: |
           cmake --preset=build
           cmake --build build --target all
+      
+      - name: Start Xvfb
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
 
       - name: Run demo2d
         run: |
