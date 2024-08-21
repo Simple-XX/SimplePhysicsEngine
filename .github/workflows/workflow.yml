@@ -59,16 +59,16 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -screen 0 1024x768x24
           export DISPLAY=:99
 
       - name: Run demo2d
         run: |
           ./build/bin/demo2d
 
-      - name: Run MassSpring3d
+      - name: Run MassSpring3D
         run: |
-          ./build/bin/MassSpring3d
+          ./build/bin/MassSpring3D
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
@@ -87,9 +87,9 @@ jobs:
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
           
-      - name: Install Xvfb
+      - name: Install XQuartz
         run: |
-          brew install Xvfb
+          brew install --cask xquartz
 
       - name: Build
         run: |
@@ -98,7 +98,7 @@ jobs:
       
       - name: Start Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -screen 0 1024x768x24
           export DISPLAY=:99
 
       - name: Run demo2d
