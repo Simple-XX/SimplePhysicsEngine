@@ -30,10 +30,14 @@ public:
     }
 
     void SetVisible(bool visible) {
-        if (visible)
+        if (visible) {
             Visibility = SCENE_VISIBLE;
-        else
+            State = SCENE_ACTIVE;
+        }
+        else {
             Visibility = SCENE_HIDDEN;
+            State = SCENE_PAUSE;
+        }
     }
 
     unsigned int g_windowWidth = 800;

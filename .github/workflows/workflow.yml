@@ -71,7 +71,7 @@ jobs:
           DISPLAY: :99
   
       - name: Run MassSpring3D
-        run: ./build/bin/MassSpring3D
+        run: ./build/bin/MassSpring3D --test --instruction 1
         env:
           DISPLAY: :99
 

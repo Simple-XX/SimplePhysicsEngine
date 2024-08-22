@@ -5,9 +5,7 @@
 
 // GLSHADER ///////////////////////////////////////////////////////////////////////////////////
 GLShader::GLShader(GLenum shaderType) {
-	if (glewIsSupported("GL_VERSION_2_0"))
-		printf("Ready for OpenGL 2.0\n");
-	else {
+	if (!glewIsSupported("GL_VERSION_2_0")) {
 		printf("OpenGL 2.0 not supported\n");
 	}
 	handle = glCreateShader(shaderType);
