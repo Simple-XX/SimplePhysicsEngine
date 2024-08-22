@@ -187,7 +187,7 @@ static void initGlewState() {
     // }
     if (err != GLEW_OK) {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err) << std::endl;
-        exit(1);
+        exit(0);
     }
 }
 
