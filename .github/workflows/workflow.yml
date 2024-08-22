@@ -59,16 +59,18 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
-          export DISPLAY=:99
+          nohup Xvfb :99 -screen 0 1024x768x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Run demo2d
-        run: |
-          ./build/bin/demo2d
-
+        run: ./build/bin/demo2d
+        env:
+          DISPLAY: :99
+  
       - name: Run MassSpring3D
-        run: |
-          ./build/bin/MassSpring3D
+        run: ./build/bin/MassSpring3D
+        env:
+          DISPLAY: :99
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3

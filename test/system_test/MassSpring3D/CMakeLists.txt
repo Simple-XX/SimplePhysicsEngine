@@ -17,6 +17,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         include
 )
 
+target_link_libraries(${PROJECT_NAME} GLEW::GLEW)
+
 if (APPLE)
         target_compile_definitions(${PROJECT_NAME} PRIVATE
                 GL_SILENCE_DEPRECATION
