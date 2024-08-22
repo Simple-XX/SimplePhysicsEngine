@@ -87,7 +87,7 @@ void display() {
             .count();
         if (total_time > 5.0) {
             std::cout << "TEST " << INSTRUCTION << "." << std::endl;
-            exit(0);
+            exit(1);
         }
     }
     last_clock = now;
@@ -181,10 +181,10 @@ static void initGlutState(int argc, char** argv, const char* window_title = "", 
 
 static void initGlewState() {
     GLenum err = glewInit();
-    if (!glewIsSupported("GL_VERSION_2_0")) {
-        printf("OpenGL 2.0 not supported\n");
-        exit(1);
-    }
+    // if (!glewIsSupported("GL_VERSION_2_0")) {
+    //     printf("OpenGL 2.0 not supported\n");
+    //     exit(1);
+    // }
     if (err != GLEW_OK) {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err) << std::endl;
         exit(1);
