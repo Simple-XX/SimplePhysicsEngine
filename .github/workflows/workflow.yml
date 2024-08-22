@@ -63,7 +63,10 @@ jobs:
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Run demo2d
-        run: ./build/bin/demo2d
+        run: |
+          for i in {1..7}; do
+            ./build/bin/demo2d --test --instruction $i
+          done
         env:
           DISPLAY: :99
   
@@ -93,23 +96,28 @@ jobs:
         run: |
           brew install --cask xquartz
 
+      - name: Start Xvfb
+        run: |
+          sudo Xvfb :99 -screen 0 1024x768x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+      
       - name: Build
         run: |
           cmake --preset=build
           cmake --build build --target all
-      
-      - name: Start Xvfb
-        run: |
-          Xvfb :99 -screen 0 1024x768x24 &
-          export DISPLAY=:99
 
       - name: Run demo2d
         run: |
-          ./build/bin/demo2d
+          for i in {1..7}; do
+            ./build/bin/demo2d --test --instruction $i
+          done
+        env:
+          DISPLAY: :99
 
-      - name: Run MassSpring3d
-        run: |
-          ./build/bin/MassSpring3d
+      - name: Run MassSpring3D
+        run: ./build/bin/MassSpring3D
+        env:
+          DISPLAY: :99
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
