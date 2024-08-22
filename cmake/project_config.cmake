@@ -47,4 +47,7 @@ set(VTK_OPT # whether to use VTK
         "OFF"
         CACHE BOOL "Choose whether to use VTK or not")
 
+# Ensure GLEW_USE_STATIC_LIBS is set consistently
+set(GLEW_USE_STATIC_LIBS ON CACHE BOOL "Use static GLEW libraries")
+
 # Add global definitions to project

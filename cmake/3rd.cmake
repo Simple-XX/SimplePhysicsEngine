@@ -46,9 +46,6 @@ endif ()
 include(${CPM_DOWNLOAD_LOCATION})
 # -------- get_cpm.cmake --------
 
-# Ensure GLEW_USE_STATIC_LIBS is set consistently
-set(GLEW_USE_STATIC_LIBS ON CACHE BOOL "Use static GLEW libraries")
-
 # https://github.com/google/googletest
 CPMAddPackage(
         NAME googletest
