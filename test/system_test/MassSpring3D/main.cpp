@@ -29,6 +29,7 @@
 #include "Renderer.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
+static auto init_clock = std::chrono::high_resolution_clock::now();
 
 // The Width of the screen
 const unsigned int WINDOW_WIDTH = 800;
@@ -36,6 +37,9 @@ const unsigned int WINDOW_WIDTH = 800;
 const unsigned int WINDOW_HEIGHT = 600;
 static ClothSimulation scene(WINDOW_WIDTH, WINDOW_HEIGHT, { 0, -9.8 });
 // static ProgramInput* g_render_target; // vertex, index
+
+bool TEST = false;
+char INSTRUCTION = '0';
 
 static void checkGlErrors();
 
@@ -74,8 +78,18 @@ void display() {
     glTranslatef(0.0f, -8.0f, -25.0f);
 
     auto now = std::chrono::high_resolution_clock::now();
-    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(now - last_clock).count();
-    last_clock = now;
+    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
+        now - last_clock)
+        .count();
+    if (TEST) {
+        auto total_time = std::chrono::duration_cast<std::chrono::duration<double>>(
+            now - init_clock)
+            .count();
+        if (total_time > 5.0) {
+            std::cout << "TEST " << INSTRUCTION << "." << std::endl;
+            exit(0);
+        }
+    }
 
     int h = glutGet(GLUT_WINDOW_HEIGHT);
     int w = glutGet(GLUT_WINDOW_WIDTH);
@@ -201,6 +215,16 @@ static void initGLState() {
 }
 
 int main(int argc, char* argv[]) {
+    // Parse command line arguments
+    for (int i = 1; i < argc; ++i) {
+        if (std::strcmp(argv[i], "--test") == 0) {
+            TEST = true;
+        }
+        else if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
+            INSTRUCTION = argv[++i][0];
+        }
+    }
+
     try {
         const char* window_title = "SimplePhysicsEngine-ST-MassSpring3D";
         initGlutState(argc, argv, window_title, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -210,6 +234,9 @@ int main(int argc, char* argv[]) {
         scene.Init();
         checkGlErrors();
 
+        if (INSTRUCTION != '0') {
+            keyboard(INSTRUCTION, 0, 0);
+        }
         glutMainLoop();
 
         scene.CleanUp();
