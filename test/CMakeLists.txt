@@ -48,8 +48,7 @@ link_libraries(
         SimplePhysicsEngine-static
 )
 
-# @bug unit_test 待补充好再开启
-# add_subdirectory(unit_test)
+add_subdirectory(unit_test)
 #add_subdirectory(integration_test)
 add_subdirectory(system_test)
 
