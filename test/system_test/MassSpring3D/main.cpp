@@ -90,6 +90,7 @@ void display() {
             exit(0);
         }
     }
+    last_clock = now;
 
     int h = glutGet(GLUT_WINDOW_HEIGHT);
     int w = glutGet(GLUT_WINDOW_WIDTH);
