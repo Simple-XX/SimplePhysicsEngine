@@ -59,7 +59,7 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24
+          Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
 
       - name: Run demo2d
@@ -83,7 +83,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw vtk cgal glm glew
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
           
@@ -98,7 +98,7 @@ jobs:
       
       - name: Start Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24
+          Xvfb :99 -screen 0 1024x768x24 &
           export DISPLAY=:99
 
       - name: Run demo2d
