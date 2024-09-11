@@ -126,8 +126,6 @@ jobs:
           sudo Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
           sleep 3  # Give Xvfb some time to start
-          export DISPLAY=:99
-          xset -q  # Check if Xvfb is running
 
       - name: Build
         run: |
