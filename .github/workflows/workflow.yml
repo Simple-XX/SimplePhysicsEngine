@@ -58,14 +58,14 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          nohup Xvfb :99 -screen 0 1024x768x24 &
+          nohup Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Run demo2d
         run: |
           for i in {1..7}; do
             # Start recording with ffmpeg
-            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
             FFmpeg_PID=$!
             # Run the demo2d program in the background
             ./build/bin/demo2d --instruction $i &
@@ -83,7 +83,7 @@ jobs:
       - name: Run MassSpring3D
         run: |
           for i in {1..1}; do
-            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
             ./build/bin/MassSpring3D --instruction $i &
             MassSpring3D_PID=$!
@@ -123,9 +123,12 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          sudo Xvfb :99 -screen 0 1024x768x24 &
+          sudo Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
-      
+          sleep 3  # Give Xvfb some time to start
+          export DISPLAY=:99
+          xset -q  # Check if Xvfb is running
+
       - name: Build
         run: |
           cmake --preset=build
@@ -135,7 +138,7 @@ jobs:
         run: |
           for i in {1..7}; do
             # Start recording with ffmpeg
-            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
             FFmpeg_PID=$!
             # Run the demo2d program in the background
             ./build/bin/demo2d --instruction $i &
@@ -153,7 +156,7 @@ jobs:
       - name: Run MassSpring3D
         run: |
           for i in {1..1}; do
-            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
             ./build/bin/MassSpring3D --instruction $i &
             MassSpring3D_PID=$!
