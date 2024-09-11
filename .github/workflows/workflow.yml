@@ -49,7 +49,7 @@ jobs:
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
           sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
-          sudo apt-get install --no-install-recommends -y xvfb
+          sudo apt-get install --no-install-recommends -y xvfb ffmpeg
 
       - name: Build
         run: |
@@ -59,21 +59,47 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          nohup Xvfb :99 -screen 0 1024x768x24 &
+          nohup Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Run demo2d
         run: |
           for i in {1..7}; do
-            ./build/bin/demo2d --test --instruction $i
+            # Start recording with ffmpeg
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            FFmpeg_PID=$!
+            # Run the demo2d program in the background
+            ./build/bin/demo2d --instruction $i &
+            Demo2d_PID=$!
+            # Wait for 5 seconds
+            sleep 5
+            # Stop the ffmpeg recording
+            kill $FFmpeg_PID
+            # Terminate the demo2d program
+            kill $Demo2d_PID
           done
         env:
           DISPLAY: :99
   
       - name: Run MassSpring3D
-        run: ./build/bin/MassSpring3D --test --instruction 1
+        run: |
+          for i in {1..1}; do
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            FFmpeg_PID=$!
+            ./build/bin/MassSpring3D --instruction $i &
+            MassSpring3D_PID=$!
+            sleep 5
+            kill $FFmpeg_PID
+            kill $MassSpring3D_PID
+          done
         env:
           DISPLAY: :99
+      
+      - name: Upload GIFs
+        uses: actions/upload-artifact@v3
+        with:
+          name: gifs
+          path: build/bin/*.gif
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
@@ -98,7 +124,7 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          sudo Xvfb :99 -screen 0 1024x768x24 &
+          sudo Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
       
       - name: Build
@@ -109,15 +135,41 @@ jobs:
       - name: Run demo2d
         run: |
           for i in {1..7}; do
-            ./build/bin/demo2d --test --instruction $i
+            # Start recording with ffmpeg
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            FFmpeg_PID=$!
+            # Run the demo2d program in the background
+            ./build/bin/demo2d --instruction $i &
+            Demo2d_PID=$!
+            # Wait for 5 seconds
+            sleep 5
+            # Stop the ffmpeg recording
+            kill $FFmpeg_PID
+            # Terminate the demo2d program
+            kill $Demo2d_PID
           done
         env:
           DISPLAY: :99
 
       - name: Run MassSpring3D
-        run: ./build/bin/MassSpring3D --test --instruction 1
+        run: |
+          for i in {1..1}; do
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            FFmpeg_PID=$!
+            ./build/bin/MassSpring3D --instruction $i &
+            MassSpring3D_PID=$!
+            sleep 5
+            kill $FFmpeg_PID
+            kill $MassSpring3D_PID
+          done
         env:
           DISPLAY: :99
+      
+      - name: Upload GIFs
+        uses: actions/upload-artifact@v3
+        with:
+          name: gifs
+          path: build/bin/*.gif
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
