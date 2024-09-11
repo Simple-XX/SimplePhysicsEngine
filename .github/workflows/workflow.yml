@@ -7,7 +7,6 @@ name: build
 
 on:
   - push
-  - pull_request
   - release
 
 env:
@@ -59,14 +58,14 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          nohup Xvfb :99 -screen 0 800x600x24 &
+          nohup Xvfb :99 -screen 0 1024x768x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Run demo2d
         run: |
           for i in {1..7}; do
             # Start recording with ffmpeg
-            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
             FFmpeg_PID=$!
             # Run the demo2d program in the background
             ./build/bin/demo2d --instruction $i &
@@ -84,7 +83,7 @@ jobs:
       - name: Run MassSpring3D
         run: |
           for i in {1..1}; do
-            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
             ./build/bin/MassSpring3D --instruction $i &
             MassSpring3D_PID=$!
@@ -114,17 +113,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm ffmpeg
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
           
       - name: Install XQuartz
         run: |
-          brew install --cask xquartz ffmpeg
+          brew install --cask xquartz
 
       - name: Start Xvfb
         run: |
-          sudo Xvfb :99 -screen 0 800x600x24 &
+          sudo Xvfb :99 -screen 0 1024x768x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
       
       - name: Build
@@ -136,7 +135,7 @@ jobs:
         run: |
           for i in {1..7}; do
             # Start recording with ffmpeg
-            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
+            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
             FFmpeg_PID=$!
             # Run the demo2d program in the background
             ./build/bin/demo2d --instruction $i &
@@ -154,7 +153,7 @@ jobs:
       - name: Run MassSpring3D
         run: |
           for i in {1..1}; do
-            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            ffmpeg -y -f x11grab -video_size 1024x768 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
             ./build/bin/MassSpring3D --instruction $i &
             MassSpring3D_PID=$!
