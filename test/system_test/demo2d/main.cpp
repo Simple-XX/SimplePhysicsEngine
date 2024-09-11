@@ -32,7 +32,6 @@ const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 static FemSimulation world({ 0, -9.8 });
 
-bool TEST = false;
 char INSTRUCTION = '0';
 
 static void draw_text(int x, int y, const char* format, ...) {
@@ -296,15 +295,6 @@ void display() {
   auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
     now - last_clock)
     .count();
-  if (TEST) {
-    auto total_time = std::chrono::duration_cast<std::chrono::duration<double>>(
-      now - init_clock)
-      .count();
-    if (total_time > 5.0) {
-      std::cout << "TEST " << INSTRUCTION << "." << std::endl;
-      exit(0);
-    }
-  }
 
   last_clock = now;
 
@@ -420,10 +410,7 @@ void idle() { display(); }
 int main(int argc, char* argv[]) {
   // Parse command line arguments
   for (int i = 1; i < argc; ++i) {
-    if (std::strcmp(argv[i], "--test") == 0) {
-      TEST = true;
-    }
-    else if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
+    if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
       INSTRUCTION = argv[++i][0];
     }
   }

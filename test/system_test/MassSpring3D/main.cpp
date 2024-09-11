@@ -38,7 +38,6 @@ const unsigned int WINDOW_HEIGHT = 600;
 static ClothSimulation scene(WINDOW_WIDTH, WINDOW_HEIGHT, { 0, -9.8 });
 // static ProgramInput* g_render_target; // vertex, index
 
-bool TEST = false;
 char INSTRUCTION = '0';
 
 static void checkGlErrors();
@@ -81,15 +80,6 @@ void display() {
     auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
         now - last_clock)
         .count();
-    if (TEST) {
-        auto total_time = std::chrono::duration_cast<std::chrono::duration<double>>(
-            now - init_clock)
-            .count();
-        if (total_time > 5.0) {
-            std::cout << "TEST " << INSTRUCTION << "." << std::endl;
-            exit(1);
-        }
-    }
     last_clock = now;
 
     int h = glutGet(GLUT_WINDOW_HEIGHT);
@@ -181,10 +171,10 @@ static void initGlutState(int argc, char** argv, const char* window_title = "", 
 
 static void initGlewState() {
     GLenum err = glewInit();
-    // if (!glewIsSupported("GL_VERSION_2_0")) {
-    //     printf("OpenGL 2.0 not supported\n");
-    //     exit(1);
-    // }
+    if (!glewIsSupported("GL_VERSION_2_0")) {
+        printf("OpenGL 2.0 not supported\n");
+        exit(1);
+    }
     if (err != GLEW_OK) {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err) << std::endl;
         exit(0);
@@ -218,10 +208,7 @@ static void initGLState() {
 int main(int argc, char* argv[]) {
     // Parse command line arguments
     for (int i = 1; i < argc; ++i) {
-        if (std::strcmp(argv[i], "--test") == 0) {
-            TEST = true;
-        }
-        else if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
+        if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
             INSTRUCTION = argv[++i][0];
         }
     }
