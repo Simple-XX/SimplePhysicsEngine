@@ -157,7 +157,7 @@ void idle() {
 static void initGlutState(int argc, char** argv, const char* window_title = "", const unsigned int window_width = 800, const unsigned int window_height = 600) {
     glutInit(&argc, argv);
     glutInitWindowSize(window_width, window_height);
-    glutInitWindowPosition(50, 50);
+    glutInitWindowPosition(0, 0);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);  /// TODO
     glutCreateWindow(window_title);
     glutDisplayFunc(&display);

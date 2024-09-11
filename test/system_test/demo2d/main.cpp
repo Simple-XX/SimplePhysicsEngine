@@ -417,7 +417,7 @@ int main(int argc, char* argv[]) {
 
   glutInit(&argc, argv);
   glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-  glutInitWindowPosition(50, 50);
+  glutInitWindowPosition(0, 0);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutCreateWindow("SimplePhysicsEngine-ST-demo2d");
   // world.Init();
