@@ -159,10 +159,11 @@ static void initGlutState(int argc, char** argv, const char* window_title = "", 
     glutInitWindowSize(window_width, window_height);
     glutInitWindowPosition(0, 0);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-#ifdef __APPLE__
-    glutInitContextVersion(3, 3);
-    glutInitContextFlags(GLUT_CORE_PROFILE);
-#endif
+    // TODO: Fix error of OpenGL version in macOS
+    // #ifdef __APPLE__
+    //     glutInitContextVersion(3, 3);
+    //     glutInitContextFlags(GLUT_CORE_PROFILE);
+    // #endif
     glutCreateWindow(window_title);
     glutDisplayFunc(&display);
     glutReshapeFunc(&reshape);
