@@ -113,14 +113,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm ffmpeg Xvfb
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm ffmpeg
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
           brew install --cask xquartz
 
       - name: Start Xvfb
         run: |
-          sudo Xvfb :99 -screen 0 800x600x24 &
+          sudo /opt/X11/bin/Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
           export DISPLAY=:99
           sleep 3  # Give Xvfb some time to start
