@@ -113,12 +113,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm ffmpeg
+          brew install doxygen graphviz llvm cppcheck lcov spdlog boost freeglut glfw glew vtk cgal glm ffmpeg Xvfb
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
-          
-      - name: Install XQuartz
-        run: |
           brew install --cask xquartz
 
       - name: Start Xvfb
