@@ -124,10 +124,6 @@ jobs:
           echo "DISPLAY=:99" >> $GITHUB_ENV
           export DISPLAY=:99
           sleep 3  # Give Xvfb some time to start
-      
-      - name: check OpenGL
-        run: |
-          system_profiler SPDisplaysDataType | grep "OpenGL"
 
       - name: Build
         run: |
