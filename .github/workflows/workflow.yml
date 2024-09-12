@@ -127,7 +127,7 @@ jobs:
       
       - name: check OpenGL
         run: |
-          glxinfo | grep "OpenGL version"
+          system_profiler SPDisplaysDataType | grep "OpenGL"
 
       - name: Build
         run: |
