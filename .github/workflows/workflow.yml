@@ -124,14 +124,10 @@ jobs:
           echo "DISPLAY=:99" >> $GITHUB_ENV
           export DISPLAY=:99
           sleep 3  # Give Xvfb some time to start
-          if ! pgrep Xvfb; then
-            echo "Xvfb did not start correctly"
-            exit 1
-          fi
-          if [ -z "$DISPLAY" ]; then
-            echo "DISPLAY environment variable is not set"
-            exit 1
-          fi
+      
+      - name: check OpenGL
+        run: |
+          glxinfo | grep "OpenGL version"
 
       - name: Build
         run: |
