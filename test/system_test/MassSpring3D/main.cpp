@@ -160,7 +160,8 @@ static void initGlutState(int argc, char** argv, const char* window_title = "", 
     glutInitWindowPosition(0, 0);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 #ifdef __APPLE__
-    glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
+    glutInitContextVersion(3, 3);
+    glutInitContextFlags(GLUT_CORE_PROFILE);
 #endif
     glutCreateWindow(window_title);
     glutDisplayFunc(&display);
