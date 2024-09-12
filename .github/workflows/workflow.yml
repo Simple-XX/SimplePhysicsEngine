@@ -124,9 +124,6 @@ jobs:
           echo "DISPLAY=:99" >> $GITHUB_ENV
           export DISPLAY=:99
           sleep 3  # Give Xvfb some time to start
-
-      - name: Verify Xvfb
-        run: |
           if ! pgrep Xvfb; then
             echo "Xvfb did not start correctly"
             exit 1
@@ -153,9 +150,13 @@ jobs:
             # Wait for 5 seconds
             sleep 5
             # Stop the ffmpeg recording
-            kill $FFmpeg_PID
+            if ps -p $FFmpeg_PID > /dev/null; then
+              kill $FFmpeg_PID
+            fi
             # Terminate the demo2d program
-            kill $Demo2d_PID
+            if ps -p $Demo2d_PID > /dev/null; then
+              kill $Demo2d_PID
+            fi
           done
         env:
           DISPLAY: :99
@@ -168,8 +169,12 @@ jobs:
             ./build/bin/MassSpring3D --instruction $i &
             MassSpring3D_PID=$!
             sleep 5
-            kill $FFmpeg_PID
-            kill $MassSpring3D_PID
+            if ps -p $FFmpeg_PID > /dev/null; then
+              kill $FFmpeg_PID
+            fi
+            if ps -p $MassSpring3D_PID > /dev/null; then
+              kill $MassSpring3D_PID
+            fi
           done
         env:
           DISPLAY: :99
