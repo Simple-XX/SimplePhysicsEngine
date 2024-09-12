@@ -97,7 +97,7 @@ jobs:
       - name: Upload GIFs
         uses: actions/upload-artifact@v4
         with:
-          name: gifs
+          name: gifs_ubuntu
           path: build/bin/*.gif
 
       - name: Upload coverage reports to Codecov
@@ -126,6 +126,17 @@ jobs:
           sudo Xvfb :99 -screen 0 800x600x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
           sleep 3  # Give Xvfb some time to start
+
+      - name: Verify Xvfb
+        run: |
+          if ! pgrep Xvfb; then
+            echo "Xvfb did not start correctly"
+            exit 1
+          fi
+          if [ -z "$DISPLAY" ]; then
+            echo "DISPLAY environment variable is not set"
+            exit 1
+          fi
 
       - name: Build
         run: |
@@ -168,7 +179,7 @@ jobs:
       - name: Upload GIFs
         uses: actions/upload-artifact@v4
         with:
-          name: gifs
+          name: gifs_macos
           path: build/bin/*.gif
 
       - name: Upload coverage reports to Codecov
