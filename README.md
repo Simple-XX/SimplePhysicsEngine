@@ -217,6 +217,28 @@ A blood flow induced physical simulation of guidewire shape for virtual vascular
   <img src="./demo/img/3dFEM.gif" width = "50%", height = "50%" />
 </div>
 
+## Demo2d
+
+<div align="center">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; max-width: 800px; margin: auto;">
+    <img src="./demo/img/demo2d_1.gif" style="width: 100%; height: auto; max-width: 200px;" />
+    <img src="./demo/img/demo2d_2.gif" style="width: 100%; height: auto; max-width: 200px;" />
+    <img src="./demo/img/demo2d_3.gif" style="width: 100%; height: auto; max-width: 200px;" />
+    <img src="./demo/img/demo2d_4.gif" style="width: 100%; height: auto; max-width: 200px;" />
+    <img src="./demo/img/demo2d_5.gif" style="width: 100%; height: auto; max-width: 200px;" />
+    <img src="./demo/img/demo2d_6.gif" style="width: 100%; height: auto; max-width: 200px;" />
+    <img src="./demo/img/demo2d_7.gif" style="width: 100%; height: auto; max-width: 200px;" />
+  </div>
+</div>
+
+## MassSpring3D
+
+<div align="center">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; max-width: 800px; margin: auto;">
+    <img src="./demo/img/MassSpring3D_1.gif" style="width: 100%; height: auto; max-width: 200px;" />
+  </div>
+</div>
+
 ## Documentation
 
 You can find documentation [here](https://github.com/Simple-XX/SimplePhysicsEngine/blob/main/doc/html/index.html).
