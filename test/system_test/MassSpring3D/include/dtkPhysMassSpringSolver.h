@@ -7,6 +7,9 @@
 #include <Eigen/Sparse>
 #include <random>
 
+#include <cuda_runtime.h>
+#include <cusparse.h>
+
 namespace dtk {
     class dtkPhysMassSpringSolver {
     private:
@@ -49,9 +52,7 @@ namespace dtk {
         dtkPhysMassSpringSolver();
         dtkPhysMassSpringSolver(const dtkPhysMassSpring::Ptr& massSpring);
 
-        void localStep();
-        void globalStep();
-
+        void step(bool use_cuda = false);
         Cholesky _system_matrix;
         dtkPhysMassSpring::Ptr _system;
 
@@ -65,6 +66,10 @@ namespace dtk {
         VectorXf _prev_state;  // q(n-1)
         VectorXf _spring_directions; // d, spring directions
         VectorXf _inertial_term; /**< 惯性项 = M * y, y = (a + 1) * q(n) - a * q(n - 1), a = damp_factor */
+
+        std::vector<float> _rest_lengths;  // 存储每个弹簧的初始长度
+        std::vector<int> _spring_indices;  // 存储每个弹簧的两个顶点的索引（大小为 2 * num_springs）
+
 
         float _time_step;
     };
