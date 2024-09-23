@@ -11,13 +11,17 @@ add_executable(${PROJECT_NAME}
         Shader.cpp
         Renderer.cpp
         dtkPhysMassSpringSolver.cpp
+        step.cu
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         include
 )
 
-target_link_libraries(${PROJECT_NAME} GLEW::GLEW)
+# find_package(CUDA REQUIRED)
+find_package(CUDAToolkit)
+
+target_link_libraries(${PROJECT_NAME} GLEW::GLEW CUDA::cudart CUDA::cusparse)
 
 if (APPLE)
         target_compile_definitions(${PROJECT_NAME} PRIVATE

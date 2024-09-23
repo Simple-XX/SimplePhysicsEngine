@@ -14,7 +14,8 @@
  */
 #include "ClothSimulation.h"
 
-ClothSimulation::ClothSimulation(const unsigned int& windowWidth, const unsigned int& windowHeight, const dtk::dtkDouble3& gravity) : Scene(windowWidth, windowHeight), _gravity(gravity) {
+ClothSimulation::ClothSimulation(const unsigned int& windowWidth, const unsigned int& windowHeight, const dtk::dtkDouble3& gravity, const unsigned int& edge_num) : Scene(windowWidth, windowHeight), _gravity(gravity), _param(SystemParam(edge_num)) {
+    this->Init();
 };
 
 const ClothSimulation::ClothMesh ClothSimulation::GetClothMesh() const {
@@ -90,7 +91,7 @@ void ClothSimulation::InitShader() {
 }
 
 void ClothSimulation::InitCloth() {
-    _cloth_mesh = dtkFactory::CreateClothMesh(SystemParam::w, SystemParam::n);
+    _cloth_mesh = dtkFactory::CreateClothMesh(_param.w, _param.n);
 
     ClothDrop();
 
@@ -107,7 +108,7 @@ void ClothSimulation::InitScene() {
         glm::vec3(0.618, -0.786, 0.3f) * g_camera_distance,
         glm::vec3(0.0f, 0.0f, -1.0f),
         glm::vec3(0.0f, 0.0f, 1.0f)
-    ) * glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, SystemParam::w / 4));
+    ) * glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, _param.w / 4));
     g_ProjectionMatrix = glm::perspective(PI / 4.0f, g_windowWidth * 1.0f / g_windowHeight, 0.01f, 1000.0f);
 };
 
@@ -116,7 +117,7 @@ void ClothSimulation::SetParameters() {
 };
 
 void ClothSimulation::ClothDrop() {
-    _system = dtkFactory::CreateClothMassSpringSystem(_cloth_mesh);
+    _system = dtkFactory::CreateClothMassSpringSystem(_cloth_mesh, _param);
     // _sphere_mesh = dtkFactory::CreateSphereMesh(dtk::dtkDouble3(0, 0, -1), 0.64, 20);
 
     _solver = dtkFactory::CreateClothMassSpringSolver(_system);
@@ -161,6 +162,9 @@ void ClothSimulation::UpdateRenderTarget() {
 };
 
 dtk::dtkStaticTriangleMesh::Ptr dtkFactory::CreateClothMesh(float w, int n) {
+    if (n % 2 == 0)
+        throw std::runtime_error("n must be odd!");
+
     dtk::dtkStaticTriangleMesh::Ptr result = dtk::dtkStaticTriangleMesh::New();
 
     unsigned int idx = 0; // vertex index
@@ -245,26 +249,26 @@ dtk::dtkStaticTriangleMesh::Ptr dtkFactory::CreateSphereMesh(dtk::dtkDouble3 cen
     return result;
 }
 
-dtk::dtkPhysMassSpring::Ptr dtkFactory::CreateClothMassSpringSystem(const dtk::dtkStaticTriangleMesh::Ptr& mesh) {
-    dtk::dtkDouble3 gravity(0, 0, -SystemParam::g);
-    dtk::dtkPhysMassSpring::Ptr system = dtk::dtkPhysMassSpring::New(SystemParam::m, SystemParam::k, SystemParam::b, SystemParam::a, SystemParam::r, SystemParam::h, gravity);
+dtk::dtkPhysMassSpring::Ptr dtkFactory::CreateClothMassSpringSystem(const dtk::dtkStaticTriangleMesh::Ptr& mesh, const SystemParam& _param) {
+    dtk::dtkDouble3 gravity(0, 0, -_param.g);
+    dtk::dtkPhysMassSpring::Ptr system = dtk::dtkPhysMassSpring::New(_param.m, _param.k, _param.b, _param.a, _param.r, _param.h, gravity);
     // system->SetTriangleMesh(mesh);
 
     // n must be odd
-    assert(SystemParam::n % 2 == 1);
+    assert(_param.n % 2 == 1);
 
     // compute n_points and n_springs
-    unsigned int n_points = SystemParam::n * SystemParam::n;
-    unsigned int n_springs = (SystemParam::n - 1) * (5 * SystemParam::n - 2);
+    unsigned int n_points = _param.n * _param.n;
+    unsigned int n_springs = (_param.n - 1) * (5 * _param.n - 2);
     system->SetPoints(mesh->GetPoints());
     for (unsigned int id = 0; id < n_points; id++) {
-        system->AddMassPoint(id, SystemParam::m, dtk::dtkT3<double>(0, 0, 0), SystemParam::a, SystemParam::c, gravity);
+        system->AddMassPoint(id, _param.m, dtk::dtkT3<double>(0, 0, 0), _param.a, _param.c, gravity);
     }
 
-    unsigned int n = SystemParam::n;
+    unsigned int n = _param.n;
     double rest_length_factor = 1.05;
-    for (unsigned int i = 0; i < SystemParam::n; i++) {
-        for (unsigned int j = 0; j < SystemParam::n; j++) {
+    for (unsigned int i = 0; i < _param.n; i++) {
+        for (unsigned int j = 0; j < _param.n; j++) {
             // bottom right corner
             if (i == n - 1 && j == n - 1) {
                 continue;
@@ -272,11 +276,11 @@ dtk::dtkPhysMassSpring::Ptr dtkFactory::CreateClothMassSpringSystem(const dtk::d
 
             if (i == n - 1) {
                 // structural spring
-                system->AddSpring(n * i + j, n * i + j + 1, SystemParam::k, SystemParam::a, rest_length_factor);
+                system->AddSpring(n * i + j, n * i + j + 1, _param.k, _param.a, rest_length_factor);
 
                 // bending spring
                 if (j % 2 == 0) {
-                    system->AddSpring(n * i + j, n * i + j + 2, SystemParam::k, SystemParam::a, rest_length_factor);
+                    system->AddSpring(n * i + j, n * i + j + 2, _param.k, _param.a, rest_length_factor);
                 }
                 continue;
             }
@@ -284,31 +288,31 @@ dtk::dtkPhysMassSpring::Ptr dtkFactory::CreateClothMassSpringSystem(const dtk::d
             // right edge
             if (j == n - 1) {
                 // structural spring
-                system->AddSpring(n * i + j, n * (i + 1) + j, SystemParam::k, SystemParam::a, rest_length_factor);
+                system->AddSpring(n * i + j, n * (i + 1) + j, _param.k, _param.a, rest_length_factor);
 
                 // bending spring
                 if (i % 2 == 0) {
-                    system->AddSpring(n * i + j, n * (i + 2) + j, SystemParam::k, SystemParam::a, rest_length_factor);
+                    system->AddSpring(n * i + j, n * (i + 2) + j, _param.k, _param.a, rest_length_factor);
                 }
                 continue;
             }
 
             // structural springs
-            system->AddSpring(n * i + j, n * i + j + 1, SystemParam::k, SystemParam::a, rest_length_factor);
+            system->AddSpring(n * i + j, n * i + j + 1, _param.k, _param.a, rest_length_factor);
 
-            system->AddSpring(n * i + j, n * (i + 1) + j, SystemParam::k, SystemParam::a, rest_length_factor);
+            system->AddSpring(n * i + j, n * (i + 1) + j, _param.k, _param.a, rest_length_factor);
 
             // shearing springs
-            system->AddSpring(n * i + j, n * (i + 1) + j + 1, SystemParam::k, SystemParam::a, rest_length_factor);
+            system->AddSpring(n * i + j, n * (i + 1) + j + 1, _param.k, _param.a, rest_length_factor);
 
-            system->AddSpring(n * (i + 1) + j, n * i + j + 1, SystemParam::k, SystemParam::a, rest_length_factor);
+            system->AddSpring(n * (i + 1) + j, n * i + j + 1, _param.k, _param.a, rest_length_factor);
 
             // bending springs
             if (j % 2 == 0) {
-                system->AddSpring(n * i + j, n * i + j + 2, SystemParam::k, SystemParam::a, rest_length_factor);
+                system->AddSpring(n * i + j, n * i + j + 2, _param.k, _param.a, rest_length_factor);
             }
             if (i % 2 == 0) {
-                system->AddSpring(n * i + j, n * (i + 2) + j, SystemParam::k, SystemParam::a, rest_length_factor);
+                system->AddSpring(n * i + j, n * (i + 2) + j, _param.k, _param.a, rest_length_factor);
             }
         }
     }
