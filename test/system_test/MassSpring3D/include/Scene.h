@@ -9,10 +9,12 @@ class Scene {
     SceneVisibility Visibility;
 public:
     Scene() : State(SCENE_ACTIVE), Visibility(SCENE_VISIBLE) {};
-    Scene(const unsigned int& width, const unsigned int& height) : State(SCENE_PAUSE), Visibility(SCENE_HIDDEN), g_windowWidth(width), g_windowHeight(height) {};
+    Scene(const unsigned int& width, const unsigned int& height) : State(SCENE_ACTIVE), Visibility(SCENE_VISIBLE), g_windowWidth(width), g_windowHeight(height) {};
     virtual void Init() = 0;
     virtual void Update(float dt) = 0;
     virtual void Render() = 0;
+    virtual void CleanUp() = 0;
+    virtual void move(const dtk::dtkDouble2& v) = 0;
 
     bool IsPause() const {
         return State == SCENE_PAUSE;

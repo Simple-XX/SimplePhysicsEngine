@@ -38,23 +38,29 @@
 #include "dtkPhysMassSpringSolver.h"
 #include "dtkPhysMassSpringCollisionResponse.h"
 
-namespace SystemParam {
-    static const int n = 33; // must be odd, n * n = n_vertices | 61
-    static const float w = 2.0f; // width | 2.0f
-    static const float h = 0.008f; // time step, smaller for better results | 0.008f = 0.016f/2
-    static const float r = w / (n - 1) * 1.05f; // spring rest legnth
-    static const float k = 1.0f; // spring stiffness | 1.0f;
-    static const float m = 0.05f / (n * n); // point mass | 0.25f
-    static const float a = 0.993f; // point damping, close to 1.0 | 0.993f
-    static const float b = 5880.0f; // damping | 5880.0f
-    static const float c = 2.5f; // point resistence | 2.5f
-    static const float g = 9.8f * m; // gravitational force | 9.8f
-}
+class SystemParam {
+public:
+    SystemParam(int n = 33, float w = 2.0f, float h = 0.008f, float k = 1.0f,
+                float a = 0.993f, float b = 5880.0f, float c = 2.5f)
+        : n(n), w(w), h(h), r(w / (n - 1) * 1.05f), k(k),
+        m(0.05f / (n * n)), a(a), b(b), c(c), g(9.8f * m) {}
+
+    const int n; // must be odd, n * n = n_vertices | 33
+    const float w; // width | 2.0f
+    const float h; // time step, smaller for better results | 0.008f = 0.016f/2
+    const float r; // spring rest length
+    const float k; // spring stiffness | 1.0f
+    const float m; // point mass | 0.25f
+    const float a; // point damping, close to 1.0 | 0.993f
+    const float b; // damping | 5880.0f
+    const float c; // point resistance | 2.5f
+    const float g; // gravitational force | 9.8f
+};
 
 class ClothSimulation : public Scene {
     typedef Eigen::VectorXf VectorXf;
 public:
-    ClothSimulation(const unsigned int& windowWidth, const unsigned int& windowHeight, const dtk::dtkDouble3& gravity);
+    ClothSimulation(const unsigned int& windowWidth, const unsigned int& windowHeight, const dtk::dtkDouble3& gravity, const unsigned int& edge_num);
     ~ClothSimulation() = default;
 
     using ClothMesh = dtk::dtkStaticTriangleMesh::Ptr;
@@ -102,6 +108,7 @@ private:
     // 重力
     dtk::dtkDouble3 _gravity;
 
+    SystemParam _param;
     ClothMesh _cloth_mesh;
     SphereMesh _sphere_mesh;
     ClothMassSpring _system;
@@ -115,7 +122,7 @@ private:
 class dtkFactory {
 public:
     static dtk::dtkStaticTriangleMesh::Ptr CreateClothMesh(float w, int n);
-    static dtk::dtkPhysMassSpring::Ptr CreateClothMassSpringSystem(const dtk::dtkStaticTriangleMesh::Ptr& mesh);
+    static dtk::dtkPhysMassSpring::Ptr CreateClothMassSpringSystem(const dtk::dtkStaticTriangleMesh::Ptr& mesh, const SystemParam& _param);
     static dtk::dtkPhysMassSpringSolver::Ptr CreateClothMassSpringSolver(const dtk::dtkPhysMassSpring::Ptr& system);
     static dtk::dtkStaticTriangleMesh::Ptr CreateSphereMesh(dtk::dtkDouble3 center, float radius, int n);
 };

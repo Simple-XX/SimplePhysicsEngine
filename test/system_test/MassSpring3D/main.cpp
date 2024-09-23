@@ -29,16 +29,20 @@
 #include "Renderer.h"
 
 static auto last_clock = std::chrono::high_resolution_clock::now();
-static auto init_clock = std::chrono::high_resolution_clock::now();
 
 // The Width of the screen
 const unsigned int WINDOW_WIDTH = 800;
 // The height of the screen
 const unsigned int WINDOW_HEIGHT = 600;
-static ClothSimulation scene(WINDOW_WIDTH, WINDOW_HEIGHT, { 0, -9.8 });
-// static ProgramInput* g_render_target; // vertex, index
+Scene* current_scene = nullptr;
+
+double fps = 0.0;
+double total_time = 0.0;
+int total_frames = 0;
+auto last_time = std::chrono::high_resolution_clock::now();
 
 char INSTRUCTION = '0';
+int I1_EDGE_NUM = 33;
 
 static void checkGlErrors();
 
@@ -78,9 +82,14 @@ void display() {
 
     auto now = std::chrono::high_resolution_clock::now();
     auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
-        now - last_clock)
+        now - last_time)
         .count();
-    last_clock = now;
+    last_time = now;
+
+    total_time += dt;
+    total_frames++;
+    last_time = now;
+    double fps = total_frames / total_time;
 
     int h = glutGet(GLUT_WINDOW_HEIGHT);
     int w = glutGet(GLUT_WINDOW_WIDTH);
@@ -90,21 +99,19 @@ void display() {
     draw_text(5, 40, "Push [1-1] to switch scene");
     draw_text(w - 150, h - 20, "refer: apollonia");
 
-    if (scene.IsPause())
+    draw_text(5, h - 40, "%.2f FPS", fps);
+    if (current_scene->IsPause())
         draw_text(5, h - 20, "dt: %.2f ms PAUSED", dt * 1000);
     else
         draw_text(5, h - 20, "dt: %.2f ms", dt * 1000);
 
-    scene.Update(std::min(dt, 0.08));
-    scene.Render();
-
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error: " << err << std::endl;
-    }
+    current_scene->Update(dt);
+    current_scene->Render();
 
     glutSwapBuffers();
     checkGlErrors();
+
+    glutPostRedisplay();
 }
 
 void reshape(int width, int height) {
@@ -116,12 +123,12 @@ void reshape(int width, int height) {
 
 void mouse(int button, int state, int x, int y) {}
 
-void move_pos(const dtk::dtkDouble2& v) { scene.move(v); }
+void move_pos(const dtk::dtkDouble2& v) { current_scene->move(v); }
 
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
     case '1':
-        scene.SetVisible(!scene.IsVisible());
+        current_scene = new ClothSimulation(WINDOW_WIDTH, WINDOW_HEIGHT, { 0, -9.8 }, I1_EDGE_NUM);
         break;
     case 'w':
         move_pos(dtk::dtkDouble2(0, 1));
@@ -136,7 +143,7 @@ void keyboard(unsigned char key, int x, int y) {
         move_pos(dtk::dtkDouble2(1, 0));
         break;
     case ' ':
-        scene.SetPause(!scene.IsPause());
+        current_scene->SetPause(!current_scene->IsPause());
         break;
     case 27:
         exit(0);
@@ -176,10 +183,6 @@ static void initGlutState(int argc, char** argv, const char* window_title = "", 
 
 static void initGlewState() {
     GLenum err = glewInit();
-    if (!glewIsSupported("GL_VERSION_2_0")) {
-        printf("OpenGL 2.0 not supported\n");
-        exit(1);
-    }
     if (err != GLEW_OK) {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err) << std::endl;
         exit(0);
@@ -216,6 +219,12 @@ int main(int argc, char* argv[]) {
         if (std::strcmp(argv[i], "--instruction") == 0 && i + 1 < argc) {
             INSTRUCTION = argv[++i][0];
         }
+
+        if (INSTRUCTION == '1') {
+            if (std::strcmp(argv[i], "--edge_num") == 0 && i + 1 < argc) {
+                I1_EDGE_NUM = std::stoi(argv[++i]);
+            }
+        }
     }
 
     try {
@@ -224,7 +233,6 @@ int main(int argc, char* argv[]) {
         initGlewState();
         initGLState();
 
-        scene.Init();
         checkGlErrors();
 
         if (INSTRUCTION != '0') {
@@ -232,7 +240,8 @@ int main(int argc, char* argv[]) {
         }
         glutMainLoop();
 
-        scene.CleanUp();
+        current_scene->CleanUp();
+        delete current_scene;
         return 0;
     }
     catch (const std::runtime_error& e) {
