@@ -184,27 +184,33 @@ $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 
 ### Demo2d
 
-<div align="center">
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 800px; margin: auto;">
-    <img src="./demo/img/demo2d_1.gif" style="width: 100%; height: auto;" />
-    <img src="./demo/img/demo2d_2.gif" style="width: 100%; height: auto;" />
-    <img src="./demo/img/demo2d_3.gif" style="width: 100%; height: auto;" />
-    <img src="./demo/img/demo2d_4.gif" style="width: 100%; height: auto;" />
-    <img src="./demo/img/demo2d_5.gif" style="width: 100%; height: auto;" />
-    <img src="./demo/img/demo2d_6.gif" style="width: 100%; height: auto;" />
-    <img src="./demo/img/demo2d_7.gif" style="width: 100%; height: auto;" />
-  </div>
-</div>
+<table align="center">
+  <tr>
+    <td><img src="./demo/img/demo2d_1.gif" style="width: 100%; height: auto;" /></td>
+    <td><img src="./demo/img/demo2d_2.gif" style="width: 100%; height: auto;" /></td>
+    <td><img src="./demo/img/demo2d_3.gif" style="width: 100%; height: auto;" /></td>
+    <td><img src="./demo/img/demo2d_4.gif" style="width: 100%; height: auto;" /></td>
+  </tr>
+  <tr>
+    <td><img src="./demo/img/demo2d_5.gif" style="width: 100%; height: auto;" /></td>
+    <td><img src="./demo/img/demo2d_6.gif" style="width: 100%; height: auto;" /></td>
+    <td><img src="./demo/img/demo2d_7.gif" style="width: 100%; height: auto;" /></td>
+    <td></td>
+  </tr>
+</table>
 
 ### MassSpring3D
 
 CUDA can be used to accelerate the simulation of mass spring system. 
 
-<div align="center">
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 800px; margin: auto;">
-    <img src="./demo/img/MassSpring3D_1.gif" style="width: 100%; height: auto;" />
-  </div>
-</div>
+<table align="center">
+  <tr>
+    <td><img src="./demo/img/MassSpring3D_1.gif" style="width: 100%; height: auto;" /></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
 
 ## Documentation
 
