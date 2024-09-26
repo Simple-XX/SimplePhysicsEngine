@@ -221,12 +221,6 @@ if (NOT glfw3_FOUND)
             "Following https://www.glfw.org to install.")
 endif ()
 
-find_package(GLEW REQUIRED)
-if (NOT GLEW_FOUND)
-    message(FATAL_ERROR "GLEW not found.\n"
-            "Following http://glew.sourceforge.net to install.")
-endif ()
-
 find_package(CUDAToolkit 11.7 QUIET)
 if (CUDAToolkit_FOUND)
     message(STATUS "CUDAToolkit found.")
