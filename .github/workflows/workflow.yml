@@ -171,6 +171,7 @@ jobs:
 
       - name: Build
         run: |
+          cd ..
           cmake --preset=build
           cmake --build build --target all
           cmake --build build --target coverage
