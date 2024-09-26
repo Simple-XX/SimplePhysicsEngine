@@ -43,12 +43,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check for CUDA
+        id: check_cuda
+        run: |
+          if command -v nvcc &> /dev/null; then
+            echo "CUDA is installed."
+            echo "has_cuda=true" >> $GITHUB_ENV
+          else
+            echo "CUDA is not installed."
+            echo "has_cuda=false" >> $GITHUB_ENV
+          fi
+
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
           sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
           sudo apt-get install --no-install-recommends -y xvfb ffmpeg
+          
+          # Optionally install CUDA dependencies if CUDA is available
+          if [ "$has_cuda" = "true" ]; then
+            sudo apt install --fix-missing -y cuda-toolkit
+          fi
 
       - name: Build
         run: |
@@ -68,7 +84,7 @@ jobs:
             ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
             FFmpeg_PID=$!
             # Run the demo2d program in the background
-            ./build/bin/demo2d --instruction $i &
+            ./build/bin/demo2d --instruction $i --edge_num 33 &
             Demo2d_PID=$!
             # Wait for 5 seconds
             sleep 5
@@ -79,6 +95,91 @@ jobs:
           done
         env:
           DISPLAY: :99
+  
+      - name: Run MassSpring3D
+        run: |
+          for i in {1..1}; do
+            ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
+            FFmpeg_PID=$!
+            ./build/bin/MassSpring3D --instruction $i &
+            MassSpring3D_PID=$!
+            sleep 5
+            kill $FFmpeg_PID
+            kill $MassSpring3D_PID
+          done
+        env:
+          DISPLAY: :99
+      
+      - name: Upload GIFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: gifs_ubuntu
+          path: build/bin/*.gif
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: build/coverage/coverage.info
+          verbose: true
+
+  build_ubuntu_with_cuda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: Jimver/cuda-toolkit@v0.2.17
+        with:
+          # Cuda version
+          cuda: 11.7.0 # optional, default is 12.5.0
+          # Only installs specified subpackages, must be in the form of a JSON array. For example, if you only want to install nvcc and visual studio integration: ["nvcc", "visual_studio_integration"] double quotes required! Note that if you want to use this on Linux, 'network' method MUST be used.
+          sub-packages: '[]' # optional, default is []
+          # Only installs specified subpackages that do not have the cuda prefix, must be in the form of a JSON array. For example, if you only want to install libcublas and libcufft: ["libcublas", "libcufft"] double quotes required! Note that this only works with 'network' method on only on Linux.
+          non-cuda-sub-packages: '[]' # optional, default is []
+          # Installation method, can be either 'local' or 'network'. 'local' downloads the entire installer with all packages and runs that (you can still only install certain packages with sub-packages on Windows). 'network' downloads a smaller executable which only downloads necessary packages which you can define in subPackages
+          method: network # optional, default is local
+          # (Linux and 'local' method only) override arguments for the linux .run installer. For example if you don't want samples use ["--toolkit"] double quotes required!
+          linux-local-args: '["--toolkit", "--samples"]' # optional, default is ["--toolkit", "--samples"]
+          # Use GitHub cache to cache downloaded installer on GitHub servers
+          use-github-cache: true # optional, default is true
+          # Use local cache to cache downloaded installer on the local runner
+          use-local-cache: true # optional, default is true
+          # Suffix of log file name in artifact
+          log-file-suffix: log.txt # optional, default is log.txt    
+
+      - name: Check for CUDA
+        id: check_cuda
+        run: |
+          if command -v nvcc &> /dev/null; then
+            echo "CUDA is installed."
+            echo "has_cuda=true" >> $GITHUB_ENV
+          else
+            echo "CUDA is not installed."
+            echo "has_cuda=false" >> $GITHUB_ENV
+          fi
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install --fix-missing -y doxygen graphviz clang-format clang-tidy cppcheck lcov
+          sudo apt install --fix-missing -y gcc g++ libspdlog-dev libcgal-dev freeglut3-dev libboost-all-dev libvtk9-dev qtbase5-dev xorg-dev libglu1-mesa-dev libglm-dev libglfw3-dev libglew-dev
+          sudo apt-get install --no-install-recommends -y xvfb ffmpeg
+          
+          # Optionally install CUDA dependencies if CUDA is available
+          if [ "$has_cuda" = "true" ]; then
+            sudo apt install --fix-missing -y cuda-toolkit
+          fi
+
+      - name: Build
+        run: |
+          ls
+          cmake --preset=build
+          cmake --build build --target all
+          cmake --build build --target coverage
+
+      - name: Start Xvfb
+        run: |
+          nohup Xvfb :99 -screen 0 800x600x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
   
       - name: Run MassSpring3D
         run: |

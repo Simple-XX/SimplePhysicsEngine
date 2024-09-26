@@ -28,8 +28,6 @@
 #include "Shader.h"
 #include "Renderer.h"
 
-static auto last_clock = std::chrono::high_resolution_clock::now();
-
 // The Width of the screen
 const unsigned int WINDOW_WIDTH = 800;
 // The height of the screen
@@ -39,7 +37,7 @@ Scene* current_scene = nullptr;
 double fps = 0.0;
 double total_time = 0.0;
 int total_frames = 0;
-auto last_time = std::chrono::high_resolution_clock::now();
+double dt = 0.08;
 
 char INSTRUCTION = '0';
 int I1_EDGE_NUM = 33;
@@ -75,17 +73,19 @@ static void draw_text(int x, int y, const char* format, ...) {
 }
 
 void display() {
+    if (current_scene == nullptr || current_scene->IsPause()) {
+        return;
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0f, -8.0f, -25.0f);
 
+    auto last_time = std::chrono::high_resolution_clock::now();
+    current_scene->Update(dt);
+    current_scene->Render();
     auto now = std::chrono::high_resolution_clock::now();
-    auto dt = std::chrono::duration_cast<std::chrono::duration<double>>(
-        now - last_time)
-        .count();
-    last_time = now;
-
+    dt = std::chrono::duration_cast<std::chrono::duration<double>>(now - last_time).count();
     total_time += dt;
     total_frames++;
     last_time = now;
@@ -104,9 +104,6 @@ void display() {
         draw_text(5, h - 20, "dt: %.2f ms PAUSED", dt * 1000);
     else
         draw_text(5, h - 20, "dt: %.2f ms", dt * 1000);
-
-    current_scene->Update(dt);
-    current_scene->Render();
 
     glutSwapBuffers();
     checkGlErrors();

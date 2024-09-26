@@ -15,7 +15,7 @@ void main(){
 	}
 
     vec3 toLight = normalize(-uLight);
-    float diffuse = max(0, dot(toLight, normal));
+    float diffuse = max(0.0, dot(toLight, normal));
 
     vec3 color = diffuse * albedo + uAmbient * albedo;
     fragColor = vec4(color, 1.0);

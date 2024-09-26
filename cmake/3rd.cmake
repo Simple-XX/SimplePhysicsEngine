@@ -220,3 +220,13 @@ if (NOT glfw3_FOUND)
     message(FATAL_ERROR "glfw3 not found.\n"
             "Following https://www.glfw.org to install.")
 endif ()
+
+find_package(CUDAToolkit 11.7 QUIET)
+if (CUDAToolkit_FOUND)
+    message(STATUS "CUDAToolkit found.")
+    set(CUDA_ENABLED TRUE)
+else ()
+    message(WARNING "CUDAToolkit not found. CUDA features will be disabled.\n"
+            "Follow https://developer.nvidia.com/cuda-downloads to install.")
+    set(CUDA_ENABLED FALSE)
+endif ()
