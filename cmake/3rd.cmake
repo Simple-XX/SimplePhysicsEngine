@@ -220,3 +220,15 @@ if (NOT glfw3_FOUND)
     message(FATAL_ERROR "glfw3 not found.\n"
             "Following https://www.glfw.org to install.")
 endif ()
+
+find_package(GLEW REQUIRED)
+if (NOT GLEW_FOUND)
+    message(FATAL_ERROR "GLEW not found.\n"
+            "Following http://glew.sourceforge.net to install.")
+endif ()
+
+find_package(CUDAToolkit 11.7 REQUIRED)
+if (NOT CUDAToolkit_FOUND)
+    message(FATAL_ERROR "CUDAToolkit not found.\n"
+            "Following https://developer.nvidia.com/cuda-downloads to install.")
+endif ()

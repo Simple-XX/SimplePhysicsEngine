@@ -117,6 +117,10 @@ dtk Render by Opengl.
 
 [ The Visualization ToolKit (VTK)](https://vtk.org/Wiki/VTK) is an open source, freely available software system for 3D computer graphics, image processing, and visualization used by thousands of researchers and developers around the world. VTK consists of a C++ class library, and several interpreted interface layers including Tcl/Tk, Java, and Python. Professional support and products for VTK are provided by [Kitware, Inc.](http://www.kitware.com/) VTK supports a wide variety of visualization algorithms including scalar, vector, tensor, texture, and volumetric methods; and advanced modeling techniques such as implicit modelling, polygon reduction, mesh smoothing, cutting, contouring, and Delaunay triangulation. In addition, dozens of imaging algorithms have been directly integrated to allow the user to mix 2D imaging / 3D graphics algorithms and data.
 
+## [Cuda](https://developer.nvidia.com/cuda-zone) \(Optional\)
+
+CUDA® is a parallel computing platform and programming model developed by NVIDIA for general computing on graphical processing units (GPUs). With CUDA, developers are able to dramatically speed up computing applications by harnessing the power of GPUs.
+
 ## How to build
 
 dtk is build by CMake. so you can build easily. You could build this project either in windows or linux. [tutorial on cmake build](https://preshing.com/20170511/how-to-build-a-cmake-based-project/)
@@ -178,46 +182,7 @@ $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 
 ## Demo with dtk
 
-### Rigid body Simulation Demo
-
- A physical simulation demo for 2D rigid body in real time. It deals with the collision of the rigid body which has no deformation by SAT and AABB methods.
-
-<div align="center">
-  <img src="./demo/img/dtkRigidBodySimulation.gif" width = "50%", height = "50%"/>
-</div>
-
-### Finite Element Method Simulation
-
-A finite element method physical simulation for 2D hyperelasticity deformation meterial body in real time.
-
-<div align="center">
-  <img src="./demo/img/dtkFemSimulation.gif" width = "50%", height = "50%"/>
-</div>
-
-### SPH Methods Simulation
-
-A physical simulation demo for 2D fluid in real time. It deals with the fluid body by a series of SPH methods, which include WCSPH, PCISPH and DFSPH.
-
-<div align = center>
-<img src="./demo/img/WCSPH.gif" width = "30%", height = "30%" /><img src="./demo/img/PCISPH.gif" width = "30%", height = "30%"/><img src="./demo/img/DFSPH.gif" width = "30%", height = "30%"/>
-</div>
-
-The SPH method is WCSPH, PCISPH and DFSPH from left to right.
-
-### Guidewire Simulation
-
-A blood flow induced physical simulation of guidewire shape for virtual vascular intervention training system in real time. Virtual vascular intervention training system, which is a low cost, safe and effective solution, is able to provide an immersive virtual training environment for trainees.
-
-<div align="center">
-  <img src="./demo/img/guideWire.jpg" width = "50%", height = "50%" />
-</div>
-### Finite Element Method Simulation in 3D
-
-<div align="center">
-  <img src="./demo/img/3dFEM.gif" width = "50%", height = "50%" />
-</div>
-
-## Demo2d
+### Demo2d
 
 <div align="center">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; max-width: 800px; margin: auto;">
@@ -231,7 +196,9 @@ A blood flow induced physical simulation of guidewire shape for virtual vascular
   </div>
 </div>
 
-## MassSpring3D
+### MassSpring3D
+
+CUDA can be used to accelerate the simulation of mass spring system. 
 
 <div align="center">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; max-width: 800px; margin: auto;">
