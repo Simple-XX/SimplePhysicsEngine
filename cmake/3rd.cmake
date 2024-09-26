@@ -227,8 +227,12 @@ if (NOT GLEW_FOUND)
             "Following http://glew.sourceforge.net to install.")
 endif ()
 
-find_package(CUDAToolkit 11.7 REQUIRED)
-if (NOT CUDAToolkit_FOUND)
-    message(FATAL_ERROR "CUDAToolkit not found.\n"
-            "Following https://developer.nvidia.com/cuda-downloads to install.")
+find_package(CUDAToolkit 11.7 QUIET)
+if (CUDAToolkit_FOUND)
+    message(STATUS "CUDAToolkit found.")
+    set(CUDA_ENABLED TRUE)
+else ()
+    message(WARNING "CUDAToolkit not found. CUDA features will be disabled.\n"
+            "Follow https://developer.nvidia.com/cuda-downloads to install.")
+    set(CUDA_ENABLED FALSE)
 endif ()
