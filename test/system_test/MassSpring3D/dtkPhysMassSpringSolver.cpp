@@ -1,5 +1,4 @@
 #include "dtkPhysMassSpringSolver.h"
-#include "step.cuh"
 
 dtk::dtkPhysMassSpringSolver::dtkPhysMassSpringSolver() {
 }
@@ -65,10 +64,51 @@ dtk::dtkPhysMassSpringSolver::dtkPhysMassSpringSolver(const dtk::dtkPhysMassSpri
     _J.setFromTriplets(JTriplets.begin(), JTriplets.end());
 
     // pre-factor 
-    double h2 = _system->GetTimeStep() * _system->GetTimeStep();
-    SparseMatrix A = _M + h2 * _L;
-    _system_matrix.compute(A);
+    _h2 = _system->GetTimeStep() * _system->GetTimeStep();
+    SparseMatrixCSR A = _M + _h2 * _L;
 
+    // external force (gravity)
+    const dtk::dtkDouble3& fext = _system->GetDefaultGravityAccel();
+    Vector3f gravity(fext.x, fext.y, fext.z);
+    _fext_force = gravity.replicate(_system->GetNumberOfMassPoints(), 1);
+
+#ifdef DTK_CUDA
+    const int n = static_cast<int>(A.rows());
+    const int m = static_cast<int>(A.cols());
+    const int nnz = static_cast<int>(A.nonZeros());
+
+    std::cout << "=== Matrix : " << std::endl;
+    std::cout << "Size       : " << n << " x " << m << std::endl;
+    std::cout << "Non-zeros  : " << nnz << std::endl;
+
+    SparseMatrixCSR Acsr = A; // solver supports CSR format
+    // printSparseMatrix(Acsr);
+    _system_matrix = CuSparseCholeskySolver<float>::create(n);
+
+    bool doOrdering = true;
+    if (doOrdering)
+    {
+        // compute permutation
+        PermutationMatrix P;
+        Ordering ordering;
+        ordering(Acsr.selfadjointView<Eigen::Upper>(), P);
+
+        // set permutation to solver
+        _system_matrix->setPermutaion(n, P.indices().data());
+    }
+
+    _system_matrix->analyze(nnz, Acsr.outerIndexPtr(), Acsr.innerIndexPtr());
+
+    _system_matrix->factorize(Acsr.valuePtr());
+
+    if (_system_matrix->info() != CuSparseCholeskySolver<float>::SUCCESS)
+    {
+        std::cerr << "Factorize failed." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+#else
+    _system_matrix.compute(A);  // Cholesky 分解
+#endif
 
     int num_springs = _system->GetNumberOfSprings();
     _rest_lengths.resize(num_springs);
@@ -81,6 +121,22 @@ dtk::dtkPhysMassSpringSolver::dtkPhysMassSpringSolver(const dtk::dtkPhysMassSpri
         _spring_indices[2 * i] = spring->GetFirstVertex()->GetPointID();
         _spring_indices[2 * i + 1] = spring->GetSecondVertex()->GetPointID();
     }
+
+#ifdef DTK_CUDA
+    // Initialize CUDA and allocate memory on GPU
+    cudaMalloc(&d_current_state, _current_state.size() * sizeof(float));
+    cudaMalloc(&d_spring_directions, _spring_directions.size() * sizeof(float));
+    cudaMalloc(&d_rest_lengths, _rest_lengths.size() * sizeof(float));
+    cudaMalloc(&d_spring_indices, _spring_indices.size() * sizeof(int));
+    cudaMalloc(&d_fext_force, _fext_force.size() * sizeof(float));
+    cudaMalloc(&d_b, _fext_force.size() * sizeof(float));
+    cudaMalloc(&d_J_spring_directions, _fext_force.size() * sizeof(float));
+
+    // Copy initial data from CPU to GPU
+    cudaMemcpy(d_current_state, _current_state.data(), _current_state.size() * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_rest_lengths, _rest_lengths.data(), _rest_lengths.size() * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_spring_indices, _spring_indices.data(), _spring_indices.size() * sizeof(int), cudaMemcpyHostToDevice);
+#endif
 
     // std::cout << "M: " << std::endl;
     // printSparseMatrix(_M);
@@ -96,159 +152,77 @@ void dtk::dtkPhysMassSpringSolver::solve(unsigned int iter_num) {
     float damping_factor = _system->GetDefaultPointDamp();
 
     // update inertial term
+#ifdef DTK_CUDA
+    VectorXf v_term = (damping_factor + 1) * (_current_state)-damping_factor * _prev_state;
+    _inertial_term = cusparse_multiply(_M, v_term);
+#else
     _inertial_term = _M * ((damping_factor + 1) * (_current_state)-damping_factor * _prev_state);
+#endif
+
     _prev_state = _current_state;
 
+#ifdef DTK_CUDA
+    cudaMemcpy(d_inertial_term, _inertial_term.data(), _inertial_term.size() * sizeof(float), cudaMemcpyHostToDevice);
+#endif
+
     // perform steps
-    bool use_cuda = true;
-    for (unsigned int i = 0; i < iter_num; i++) {
-        step(use_cuda);
-    }
+    for (unsigned int i = 0; i < iter_num; i++)
+        step();
 }
 
-extern "C" void run_local_step_kernel(const float* current_state, float* spring_directions, const float* rest_lengths, const int* spring_indices, int num_springs);
+void dtk::dtkPhysMassSpringSolver::step() {
+    // local step
+#ifdef DTK_CUDA
+    int num_springs = _system->GetNumberOfSprings();
+    run_local_step_with_cuda(d_current_state, d_spring_directions, d_spring_indices, d_rest_lengths, num_springs);
+    cudaMemcpy(_spring_directions.data(), d_spring_directions, _spring_directions.size() * sizeof(float), cudaMemcpyDeviceToHost);
+#else
+    for (dtk::dtkID id = 0; id < _system->GetNumberOfSprings(); id++) {
+        dtk::dtkPhysSpring* spring = _system->GetSpring(id);
+        dtk::dtkID id1 = spring->GetFirstVertex()->GetPointID();
+        dtk::dtkID id2 = spring->GetSecondVertex()->GetPointID();
+        double rest_length = spring->GetRestLength();
+        Vector3f p12(
+            _current_state[3 * id1 + 0] - _current_state[3 * id2 + 0],
+            _current_state[3 * id1 + 1] - _current_state[3 * id2 + 1],
+            _current_state[3 * id1 + 2] - _current_state[3 * id2 + 2]
+        );
 
-void dtk::dtkPhysMassSpringSolver::step(bool use_cuda) {
-    if (use_cuda) {
-        // ***** CUDA Setup ***** //
-        cusparseHandle_t handle;
-        cusparseCreate(&handle);
-
-        int num_springs = _system->GetNumberOfSprings();
-        int num_points = _system->GetNumberOfMassPoints();
-        float h2 = _system->GetTimeStep() * _system->GetTimeStep();
-
-        // 分配 GPU 内存
-        float* d_current_state, * d_spring_directions, * d_inertial_term, * d_fext_force, * d_b;
-        float* d_rest_lengths;
-        int* d_spring_indices;
-
-        cudaMalloc(&d_current_state, _current_state.size() * sizeof(float));
-        cudaMalloc(&d_spring_directions, _spring_directions.size() * sizeof(float));
-        cudaMalloc(&d_inertial_term, _inertial_term.size() * sizeof(float));
-        cudaMalloc(&d_fext_force, num_points * 3 * sizeof(float)); // Assuming 3D points
-        cudaMalloc(&d_b, _inertial_term.size() * sizeof(float));
-        cudaMalloc(&d_rest_lengths, num_springs * sizeof(float));
-        cudaMalloc(&d_spring_indices, 2 * num_springs * sizeof(int)); // 每个弹簧有两个顶点
-
-        // 将数据从 CPU 拷贝到 GPU
-        cudaMemcpy(d_current_state, _current_state.data(), _current_state.size() * sizeof(float), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_rest_lengths, _rest_lengths.data(), num_springs * sizeof(float), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_spring_indices, _spring_indices.data(), 2 * num_springs * sizeof(int), cudaMemcpyHostToDevice);
-
-        // 调用 CUDA 函数执行 local step
-        run_local_step_kernel(d_current_state, d_spring_directions, d_rest_lengths, d_spring_indices, num_springs);
-
-        // 拷贝结果回 CPU
-        cudaMemcpy(_spring_directions.data(), d_spring_directions, _spring_directions.size() * sizeof(float), cudaMemcpyDeviceToHost);
-
-        // ***** 外力计算 ***** //
-        dtk::dtkDouble3 fext = _system->GetDefaultGravityAccel();
-        Vector3f fext_vector(fext.x, fext.y, fext.z);
-        VectorXf fext_force = fext_vector.replicate(num_points, 1);
-        cudaMemcpy(d_fext_force, fext_force.data(), num_points * 3 * sizeof(float), cudaMemcpyHostToDevice);
-
-        // ***** Right Hand Side (RHS) 的计算 ***** //
-        VectorXf rhs = _inertial_term + h2 * _J * _spring_directions + h2 * fext_force;
-        cudaMemcpy(d_b, rhs.data(), rhs.size() * sizeof(float), cudaMemcpyHostToDevice);
-
-        // ***** cuSPARSE 矩阵求解 ***** //
-        Eigen::SparseMatrix<float> system_matrix_eigen = _system_matrix.matrixL();  // 获取分解的下三角矩阵
-        int nnz = system_matrix_eigen.nonZeros();
-        int rows = system_matrix_eigen.rows();
-        int cols = system_matrix_eigen.cols();
-
-        // 生成 CSR 格式的数据
-        std::vector<int> csrRowPtr(rows + 1), csrColInd(nnz);
-        std::vector<float> csrVal(nnz);
-        int idx = 0;
-        for (int k = 0; k < system_matrix_eigen.outerSize(); ++k) {
-            csrRowPtr[k] = idx;
-            for (Eigen::SparseMatrix<float>::InnerIterator it(system_matrix_eigen, k); it; ++it) {
-                csrVal[idx] = it.value();
-                csrColInd[idx] = it.col();
-                idx++;
-            }
-        }
-        csrRowPtr[rows] = nnz;
-
-        // 在 GPU 上分配 CSR 矩阵
-        int* d_csrRowPtr, * d_csrColInd;
-        float* d_csrVal;
-        cudaMalloc(&d_csrRowPtr, (rows + 1) * sizeof(int));
-        cudaMalloc(&d_csrColInd, nnz * sizeof(int));
-        cudaMalloc(&d_csrVal, nnz * sizeof(float));
-        cudaMemcpy(d_csrRowPtr, csrRowPtr.data(), (rows + 1) * sizeof(int), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_csrColInd, csrColInd.data(), nnz * sizeof(int), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_csrVal, csrVal.data(), nnz * sizeof(float), cudaMemcpyHostToDevice);
-
-        // 使用 cuSPARSE 进行求解
-        float* d_x;
-        cudaMalloc(&d_x, rhs.size() * sizeof(float));
-
-        cusparseMatDescr_t descr;
-        cusparseCreateMatDescr(&descr);
-
-        // 定义 alpha 和 beta
-        float alpha = 1.0f;
-        float beta = 0.0f;
-
-        // 使用 cuSPARSE API 进行矩阵-向量乘法
-        cusparseSpMatDescr_t matA;
-        cusparseDnVecDescr_t vecX, vecY;
-        cusparseCreateCsr(&matA, rows, cols, nnz, d_csrRowPtr, d_csrColInd, d_csrVal,
-                          CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,
-                          CUSPARSE_INDEX_BASE_ZERO, CUDA_R_32F);
-        cusparseCreateDnVec(&vecX, rhs.size(), d_b, CUDA_R_32F);
-        cusparseCreateDnVec(&vecY, rhs.size(), d_x, CUDA_R_32F);
-
-        cusparseSpMV(handle, CUSPARSE_OPERATION_NON_TRANSPOSE, &alpha, matA, vecX, &beta, vecY,
-                     CUDA_R_32F, CUSPARSE_SPMV_ALG_DEFAULT, nullptr);
-
-        // 将解拷贝回 CPU
-        cudaMemcpy(_current_state.data(), d_x, rhs.size() * sizeof(float), cudaMemcpyDeviceToHost);
-
-        // 释放 GPU 资源
-        cudaFree(d_current_state);
-        cudaFree(d_spring_directions);
-        cudaFree(d_inertial_term);
-        cudaFree(d_fext_force);
-        cudaFree(d_b);
-        cudaFree(d_x);
-        cudaFree(d_csrRowPtr);
-        cudaFree(d_csrColInd);
-        cudaFree(d_csrVal);
-        cudaFree(d_rest_lengths);
-        cudaFree(d_spring_indices);
-        cusparseDestroyMatDescr(descr);
-        cusparseDestroy(handle);
+        p12.normalize();
+        _spring_directions[3 * id + 0] = rest_length * p12[0];
+        _spring_directions[3 * id + 1] = rest_length * p12[1];
+        _spring_directions[3 * id + 2] = rest_length * p12[2];
     }
-    else {
-        // 原有 CPU 代码
-        for (dtk::dtkID id = 0; id < _system->GetNumberOfSprings(); id++) {
-            dtk::dtkPhysSpring* spring = _system->GetSpring(id);
-            dtk::dtkID id1 = spring->GetFirstVertex()->GetPointID();
-            dtk::dtkID id2 = spring->GetSecondVertex()->GetPointID();
-            double rest_length = spring->GetRestLength();
-            Vector3f p12(
-                _current_state[3 * id1 + 0] - _current_state[3 * id2 + 0],
-                _current_state[3 * id1 + 1] - _current_state[3 * id2 + 1],
-                _current_state[3 * id1 + 2] - _current_state[3 * id2 + 2]
-            );
+#endif
+    // global step
+#ifdef DTK_CUDA
+    // step(1)
 
-            p12.normalize();
-            _spring_directions[3 * id + 0] = rest_length * p12[0];
-            _spring_directions[3 * id + 1] = rest_length * p12[1];
-            _spring_directions[3 * id + 2] = rest_length * p12[2];
-        }
+    // auto start = std::chrono::high_resolution_clock::now();
 
-        float h2 = _system->GetTimeStep() * _system->GetTimeStep();
-        dtk::dtkDouble3 fext = _system->GetDefaultGravityAccel();
-        VectorXf fext_force = VectorXf(Vector3f(fext.x, fext.y, fext.z).replicate(_system->GetNumberOfMassPoints(), 1));
+    VectorXf _J_spring_directions = cusparse_multiply(_J, _spring_directions);
+    VectorXf b = _inertial_term + _h2 * (_J_spring_directions + _fext_force);
 
-        VectorXf b = _inertial_term + h2 * _J * _spring_directions + h2 * fext_force;
-        _current_state = _system_matrix.solve(b);
-    }
+    // auto end = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double> elapsed = end - start;
+    // std::cout << "step(1) time: " << elapsed.count() << " seconds" << std::endl;
+
+    // step(2)
+
+    // start = std::chrono::high_resolution_clock::now();
+
+    VectorR xhatGPU(b.size());
+    _system_matrix->solve(b.data(), xhatGPU.data());
+    _current_state = Eigen::Map<VectorXf>(xhatGPU.data(), xhatGPU.size());
+    cudaMemcpy(d_current_state, _current_state.data(), _current_state.size() * sizeof(float), cudaMemcpyHostToDevice);
+
+    // end = std::chrono::high_resolution_clock::now();
+    // elapsed = end - start;
+    // std::cout << "step(2) time: " << elapsed.count() << " seconds" << std::endl;
+#else
+    VectorXf b = _inertial_term + _h2 * (_J * _spring_directions + _fext_force);
+    _current_state = _system_matrix.solve(b);
+#endif
 }
 
 
