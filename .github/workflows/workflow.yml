@@ -128,7 +128,7 @@ jobs:
       - uses: Jimver/cuda-toolkit@v0.2.17
         with:
           # Cuda version
-          cuda: 11.7 # optional, default is 12.5.0
+          cuda: 11.7.0 # optional, default is 12.5.0
           # Only installs specified subpackages, must be in the form of a JSON array. For example, if you only want to install nvcc and visual studio integration: ["nvcc", "visual_studio_integration"] double quotes required! Note that if you want to use this on Linux, 'network' method MUST be used.
           sub-packages: '["libcusparse"]' # optional, default is []
           # Only installs specified subpackages that do not have the cuda prefix, must be in the form of a JSON array. For example, if you only want to install libcublas and libcufft: ["libcublas", "libcufft"] double quotes required! Note that this only works with 'network' method on only on Linux.
