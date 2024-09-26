@@ -18,7 +18,7 @@ file(GLOB cuda_source_files
         "cusparse_cholesky_solver.cpp"
         "cusparse_wrapper.cpp"
 )
-
+set(GLEW_USE_STATIC_LIBS ON)
 
 if(CUDAToolkit_FOUND)
         message(STATUS "CUDAToolkit found, compiling with CUDA support")
