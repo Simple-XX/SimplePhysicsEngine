@@ -84,7 +84,7 @@ jobs:
             ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/demo2d_$i.gif &
             FFmpeg_PID=$!
             # Run the demo2d program in the background
-            ./build/bin/demo2d --instruction $i --edge_num 33 &
+            ./build/bin/demo2d --instruction $i &
             Demo2d_PID=$!
             # Wait for 5 seconds
             sleep 5
@@ -101,7 +101,7 @@ jobs:
           for i in {1..1}; do
             ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
-            ./build/bin/MassSpring3D --instruction $i &
+            ./build/bin/MassSpring3D --instruction $i --edge_num 101 &
             MassSpring3D_PID=$!
             sleep 5
             kill $FFmpeg_PID
@@ -187,7 +187,7 @@ jobs:
           for i in {1..1}; do
             ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
-            ./build/bin/MassSpring3D --instruction $i &
+            ./build/bin/MassSpring3D --instruction $i --edge_num 101 &
             MassSpring3D_PID=$!
             sleep 5
             kill $FFmpeg_PID
@@ -260,7 +260,7 @@ jobs:
           for i in {1..1}; do
             ffmpeg -y -f x11grab -video_size 800x600 -i :99 -t 5 -r 10 ./build/bin/MassSpring3D_$i.gif &
             FFmpeg_PID=$!
-            ./build/bin/MassSpring3D --instruction $i &
+            ./build/bin/MassSpring3D --instruction $i --edge_num 101 &
             MassSpring3D_PID=$!
             sleep 5
             if ps -p $FFmpeg_PID > /dev/null; then
