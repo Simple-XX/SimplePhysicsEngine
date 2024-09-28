@@ -14,7 +14,7 @@ public:
     virtual void Update(float dt) = 0;
     virtual void Render() = 0;
     virtual void CleanUp() = 0;
-    virtual void move(const dtk::dtkDouble2& v) = 0;
+    virtual void move(const dtk::dtkDouble3& v) = 0;
 
     bool IsPause() const {
         return State == SCENE_PAUSE;
