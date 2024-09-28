@@ -43,3 +43,37 @@ void run_local_step_with_cuda(
     // Wait for all threads to complete
     cudaDeviceSynchronize();
 }
+
+extern "C" __global__ void satisfySphereKernel(float* current_state, int num_points, float radius, float3 center) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < num_points) {
+        float3 p = make_float3(
+            current_state[3 * i + 0] - center.x,
+            current_state[3 * i + 1] - center.y,
+            current_state[3 * i + 2] - center.z
+        );
+
+        float norm = sqrtf(p.x * p.x + p.y * p.y + p.z * p.z);
+        if (norm < radius) {
+            p.x /= norm;
+            p.y /= norm;
+            p.z /= norm;
+            p.x *= radius;
+            p.y *= radius;
+            p.z *= radius;
+
+            current_state[3 * i + 0] = p.x + center.x;
+            current_state[3 * i + 1] = p.y + center.y;
+            current_state[3 * i + 2] = p.z + center.z;
+        }
+    }
+}
+
+void run_satisfy_sphere_with_cuda(float* d_current_state, int num_points, float radius, float3 center) {
+    int blockSize = 256;
+    int numBlocks = (num_points + blockSize - 1) / blockSize;
+
+    satisfySphereKernel<<<numBlocks, blockSize>>>(d_current_state, num_points, radius, center);
+
+    cudaDeviceSynchronize();
+}

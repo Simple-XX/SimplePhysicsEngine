@@ -70,7 +70,8 @@ public:
 
     const ClothMesh GetClothMesh() const;
 
-    void move(const dtk::dtkDouble2& v);
+    void move(const dtk::dtkDouble3& v);
+    void rotate_view(const float& deltaX, const float& deltaY);
 
     void CleanUp();
 
@@ -95,6 +96,9 @@ private:
     // Camera
     dtk::dtkMatrix44 g_ModelViewMatrix;
     dtk::dtkMatrix44 g_ProjectionMatrix;
+    glm::vec3 g_camera_position;
+    glm::vec3 g_camera_target;
+    glm::vec3 g_camera_up;
     const float g_camera_distance = 4.2f;
     const float PI = glm::pi<float>();
 

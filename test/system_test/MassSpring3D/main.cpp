@@ -99,6 +99,7 @@ void display() {
     draw_text(5, 40, "Push [1-1] to switch scene");
     draw_text(w - 150, h - 20, "refer: apollonia");
 
+    draw_text(5, h - 60, "Mass Point: %d", I1_EDGE_NUM * I1_EDGE_NUM);
     draw_text(5, h - 40, "%.2f FPS", fps);
     if (current_scene->IsPause())
         draw_text(5, h - 20, "dt: %.2f ms PAUSED", dt * 1000);
@@ -118,26 +119,37 @@ void reshape(int width, int height) {
     gluPerspective(45.0, width / (float)height, 0.1, 100.0);
 }
 
-void mouse(int button, int state, int x, int y) {}
-
-void move_pos(const dtk::dtkDouble2& v) { current_scene->move(v); }
+void move_pos(const dtk::dtkDouble3& v) {
+    if (current_scene == nullptr) {
+        return;
+    }
+    current_scene->move(v);
+}
 
 void keyboard(unsigned char key, int x, int y) {
+    const float moveSpeed = 0.1f;
     switch (key) {
     case '1':
         current_scene = new ClothSimulation(WINDOW_WIDTH, WINDOW_HEIGHT, { 0, -9.8 }, I1_EDGE_NUM);
+        move_pos(dtk::dtkDouble3(0, 0, 0));
         break;
     case 'w':
-        move_pos(dtk::dtkDouble2(0, 1));
+        move_pos(dtk::dtkDouble3(0, moveSpeed, 0)); // Move forward
         break;
     case 'a':
-        move_pos(dtk::dtkDouble2(-1, 0));
+        move_pos(dtk::dtkDouble3(-moveSpeed, 0, 0)); // Move left
         break;
     case 's':
-        move_pos(dtk::dtkDouble2(0, -1));
+        move_pos(dtk::dtkDouble3(0, -moveSpeed, 0)); // Move backward
         break;
     case 'd':
-        move_pos(dtk::dtkDouble2(1, 0));
+        move_pos(dtk::dtkDouble3(moveSpeed, 0, 0)); // Move right
+        break;
+    case 'q':
+        move_pos(dtk::dtkDouble3(0, 0, moveSpeed)); // Move up
+        break;
+    case 'e':
+        move_pos(dtk::dtkDouble3(0, 0, -moveSpeed)); // Move down
         break;
     case ' ':
         current_scene->SetPause(!current_scene->IsPause());
@@ -149,6 +161,8 @@ void keyboard(unsigned char key, int x, int y) {
         break;
     }
 }
+
+void mouse(int button, int state, int x, int y) {}
 
 void motion(int x, int y) {}
 

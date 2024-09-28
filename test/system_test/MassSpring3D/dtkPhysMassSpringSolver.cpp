@@ -227,10 +227,13 @@ void dtk::dtkPhysMassSpringSolver::step() {
 
 
 void dtk::dtkPhysMassSpringSolver::satisfy(ClothDropType type) {
-    if (type == Sphere) {
-        const float radius = 0.64f;
-        const Eigen::Vector3f center(0, 0, -1);
-
+    auto satisfySphere = [&](const float& radius, const Eigen::Vector3f& center) {
+#ifdef DTK_CUDA
+        int num_points = _system->GetNumberOfMassPoints();
+        size_t size = num_points * 3 * sizeof(float);
+        run_satisfy_sphere_with_cuda(d_current_state, num_points, radius, make_float3(center[0], center[1], center[2]));
+        cudaMemcpy(_current_state.data(), d_current_state, size, cudaMemcpyDeviceToHost);
+#else
         for (int i = 0; i < _system->GetNumberOfMassPoints(); i++) {
             Vector3f p(
                 _current_state[3 * i + 0] - center[0],
@@ -248,10 +251,12 @@ void dtk::dtkPhysMassSpringSolver::satisfy(ClothDropType type) {
                 _current_state[3 * i + j] = p[j] + center[j];
             }
         }
-    }
-    else {
-        int fix_idx = 0;
-        for (int i = 0; i < 3; i++)
-            _current_state[fix_idx + i] = _initial_state[fix_idx + i];
+#endif
+        };
+
+
+    if (type == Sphere) {
+        satisfySphere(0.64f, Eigen::Vector3f(-0.5, 0, -1));
+        satisfySphere(0.64f, Eigen::Vector3f(0, 0.5, -2));
     }
 }

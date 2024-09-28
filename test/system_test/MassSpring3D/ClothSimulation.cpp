@@ -22,8 +22,16 @@ const ClothSimulation::ClothMesh ClothSimulation::GetClothMesh() const {
     return _cloth_mesh;
 };
 
-void ClothSimulation::move(const dtk::dtkDouble2& v) {
+void ClothSimulation::move(const dtk::dtkDouble3& v) {
+    // Update camera position
+    g_camera_position += glm::vec3(v.x, v.y, v.z);
 
+    // Recalculate the ModelView matrix
+    g_ModelViewMatrix = glm::lookAt(
+        g_camera_position,
+        g_camera_target,
+        g_camera_up
+    ) * glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, _param.w / 4));
 };
 
 void ClothSimulation::CleanUp() {
@@ -104,11 +112,15 @@ void ClothSimulation::InitCloth() {
 }
 
 void ClothSimulation::InitScene() {
+    g_camera_position = glm::vec3(0.618, -0.786, 0.3f) * g_camera_distance;
+    g_camera_target = glm::vec3(0.0f, 0.0f, -1.0f);
+    g_camera_up = glm::vec3(0.0f, 0.0f, 1.0f);
+
     g_ModelViewMatrix = glm::lookAt(
-        glm::vec3(0.618, -0.786, 0.3f) * g_camera_distance,
-        glm::vec3(0.0f, 0.0f, -1.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f)
-    ) * glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, _param.w / 4));
+        g_camera_position,
+        g_camera_position + g_camera_target,
+        g_camera_up
+    );
     g_ProjectionMatrix = glm::perspective(PI / 4.0f, g_windowWidth * 1.0f / g_windowHeight, 0.01f, 1000.0f);
 };
 
@@ -143,9 +155,6 @@ void ClothSimulation::UpdateRenderTarget() {
     const std::vector<dtk::dtkDouble3>& normalData = _cloth_mesh->GetVertexNormals();
     float* normalBuffer = new float[vertexBufferSize];
     for (dtk::dtkID i = 0;i < mPts->GetNumberOfPoints();i++) {
-        // vertexBuffer[3 * i + 0] = (float)mPts->GetPoint(i)[0];
-        // vertexBuffer[3 * i + 1] = (float)mPts->GetPoint(i)[1];
-        // vertexBuffer[3 * i + 2] = (float)mPts->GetPoint(i)[2];
         normalBuffer[3 * i + 0] = (float)normalData[i].x;
         normalBuffer[3 * i + 1] = (float)normalData[i].y;
         normalBuffer[3 * i + 2] = (float)normalData[i].z;
