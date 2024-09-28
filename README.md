@@ -201,12 +201,12 @@ $ cmake --build "DESTINATION_SHARED_DIR" --config Release --target install
 
 ### MassSpring3D
 
-CUDA can be used to accelerate the simulation of mass spring system. 
+CUDA can be used to accelerate the simulation of mass spring system. The following is the comparison between the simulation without CUDA (left) and with CUDA (right, Nvidia GPU 4060Ti).
 
 <table align="center">
   <tr>
     <td><img src="./demo/img/MassSpring3D_1.gif" style="width: 100%; height: auto;" /></td>
-    <td></td>
+    <td><img src="./demo/img/MassSpring3D_cuda_1.gif" style="width: 100%; height: auto;" /></td>
     <td></td>
     <td></td>
   </tr>
