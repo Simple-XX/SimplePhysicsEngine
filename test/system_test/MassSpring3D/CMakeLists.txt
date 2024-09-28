@@ -19,7 +19,8 @@ file(GLOB cuda_source_files
         "cusparse_wrapper.cpp"
 )
 
-if(CUDAToolkit_FOUND)
+# if(CUDAToolkit_FOUND)
+if(0)
         message(STATUS "CUDAToolkit found, compiling with CUDA support")
         enable_language(CUDA)
         
